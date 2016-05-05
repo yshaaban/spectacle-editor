@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import styles from './home.css';
+import React, { Component } from "react";
+import { observer } from "mobx-react";
+import styles from "./home.css";
 
 class Home extends Component {
   static contextTypes = {
@@ -9,7 +9,7 @@ class Home extends Component {
 
   render() {
     setTimeout(() => {
-      this.context.store.tree.component = 'NNNNEEEEEW STAAAAAAATE';
+      this.context.store.tree.component = "NNNNEEEEEW STAAAAAAATE";
     }, 2000);
 
     return (

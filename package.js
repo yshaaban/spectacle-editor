@@ -1,16 +1,16 @@
 /* eslint strict: 0, no-shadow: 0, no-unused-vars: 0, no-console: 0 */
-'use strict';
+"use strict";
 
-require('babel-polyfill');
-const os = require('os');
-const webpack = require('webpack');
-const electronCfg = require('./webpack.config.electron.js');
-const cfg = require('./webpack.config.production.js');
-const packager = require('electron-packager');
-const del = require('del');
-const exec = require('child_process').exec;
-const argv = require('minimist')(process.argv.slice(2));
-const pkg = require('./package.json');
+require("babel-polyfill");
+const os = require("os");
+const webpack = require("webpack");
+const electronCfg = require("./webpack.config.electron.js");
+const cfg = require("./webpack.config.production.js");
+const packager = require("electron-packager");
+const del = require("del");
+const exec = require("child_process").exec;
+const argv = require("minimist")(process.argv.slice(2));
+const pkg = require("./package.json");
 const deps = Object.keys(pkg.dependencies);
 const devDeps = Object.keys(pkg.devDependencies);
 
@@ -20,14 +20,14 @@ const shouldBuildAll = argv.all || false;
 
 
 const DEFAULT_OPTS = {
-  dir: './',
+  dir: "./",
   name: appName,
   asar: shouldUseAsar,
   ignore: [
-    '^/test($|/)',
-    '^/tools($|/)',
-    '^/release($|/)',
-    '^/main.development.js'
+    "^/test($|/)",
+    "^/tools($|/)",
+    "^/release($|/)",
+    "^/main.development.js"
   ].concat(devDeps.map(name => `/node_modules/${name}($|/)`))
   .concat(
     deps.filter(name => !electronCfg.externals.includes(name))
@@ -35,7 +35,7 @@ const DEFAULT_OPTS = {
   )
 };
 
-const icon = argv.icon || argv.i || 'app/app';
+const icon = argv.icon || argv.i || "app/app";
 
 if (icon) {
   DEFAULT_OPTS.icon = icon;
@@ -48,11 +48,11 @@ if (version) {
   startPack();
 } else {
   // use the same version as the currently-installed electron-prebuilt
-  exec('npm list electron-prebuilt --dev', (err, stdout) => {
+  exec("npm list electron-prebuilt --dev", (err, stdout) => {
     if (err) {
-      DEFAULT_OPTS.version = '0.37.6';
+      DEFAULT_OPTS.version = "0.37.6";
     } else {
-      DEFAULT_OPTS.version = stdout.split('electron-prebuilt@')[1].replace(/\s/g, '');
+      DEFAULT_OPTS.version = stdout.split("electron-prebuilt@")[1].replace(/\s/g, "");
     }
 
     startPack();
@@ -70,15 +70,15 @@ function build(cfg) {
 }
 
 function startPack() {
-  console.log('start pack...');
+  console.log("start pack...");
   build(electronCfg)
     .then(() => build(cfg))
-    .then(() => del('release'))
+    .then(() => del("release"))
     .then(paths => {
       if (shouldBuildAll) {
         // build for all platforms
-        const archs = ['ia32', 'x64'];
-        const platforms = ['linux', 'win32', 'darwin'];
+        const archs = ["ia32", "x64"];
+        const platforms = ["linux", "win32", "darwin"];
 
         platforms.forEach(plat => {
           archs.forEach(arch => {
@@ -97,15 +97,15 @@ function startPack() {
 
 function pack(plat, arch, cb) {
   // there is no darwin ia32 electron
-  if (plat === 'darwin' && arch === 'ia32') return;
+  if (plat === "darwin" && arch === "ia32") return;
 
   const iconObj = {
     icon: DEFAULT_OPTS.icon + (() => {
-      let extension = '.png';
-      if (plat === 'darwin') {
-        extension = '.icns';
-      } else if (plat === 'win32') {
-        extension = '.ico';
+      let extension = ".png";
+      if (plat === "darwin") {
+        extension = ".icns";
+      } else if (plat === "win32") {
+        extension = ".ico";
       }
       return extension;
     })()
@@ -115,7 +115,7 @@ function pack(plat, arch, cb) {
     platform: plat,
     arch,
     prune: true,
-    'app-version': pkg.version || DEFAULT_OPTS.version,
+    "app-version": pkg.version || DEFAULT_OPTS.version,
     out: `release/${plat}-${arch}`
   });
 

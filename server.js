@@ -1,11 +1,11 @@
 /* eslint no-console: 0 */
 
-import express from 'express';
-import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
+import express from "express";
+import webpack from "webpack";
+import webpackDevMiddleware from "webpack-dev-middleware";
+import webpackHotMiddleware from "webpack-hot-middleware";
 
-import config from './webpack.config.development';
+import config from "./webpack.config.development";
 
 const app = express();
 const compiler = webpack(config);
@@ -20,7 +20,7 @@ app.use(webpackDevMiddleware(compiler, {
 
 app.use(webpackHotMiddleware(compiler));
 
-app.listen(PORT, 'localhost', err => {
+app.listen(PORT, "localhost", err => {
   if (err) {
     console.error(err);
     return;

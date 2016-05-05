@@ -1,8 +1,8 @@
-import { observable } from 'mobx';
+import { observable } from "mobx";
 
 export default class TreeStore {
   tree = observable({
-    component: 'FOOOOO'
+    component: "FOOOOO"
   })
 
   constructor(tree) {

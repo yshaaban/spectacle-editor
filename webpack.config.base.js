@@ -1,24 +1,24 @@
-import path from 'path';
+import path from "path";
 
 export default {
   module: {
     loaders: [{
       test: /\.jsx?$/,
-      loaders: ['babel-loader'],
+      loaders: ["babel-loader"],
       exclude: /node_modules/
     }, {
       test: /\.json$/,
-      loader: 'json-loader'
+      loader: "json-loader"
     }]
   },
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
-    libraryTarget: 'commonjs2'
+    path: path.join(__dirname, "dist"),
+    filename: "bundle.js",
+    libraryTarget: "commonjs2"
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
-    packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
+    extensions: ["", ".js", ".jsx"],
+    packageMains: ["webpack", "browser", "web", "browserify", ["jam", "main"], "main"]
   },
   plugins: [
 
