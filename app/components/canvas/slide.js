@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from "react";
+import { observer } from "mobx-react";
 import { DropTarget } from "react-dnd";
 
 import { DraggableTypes } from "../../constants";
@@ -19,6 +20,7 @@ const collect = (connect, monitor) => ({
   hoverItem: monitor.getItem()
 });
 
+@observer
 class Slide extends Component {
   static contextTypes = {
     store: React.PropTypes.object
@@ -34,7 +36,7 @@ class Slide extends Component {
 
     return connectDropTarget(
       <div className={slideClass}>
-        <div>{`Slide with ${store.tree.component}`}</div>
+        <div>{`Slide with ${store.tree && store.tree.component}`}</div>
         <div>{isOver && hoverItem && `${hoverItem.elementType} BOUTS TO DROP`}</div>
       </div>
     );
@@ -42,6 +44,7 @@ class Slide extends Component {
 }
 
 Slide.propTypes = {
+  hoverItem: PropTypes.object,
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool.isRequired
 };

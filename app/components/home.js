@@ -3,6 +3,7 @@ import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { observer } from "mobx-react";
 
+import HistoryMenu from "./history-menu";
 import ElementList from "./element-list";
 import SlideList from "./slide-list";
 import Canvas from "./canvas";
@@ -12,6 +13,7 @@ class Home extends Component {
   render() {
     return (
       <div className={styles.container}>
+        <HistoryMenu />
         <SlideList />
         <ElementList />
         <Canvas />
