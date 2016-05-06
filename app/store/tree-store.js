@@ -10,4 +10,9 @@ export default class TreeStore {
       this.tree = observable(tree);
     }
   }
+
+  dropElement(elementType) {
+    console.log("DROPPING ELEMENT", elementType);
+    this.tree.component = elementType;
+  }
 }

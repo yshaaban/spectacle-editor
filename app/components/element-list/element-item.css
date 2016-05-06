@@ -1,0 +1,11 @@
+.item {
+  margin: 20px;
+  padding: 5px 10px 0px;
+  text-align: center;
+  background-color: #666;
+}
+
+.item h4 {
+  line-height: 1.5;
+  margin: 0;
+}

@@ -2,9 +2,11 @@ body {
   position: relative;
   color: white;
   height: 100vh;
+  width: 100wh;
   background-color: #ccc;
   font-family: Arial, Helvetica, Helvetica Neue;
   overflow-y: hidden;
+  margin: 0;
 }
 
 h2 {

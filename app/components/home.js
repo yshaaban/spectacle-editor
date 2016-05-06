@@ -1,26 +1,23 @@
 import React, { Component } from "react";
+import { DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 import { observer } from "mobx-react";
+
+import ElementList from "./element-list";
+import SlideList from "./slide-list";
+import Canvas from "./canvas";
 import styles from "./home.css";
 
 class Home extends Component {
-  static contextTypes = {
-    store: React.PropTypes.object
-  };
-
   render() {
-    setTimeout(() => {
-      this.context.store.tree.component = "NNNNEEEEEW STAAAAAAATE";
-    }, 2000);
-
     return (
-      <div>
-        <div className={styles.container}>
-          <h2>App</h2>
-          <h3>Store data {this.context.store.tree.component}</h3>
-        </div>
+      <div className={styles.container}>
+        <SlideList />
+        <ElementList />
+        <Canvas />
       </div>
     );
   }
 }
 
-export default observer(Home);
+export default observer(DragDropContext(HTML5Backend)(Home)); // eslint-disable-line new-cap

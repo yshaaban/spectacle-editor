@@ -1,0 +1,9 @@
+.element {
+  opacity: 1;
+  cursor: move;
+}
+
+.isDragging {
+  opacity: 0.5;
+  color: #ef3;
+}
