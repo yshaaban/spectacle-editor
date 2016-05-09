@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from "react";
-import { DropTarget } from "react-dnd";
+import { observer } from "mobx-react";
 
 import styles from "./index.css";
 
+@observer
 class HistoryMenu extends Component {
   static contextTypes = {
     store: React.PropTypes.object
@@ -17,10 +18,12 @@ class HistoryMenu extends Component {
   }
 
   render() {
+    const { undoDisabled, redoDisabled } = this.context.store;
+
     return (
       <div className={styles.historyMenu}>
-        <button onClick={this.onClickUndo}>Undo</button>
-        <button onClick={this.onClickRedo}>Redo</button>
+        <button onClick={this.onClickUndo} disabled={undoDisabled}>Undo</button>
+        <button onClick={this.onClickRedo} disabled={redoDisabled}>Redo</button>
       </div>
     );
   }

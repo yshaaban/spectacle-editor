@@ -14,8 +14,12 @@ export default class TreeStore {
     return this.history[this.historyIndex].asMutable();
   }
 
-  @computed get undoAvailable() {
-    return this.historyIndex > 0 && this.history.length > 1;
+  @computed get undoDisabled() {
+    return this.historyIndex === 0 || this.history.length <= 1;
+  }
+
+  @computed get redoDisabled() {
+    return this.historyIndex >= this.history.length - 1;
   }
 
   constructor(tree) {

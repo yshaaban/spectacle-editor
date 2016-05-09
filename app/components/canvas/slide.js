@@ -10,7 +10,7 @@ const slideTarget = {
     const { elementType } = monitor.getItem();
 
     component.context.store.dropElement(elementType);
-    console.log("DROPPIN YO",elementType);
+    console.log("DROPPIN YO", elementType);
   }
 };
 
