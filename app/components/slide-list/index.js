@@ -12,10 +12,38 @@ const allColors = [
   '#49BEAA', '#49DCB1', '#EEB868', '#EF767A',
 ];
 
-const height = 65;
+// NOTE: These must match up to the actual styles.
+const slideHeight = 65;
+// NOTE: These are half the value since vertical margins collapse
+const slideTopMargin = 5;
+const slideBottomMargin = 5;
+// Vertical margins collapse so add one more topMargin to the start.
+const listTop = 50 + slideTopMargin;
+const listBottom = 900;
+const listRight = 155;
+const listLeft = 5;
+const totalSlideHeight = slideHeight + slideTopMargin + slideBottomMargin;
 
 const springSetting1 = { stiffness: 180, damping: 10 };
 const springSetting2 = { stiffness: 1000, damping: 50 };
+
+// NOTE: If dragging hits perf issues, memoize this function
+// TODO: HANDLE SCROLL!
+const getDragIndex = (topOfSlide, currentDragIndex) => {
+  const effectiveTop = topOfSlide - listTop;
+  const interSlideTop = effectiveTop % totalSlideHeight;
+
+  let index = Math.floor(effectiveTop / totalSlideHeight);
+
+  // Account for margins
+  if (index < currentDragIndex && interSlideTop > slideTopMargin) {
+    index += 1;
+  } else if (index > currentDragIndex && interSlideTop <= slideTopMargin) {
+    index -= 1;
+  }
+
+  return index;
+};
 
 @observer
 class SlideList extends Component {
@@ -48,13 +76,32 @@ class SlideList extends Component {
   handleMouseMove = ({ pageX, pageY }) => {
     const { mouseOffset, mouseStart: [x, y], currentDragIndex } = this.state;
 
-    const newList = this.context.store.slides.concat();
-
     const newDelta = [pageX - x, pageY - y];
+    const topOfSlide = pageY + mouseOffset.top;
+    const leftOfSlide = pageX + mouseOffset.left;
+    const rightOfSlide = pageX + mouseOffset.right;
+
+    // Let the slide overflow halfway for the zero index location.
+    if (topOfSlide < listTop && topOfSlide > listTop - (slideHeight / 2)) {
+      console.log("HERE");
+
+      this.setState({
+        delta: newDelta,
+        currentDragIndex: 0,
+        outside: false
+      });
+
+      return;
+    }
 
     // If we're outside of the column, setState to outside
     // TODO: GET ACTUAL COLUMN COORDINATES, use list boundingRect and slide bounding rect
-    if (pageX > 155 || pageY > 900) {
+    if (
+      rightOfSlide < listLeft ||
+      leftOfSlide > listRight ||
+      topOfSlide > listBottom ||
+      topOfSlide < listTop
+    ) {
       this.setState({
         delta: newDelta,
         outside: true
@@ -63,20 +110,13 @@ class SlideList extends Component {
       return;
     }
 
-    // Figure out where this slide belongs
-    // THIS ASSUMES SLIDE LIST STARTS AT THE TOP OF THE PAGE
-    const topOfSlide = pageY + mouseOffset.top;
+    let newIndex = getDragIndex(topOfSlide, currentDragIndex);
 
-    let newIndex = Math.floor(topOfSlide / height);
+    const slides = this.context.store.slides;
 
-    console.log(topOfSlide, newIndex);
-
-    if (newIndex < currentDragIndex) {
-      newIndex += 1;
-    }
-
-    if (newIndex > newList.length) {
-      newIndex = newList.length - 1;
+    // Safety check
+    if (newIndex > slides.length) {
+      newIndex = slides.length - 1;
     }
 
     this.setState({
@@ -102,7 +142,7 @@ class SlideList extends Component {
         left: left - pageX
       },
       delta: [0, 0],
-      mouseStart: [pageX, pageY],
+      mouseStart: [pageX, pageY]
     });
 
     window.addEventListener("touchmove", this.handleTouchMove);
@@ -151,23 +191,20 @@ class SlideList extends Component {
 
           // Leave a space in this location if we're within column bounds
           if (!outside && visualIndex === currentDragIndex) {
-            console.log("HERE", currentDragIndex, visualIndex);
             visualIndex += 1;
           }
 
-          console.log("CURRENT INDEX", currentDragIndex);
-          console.log("VISUAL INDEX", visualIndex);
           if (i === originalDragIndex) {
             [x, y] = delta;
 
             style = {
               translateX: spring(x, springSetting2),
               translateY: spring(y, springSetting2),
-              scale: spring(1.2, springSetting1),
+              scale: spring(1.1, springSetting1),
               zIndex: 1000
             };
           } else {
-            y = (visualIndex - i) * height;
+            y = (visualIndex - i) * totalSlideHeight;
             visualIndex += 1;
 
             style = {
@@ -189,6 +226,7 @@ class SlideList extends Component {
                   onTouchStart={this.handleTouchStart.bind(this, slide.id, i)}
                   style={{
                     zIndex,
+                    margin: 10,
                     backgroundColor: allColors[i],
                     transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
                   }}
