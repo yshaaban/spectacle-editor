@@ -6,6 +6,7 @@ import { Motion, spring } from "react-motion";
 import SlideTile from "./slide-tile";
 import styles from "./index.css";
 
+// TODO: REMOVE
 const allColors = [
   '#EF767A', '#456990', '#49BEAA', '#49DCB1', '#EEB868', '#EF767A', '#456990',
   '#49BEAA', '#49DCB1', '#EEB868', '#EF767A',
@@ -13,8 +14,8 @@ const allColors = [
 
 const height = 65;
 
-const springSetting1 = {stiffness: 180, damping: 10};
-const springSetting2 = {stiffness: 1000, damping: 50};
+const springSetting1 = { stiffness: 180, damping: 10 };
+const springSetting2 = { stiffness: 1000, damping: 50 };
 
 @observer
 class SlideList extends Component {
@@ -45,7 +46,7 @@ class SlideList extends Component {
   }
 
   handleMouseMove = ({ pageX, pageY }) => {
-    const { mouseOffset, mouseStart: [x, y] } = this.state;
+    const { mouseOffset, mouseStart: [x, y], currentDragIndex } = this.state;
 
     const newList = this.context.store.slides.concat();
 
@@ -67,6 +68,12 @@ class SlideList extends Component {
     const topOfSlide = pageY + mouseOffset.top;
 
     let newIndex = Math.floor(topOfSlide / height);
+
+    console.log(topOfSlide, newIndex);
+
+    if (newIndex < currentDragIndex) {
+      newIndex += 1;
+    }
 
     if (newIndex > newList.length) {
       newIndex = newList.length - 1;
@@ -143,11 +150,13 @@ class SlideList extends Component {
           let y;
 
           // Leave a space in this location if we're within column bounds
-          if (!outside && i === currentDragIndex) {
+          if (!outside && visualIndex === currentDragIndex) {
+            console.log("HERE", currentDragIndex, visualIndex);
             visualIndex += 1;
           }
 
           console.log("CURRENT INDEX", currentDragIndex);
+          console.log("VISUAL INDEX", visualIndex);
           if (i === originalDragIndex) {
             [x, y] = delta;
 
@@ -155,6 +164,7 @@ class SlideList extends Component {
               translateX: spring(x, springSetting2),
               translateY: spring(y, springSetting2),
               scale: spring(1.2, springSetting1),
+              zIndex: 1000
             };
           } else {
             y = (visualIndex - i) * height;
@@ -164,12 +174,13 @@ class SlideList extends Component {
               translateX: spring(0, springSetting2),
               translateY: spring(y, springSetting2),
               scale: 1,
+              zIndex: i
             };
           }
 
           return (
             <Motion key={slide.id} style={style}>
-              {({ translateY, translateX, scale }) => (
+              {({ translateY, translateX, scale, zIndex }) => (
                 <div
                   className={styles.slideWrapper}
                   ref={(ref) => { this[slide.id] = ref; }}
@@ -177,7 +188,9 @@ class SlideList extends Component {
                   onMouseDown={this.handleMouseDown.bind(this, slide.id, i)}
                   onTouchStart={this.handleTouchStart.bind(this, slide.id, i)}
                   style={{
-                    transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`,
+                    zIndex,
+                    backgroundColor: allColors[i],
+                    transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
                   }}
                 >
                   <div className={styles.slideThumb}>{slide.id}</div>
