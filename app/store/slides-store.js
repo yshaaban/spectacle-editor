@@ -1,6 +1,7 @@
 import { observable, computed, transaction } from "mobx";
 import Immutable from "seamless-immutable";
 import { generate } from "shortid";
+import { findIndex } from "lodash";
 
 export default class SlidesStore {
   // Default slides state
@@ -65,8 +66,11 @@ export default class SlidesStore {
     this._addToHistory(newSlidesArray);
   }
 
+  // setSelectedSlide(slideId) {
+  //   this.currentSlideIndex = findIndex(this.slides, (slide) => slide.id === slideId);
+  // }
+
   moveSlide(currentIndex, newIndex) {
-    console.log("MOVING", currentIndex, newIndex);
     const slidesArray = this.slides;
 
     slidesArray.splice(newIndex, 0, slidesArray.splice(currentIndex, 1)[0]);

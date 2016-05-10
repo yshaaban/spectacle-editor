@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
-import { observer } from "mobx-react";
+import { autorun } from "mobx";
 import { Motion, spring } from "react-motion";
 
 import SlideTile from "./slide-tile";
@@ -45,7 +45,6 @@ const getDragIndex = (topOfSlide, currentDragIndex) => {
   return index;
 };
 
-@observer
 class SlideList extends Component {
   static contextTypes = {
     store: React.PropTypes.object
@@ -56,15 +55,25 @@ class SlideList extends Component {
 
     this.state = {
       slideList: context.store.slides,
-      boundingRect: null,
+      mouseOffset: null,
       mouseStart: [0, 0],
       delta: [0, 0], // difference between mouse and circle pos, for dragging
       outside: false, // index of component outside
       isPressed: false
     };
+
+    // We're storing local state for drag/drop functionality
+    // Update state whenever our store slides change
+    autorun(() => {
+      this.setState({
+        slideList: context.store.slides,
+        updating: false
+      });
+    });
   }
 
   handleTouchStart = (id, pressLocation, ev) => {
+    ev.preventDefault();
     this.handleMouseDown(id, pressLocation, ev.touches[0]);
   }
 
@@ -83,8 +92,6 @@ class SlideList extends Component {
 
     // Let the slide overflow halfway for the zero index location.
     if (topOfSlide < listTop && topOfSlide > listTop - (slideHeight / 2)) {
-      console.log("HERE");
-
       this.setState({
         delta: newDelta,
         currentDragIndex: 0,
@@ -95,7 +102,6 @@ class SlideList extends Component {
     }
 
     // If we're outside of the column, setState to outside
-    // TODO: GET ACTUAL COLUMN COORDINATES, use list boundingRect and slide bounding rect
     if (
       rightOfSlide < listLeft ||
       leftOfSlide > listRight ||
@@ -142,7 +148,8 @@ class SlideList extends Component {
         left: left - pageX
       },
       delta: [0, 0],
-      mouseStart: [pageX, pageY]
+      mouseStart: [pageX, pageY],
+      isPressed: true
     });
 
     window.addEventListener("touchmove", this.handleTouchMove);
@@ -152,32 +159,50 @@ class SlideList extends Component {
   }
 
   handleMouseUp = () => {
-    this.setState({
-      originalDragIndex: null,
-      currentDragIndex: null,
-      outside: false,
-      boundingRect: null,
-      delta: [0, 0]
-    });
-
     window.removeEventListener("touchmove", this.handleTouchMove);
     window.removeEventListener("touchend", this.handleMouseUp);
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.handleMouseUp);
+
+    const { outside, originalDragIndex, currentDragIndex } = this.state;
+
+    const state = {
+      delta: [0, 0],
+      outside: false,
+      isPressed: false
+    };
+
+    // TODO: allow for animations to take place before updating the store
+    this.setState(state, () => {
+      setTimeout(() => {
+        this.setState({
+          currentDragIndex: null,
+          originalDragIndex: null,
+          mouseOffset: null,
+          mouseStart: [0, 0],
+          delta: [0, 0], // difference between mouse and circle pos, for dragging
+          outside: false, // index of component outside
+          isPressed: false,
+          updating: !outside && currentDragIndex !== originalDragIndex
+        });
+
+        if (!outside) {
+          this.context.store.moveSlide(originalDragIndex, currentDragIndex);
+        }
+      }, 200);
+    });
   }
 
-  // onMoveSlide = (originalIndex, newIndex) => {
-  //   // this.context.store.moveSlide(originalIndex, newIndex);
-  // }
-
-  // onDropSlide = (originalIndex, newIndex) => {
-  //   // TODO: Commit to history here
-  // }
-
-
-
   render() {
-    const { slideList, currentDragIndex, delta, outside, originalDragIndex } = this.state;
+    const {
+      slideList,
+      currentDragIndex,
+      delta,
+      outside,
+      originalDragIndex,
+      isPressed,
+      updating
+    } = this.state;
 
     // If we're outside the column, fill in the vacant spot
     let visualIndex = 0;
@@ -197,19 +222,21 @@ class SlideList extends Component {
           if (i === originalDragIndex) {
             [x, y] = delta;
 
+            y = isPressed ? y : (currentDragIndex - i) * totalSlideHeight;
+
             style = {
-              translateX: spring(x, springSetting2),
-              translateY: spring(y, springSetting2),
-              scale: spring(1.1, springSetting1),
-              zIndex: 1000
+              translateX: updating ? x : spring(x, springSetting2),
+              translateY: updating ? y : spring(y, springSetting2),
+              scale: updating ? 1 : spring(isPressed ? 1.1 : 1, springSetting1),
+              zIndex: isPressed ? 1000 : i
             };
           } else {
             y = (visualIndex - i) * totalSlideHeight;
             visualIndex += 1;
 
             style = {
-              translateX: spring(0, springSetting2),
-              translateY: spring(y, springSetting2),
+              translateX: updating ? 0 : spring(0, springSetting2),
+              translateY: updating ? y : spring(y, springSetting2),
               scale: 1,
               zIndex: i
             };
