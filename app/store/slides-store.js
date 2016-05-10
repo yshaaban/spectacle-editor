@@ -3,6 +3,14 @@ import Immutable from "seamless-immutable";
 import { generate } from "shortid";
 import { findIndex } from "lodash";
 
+import elementMap from "../elements";
+
+// TODO: REMOVE. Useful for testing
+const allColors = [
+  "#EF767A", "#456990", "#49BEAA", "#49DCB1", "#EEB868", "#EF767A", "#456990",
+  "#49BEAA", "#49DCB1", "#EEB868", "#EF767A",
+];
+
 export default class SlidesStore {
   // Default slides state
   // history will be an array of slides arrays
@@ -10,23 +18,28 @@ export default class SlidesStore {
     // Default first slide
     id: generate(),
     props: {},
-    children: []
+    children: [],
+    color: allColors[0]
   }, {
     id: generate(),
     props: {},
-    children: []
+    children: [],
+    color: allColors[1]
   }, {
     id: generate(),
     props: {},
-    children: []
+    children: [],
+    color: allColors[2]
   }, {
     id: generate(),
     props: {},
-    children: []
+    children: [],
+    color: allColors[3]
   }, {
     id: generate(),
     props: {},
-    children: []
+    children: [],
+    color: allColors[4]
   }]]);
   @observable historyIndex = 0;
   @observable currentSlideIndex = 0;
@@ -59,16 +72,19 @@ export default class SlidesStore {
     const slideToAddTo = this.currentSlide;
     const newSlidesArray = this.slides;
 
-    // TODO: Convert to a porper element add.
-    slideToAddTo.children.push(elementType);
+    slideToAddTo.children.push({
+      ...elementMap[elementType],
+      id: generate()
+    });
+
     newSlidesArray[this.currentSlideIndex] = slideToAddTo;
 
     this._addToHistory(newSlidesArray);
   }
 
-  // setSelectedSlide(slideId) {
-  //   this.currentSlideIndex = findIndex(this.slides, (slide) => slide.id === slideId);
-  // }
+  setSelectedSlideIndex(newSlideIndex) {
+    this.currentSlideIndex = newSlideIndex;
+  }
 
   moveSlide(currentIndex, newIndex) {
     const slidesArray = this.slides;

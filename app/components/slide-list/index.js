@@ -6,12 +6,6 @@ import { Motion, spring } from "react-motion";
 import SlideTile from "./slide-tile";
 import styles from "./index.css";
 
-// TODO: REMOVE
-const allColors = [
-  '#EF767A', '#456990', '#49BEAA', '#49DCB1', '#EEB868', '#EF767A', '#456990',
-  '#49BEAA', '#49DCB1', '#EEB868', '#EF767A',
-];
-
 // NOTE: These must match up to the actual styles.
 const slideHeight = 65;
 // NOTE: These are half the value since vertical margins collapse
@@ -138,27 +132,44 @@ class SlideList extends Component {
     const { pageX, pageY } = ev;
     const { top, right, bottom, left } = this[id].getBoundingClientRect();
 
-    this.setState({
-      originalDragIndex: index,
-      currentDragIndex: index,
-      mouseOffset: {
-        top: top - pageY,
-        right: right - pageX,
-        bottom: bottom - pageY,
-        left: left - pageX
-      },
-      delta: [0, 0],
-      mouseStart: [pageX, pageY],
-      isPressed: true
-    });
-
-    window.addEventListener("touchmove", this.handleTouchMove);
-    window.addEventListener("touchend", this.handleMouseUp);
-    window.addEventListener("mousemove", this.handleMouseMove);
+    this.context.store.setSelectedSlideIndex(index);
     window.addEventListener("mouseup", this.handleMouseUp);
+    window.addEventListener("touchend", this.handleMouseUp);
+
+    // Only do drag if we hold the mouse down for a bit
+    this.mouseClickTimeout = setTimeout(() => {
+      this.mouseClickTimeout = null;
+
+      this.setState({
+        originalDragIndex: index,
+        currentDragIndex: index,
+        mouseOffset: {
+          top: top - pageY,
+          right: right - pageX,
+          bottom: bottom - pageY,
+          left: left - pageX
+        },
+        delta: [0, 0],
+        mouseStart: [pageX, pageY],
+        isPressed: true
+      });
+
+      window.addEventListener("touchmove", this.handleTouchMove);
+      window.addEventListener("mousemove", this.handleMouseMove);
+    }, 300);
   }
 
   handleMouseUp = () => {
+    if (this.mouseClickTimeout || this.mouseClickTimeout === 0) {
+      clearTimeout(this.mouseClickTimeout);
+      window.removeEventListener("mouseup", this.handleMouseUp);
+      window.removeEventListener("touchend", this.handleMouseUp);
+
+      this.mouseClickTimeout = null;
+
+      return;
+    }
+
     window.removeEventListener("touchmove", this.handleTouchMove);
     window.removeEventListener("touchend", this.handleMouseUp);
     window.removeEventListener("mousemove", this.handleMouseMove);
@@ -254,7 +265,7 @@ class SlideList extends Component {
                   style={{
                     zIndex,
                     margin: 10,
-                    backgroundColor: allColors[i],
+                    backgroundColor: slide.color,
                     transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
                   }}
                 >
