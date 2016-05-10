@@ -2,3 +2,9 @@
   border: 2px solid #999;
   flex: 0 0 150px;
 }
+
+.slideWrapper {
+  width: 150px;
+  height: 65px;
+  background-color: #333;
+}

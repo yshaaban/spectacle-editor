@@ -1,5 +1,6 @@
 export const DraggableTypes = {
-  UI_ELEMENT: "UI_ELEMENT"
+  UI_ELEMENT: "UI_ELEMENT",
+  SLIDE: "SLIDE"
 };
 
 export const ElementTypes = {

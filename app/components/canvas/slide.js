@@ -36,7 +36,7 @@ class Slide extends Component {
 
     return connectDropTarget(
       <div className={slideClass}>
-        <div>{`Slide with ${store.tree && store.tree.component}`}</div>
+        <div>{`Slide with ${store.currentSlide && store.currentSlide.id}`}</div>
         <div>{isOver && hoverItem && `${hoverItem.elementType} BOUTS TO DROP`}</div>
       </div>
     );

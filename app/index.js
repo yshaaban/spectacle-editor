@@ -2,12 +2,12 @@ import React from "react";
 import { render } from "react-dom";
 import { Router, hashHistory } from "react-router";
 import routes from "./routes";
-import TreeStore from "./store/tree-store";
+import SlidesStore from "./store/slides-store";
 import Provider from "./components/utils/provider";
 
 import "./app.global.css";
 
-const store = new TreeStore();
+const store = new SlidesStore();
 
 render(
   <Provider store={store}>

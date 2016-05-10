@@ -25,7 +25,6 @@ class DraggableElement extends Component {
       `${styles.element} ${styles.isDragging}` :
       styles.element;
 
-    // TODO: Fix this garbage
     return connectDragSource(
       <div className={elementClass}>
         {this.props.children}
