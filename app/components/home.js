@@ -4,6 +4,7 @@ import HTML5Backend from "react-dnd-html5-backend";
 import { observer } from "mobx-react";
 
 import HistoryMenu from "./history-menu";
+import PropertyEditor from "./property-editor";
 import ElementList from "./element-list";
 import SlideList from "./slide-list";
 import Canvas from "./canvas";
@@ -12,11 +13,14 @@ import styles from "./home.css";
 class Home extends Component {
   render() {
     return (
-      <div className={styles.container}>
-        <HistoryMenu />
-        <SlideList />
+      <div className={styles.home}>
         <ElementList />
-        <Canvas />
+        <div className={styles.container}>
+          <HistoryMenu />
+          <SlideList />
+          <PropertyEditor />
+          <Canvas />
+        </div>
       </div>
     );
   }

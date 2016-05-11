@@ -8,7 +8,7 @@ import elementMap from "../elements";
 // TODO: REMOVE. Useful for testing
 const allColors = [
   "#EF767A", "#456990", "#49BEAA", "#49DCB1", "#EEB868", "#EF767A", "#456990",
-  "#49BEAA", "#49DCB1", "#EEB868", "#EF767A",
+  "#49BEAA", "#49DCB1", "#EEB868", "#EF767A"
 ];
 
 export default class SlidesStore {

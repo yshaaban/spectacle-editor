@@ -1,6 +1,7 @@
 .list {
   flex: 0 0 150px;
   margin-top: 50px;
+  order: 2;
 }
 
 .slideWrapper {

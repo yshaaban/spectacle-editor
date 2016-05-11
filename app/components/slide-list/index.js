@@ -3,7 +3,6 @@ import { findDOMNode } from "react-dom";
 import { autorun } from "mobx";
 import { Motion, spring } from "react-motion";
 
-import SlideTile from "./slide-tile";
 import styles from "./index.css";
 
 // NOTE: These must match up to the actual styles.
@@ -12,7 +11,7 @@ const slideHeight = 65;
 const slideTopMargin = 5;
 const slideBottomMargin = 5;
 // Vertical margins collapse so add one more topMargin to the start.
-const listTop = 50 + slideTopMargin;
+const listTop = 160 + slideTopMargin; // default value will be overwritten on mount
 const listBottom = 900;
 const listRight = 155;
 const listLeft = 5;
@@ -58,12 +57,18 @@ class SlideList extends Component {
 
     // We're storing local state for drag/drop functionality
     // Update state whenever our store slides change
+    // TODO: Make this animate when undo/redo trigger it.
     autorun(() => {
       this.setState({
         slideList: context.store.slides,
         updating: false
       });
     });
+  }
+
+  componentDidMount = () => {
+    // TODO: Why does this give an incorrect boundingRectTop?
+    // listTop = findDOMNode(this).getBoundingClientRect().top + slideTopMargin;
   }
 
   handleTouchStart = (id, pressLocation, ev) => {
