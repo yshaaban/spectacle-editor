@@ -15,8 +15,8 @@ class Home extends Component {
     return (
       <div className={styles.home}>
         <ElementList />
+        <HistoryMenu />
         <div className={styles.container}>
-          <HistoryMenu />
           <SlideList />
           <PropertyEditor />
           <Canvas />

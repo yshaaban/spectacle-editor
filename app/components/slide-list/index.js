@@ -46,6 +46,7 @@ class SlideList extends Component {
   constructor(props, context) {
     super(props);
 
+    // TODO: Make sure default state is representative of actual state
     this.state = {
       slideList: context.store.slides,
       mouseOffset: null,

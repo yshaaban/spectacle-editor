@@ -30,8 +30,6 @@ class Slide extends Component {
     const { connectDropTarget, isOver, hoverItem } = this.props;
     const { store: { currentSlide } } = this.context;
 
-    console.log(currentSlide);
-
     const slideClass = isOver ?
       `${styles.slide} ${styles.isOver}` :
       styles.slide;

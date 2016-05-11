@@ -50,7 +50,7 @@ export default class SlidesStore {
   }
 
   // Returns a new mutable object. Functions as a cloneDeep.
-  @computed({ asStructure: true }) get currentSlide() {
+  @computed get currentSlide() {
     return this.slides[this.currentSlideIndex];
   }
 
@@ -118,6 +118,11 @@ export default class SlidesStore {
   _addToHistory(newSlides) {
     // Only notify observers once all expressions have completed
     transaction(() => {
+      // If we have a future and we do an action, remove the future.
+      if (this.historyIndex < this.history.length - 1) {
+        this.history = this.history.slice(0, this.historyIndex + 1);
+      }
+
       // Wrapp the new slides array in an array so they aren't concatted as individual slide objects
       this.history = this.history.concat([Immutable.from(newSlides)]);
       this.historyIndex += 1;
