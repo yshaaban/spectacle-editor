@@ -3,6 +3,7 @@ import { findDOMNode } from "react-dom";
 import { autorun } from "mobx";
 import { Motion, spring } from "react-motion";
 
+import SlideMenu from "./slide-menu";
 import styles from "./index.css";
 
 // NOTE: These must match up to the actual styles.
@@ -226,6 +227,7 @@ class SlideList extends Component {
 
     return (
       <div className={styles.list}>
+        <SlideMenu />
         {slideList.map((slide, i) => {
           let style;
           let x;
@@ -275,7 +277,7 @@ class SlideList extends Component {
                     transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
                   }}
                 >
-                  <div className={styles.slideThumb}>{slide.id}</div>
+                  <div>{slide.id}</div>
                 </div>
               )}
             </Motion>

@@ -41,6 +41,7 @@ export default class SlidesStore {
     children: [],
     color: allColors[4]
   }]]);
+
   @observable historyIndex = 0;
   @observable currentSlideIndex = 0;
 
@@ -93,6 +94,36 @@ export default class SlidesStore {
 
     transaction(() => {
       this.currentSlideIndex = newIndex;
+      this._addToHistory(slidesArray);
+    });
+  }
+
+  addSlide() {
+    const slidesArray = this.slides;
+
+    // TODO: Figure out new slide defaults/interface
+    const newSlide = {
+      id: generate(),
+      props: {},
+      children: [],
+      color: allColors[6]
+    };
+
+    slidesArray.splice(this.currentSlideIndex + 1, 0, newSlide);
+
+    transaction(() => {
+      this.currentSlideIndex = this.currentSlideIndex + 1;
+      this._addToHistory(slidesArray);
+    });
+  }
+
+  deleteSlide() {
+    const slidesArray = this.slides;
+
+    slidesArray.splice(this.currentSlideIndex, 1);
+
+    transaction(() => {
+      this.currentSlideIndex = this.currentSlideIndex - 1;
       this._addToHistory(slidesArray);
     });
   }

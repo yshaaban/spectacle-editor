@@ -31,5 +31,9 @@
   bottom: 0;
   right: 0;
   left: 0;
+  transform-origin: 0 0;
+  /* 22:17 ratio which is hardcoded in specatcle to 1100:850 */
+  width: 1100;
+  height: 850;
   background-color: #777;
 }
