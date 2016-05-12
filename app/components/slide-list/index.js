@@ -61,8 +61,10 @@ class SlideList extends Component {
     // Update state whenever our store slides change
     // TODO: Make this animate when undo/redo trigger it.
     autorun(() => {
+      const slideList = context.store.slides;
+
       this.setState({
-        slideList: context.store.slides,
+        slideList,
         updating: false
       });
     });
@@ -84,7 +86,7 @@ class SlideList extends Component {
   }
 
   handleMouseMove = ({ pageX, pageY }) => {
-    const { mouseOffset, mouseStart: [x, y], currentDragIndex } = this.state;
+    const { mouseOffset, mouseStart: [x, y], currentDragIndex, originalDragIndex } = this.state;
 
     const newDelta = [pageX - x, pageY - y];
     const topOfSlide = pageY + mouseOffset.top;
@@ -111,7 +113,8 @@ class SlideList extends Component {
     ) {
       this.setState({
         delta: newDelta,
-        outside: true
+        outside: true,
+        currentDragIndex: originalDragIndex
       });
 
       return;
@@ -247,7 +250,8 @@ class SlideList extends Component {
               translateX: updating ? x : spring(x, springSetting2),
               translateY: updating ? y : spring(y, springSetting2),
               scale: updating ? 1 : spring(isPressed ? 1.1 : 1, springSetting1),
-              zIndex: isPressed ? 1000 : i
+              zIndex: isPressed ? 1000 : i,
+              key: slide.id
             };
           } else {
             y = (visualIndex - i) * totalSlideHeight;
@@ -257,17 +261,18 @@ class SlideList extends Component {
               translateX: updating ? 0 : spring(0, springSetting2),
               translateY: updating ? y : spring(y, springSetting2),
               scale: 1,
-              zIndex: i
+              zIndex: i,
+              key: slide.id
             };
           }
 
           return (
             <Motion key={slide.id} style={style}>
-              {({ translateY, translateX, scale, zIndex }) => (
+              {({ translateY, translateX, scale, zIndex, key }) => (
                 <div
                   className={styles.slideWrapper}
                   ref={(ref) => { this[slide.id] = ref; }}
-                  key={slide.id}
+                  key={key}
                   onMouseDown={this.handleMouseDown.bind(this, slide.id, i)}
                   onTouchStart={this.handleTouchStart.bind(this, slide.id, i)}
                   style={{

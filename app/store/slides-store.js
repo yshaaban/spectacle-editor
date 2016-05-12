@@ -43,7 +43,11 @@ export default class SlidesStore {
   }]]);
 
   @observable historyIndex = 0;
+  // TODO: Should these be part of history?
+  // If we're undoing/redoing on a hidden slide, that is bad right?
+  // NOTE: Keynote keeps both of these in history
   @observable currentSlideIndex = 0;
+  @observable currentElementIndex = null;
 
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get slides() {
@@ -53,6 +57,11 @@ export default class SlidesStore {
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get currentSlide() {
     return this.slides[this.currentSlideIndex];
+  }
+
+  // Returns a new mutable object. Functions as a cloneDeep.
+  @computed get currentElement() {
+    return this.currentElementIndex && this.currentSlide[this.currentElementIndex];
   }
 
   @computed get undoDisabled() {
@@ -80,11 +89,23 @@ export default class SlidesStore {
 
     newSlidesArray[this.currentSlideIndex] = slideToAddTo;
 
-    this._addToHistory(newSlidesArray);
+    transaction(() => {
+      this.currentElementIndex = this.currentElementIndex ?
+        this.currentElementIndex + 1 :
+        slideToAddTo.children.length - 1;
+      this._addToHistory(newSlidesArray);
+    });
+  }
+
+  setCurrentElementIndex(newIndex) {
+    this.currentElementIndex = newIndex;
   }
 
   setSelectedSlideIndex(newSlideIndex) {
-    this.currentSlideIndex = newSlideIndex;
+    transaction(() => {
+      this.currentElementIndex = null;
+      this.currentSlideIndex = newSlideIndex;
+    });
   }
 
   moveSlide(currentIndex, newIndex) {
@@ -93,6 +114,7 @@ export default class SlidesStore {
     slidesArray.splice(newIndex, 0, slidesArray.splice(currentIndex, 1)[0]);
 
     transaction(() => {
+      this.currentElementIndex = null;
       this.currentSlideIndex = newIndex;
       this._addToHistory(slidesArray);
     });
@@ -112,6 +134,7 @@ export default class SlidesStore {
     slidesArray.splice(this.currentSlideIndex + 1, 0, newSlide);
 
     transaction(() => {
+      this.currentElementIndex = null;
       this.currentSlideIndex = this.currentSlideIndex + 1;
       this._addToHistory(slidesArray);
     });
@@ -123,6 +146,7 @@ export default class SlidesStore {
     slidesArray.splice(this.currentSlideIndex, 1);
 
     transaction(() => {
+      this.currentElementIndex = null;
       this.currentSlideIndex = this.currentSlideIndex - 1;
       this._addToHistory(slidesArray);
     });
@@ -146,6 +170,7 @@ export default class SlidesStore {
     this.historyIndex += 1;
   }
 
+  // TODO: Cap history length to some number to prevent absurd memory leaks
   _addToHistory(newSlides) {
     // Only notify observers once all expressions have completed
     transaction(() => {

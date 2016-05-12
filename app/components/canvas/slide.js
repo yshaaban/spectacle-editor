@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from "react";
 import { observer } from "mobx-react";
 import { DropTarget } from "react-dnd";
 
-import { DraggableTypes, ElementTypes } from "../../constants";
+import { DraggableTypes } from "../../constants";
+import CanvasElement from "./canvas-element";
 import styles from "./slide.css";
 
 const slideTarget = {
@@ -38,13 +39,9 @@ class Slide extends Component {
       <div className={slideClass}>
         <div>{`Slide with ${currentSlide && currentSlide.id}`}</div>
         <div>{isOver && hoverItem && `${hoverItem.elementType} BOUTS TO DROP`}</div>
-        {currentSlide && currentSlide.children.map((childObj) => {
-          const { type, ComponentClass, id, props, children } = childObj;
-
-          return type !== ElementTypes.IMAGE ?
-            (<ComponentClass key={id} {...props}>{children}</ComponentClass>) :
-            (<ComponentClass key={id} {...props} />);
-        })}
+        {currentSlide && currentSlide.children.map((childObj, i) => (
+          <CanvasElement key={childObj.id} component={childObj} elementIndex= {i} />
+        ))}
       </div>
     );
   }
