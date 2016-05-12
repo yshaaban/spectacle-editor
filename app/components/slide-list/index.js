@@ -56,21 +56,21 @@ class SlideList extends Component {
       outside: false, // index of component outside
       isPressed: false
     };
+  }
 
+  componentDidMount = () => {
     // We're storing local state for drag/drop functionality
     // Update state whenever our store slides change
     // TODO: Make this animate when undo/redo/add/delete trigger it.
     autorun(() => {
-      const slideList = context.store.slides;
+      const slideList = this.context.store.slides;
 
       this.setState({
         slideList,
         updating: false
       });
     });
-  }
 
-  componentDidMount = () => {
     // TODO: Why does this give an incorrect boundingRectTop?
     // listTop = findDOMNode(this).getBoundingClientRect().top + slideTopMargin;
   }
@@ -270,8 +270,7 @@ class SlideList extends Component {
                       translateX: updating ? x : spring(x, springSetting2),
                       translateY: updating ? y : spring(y, springSetting2),
                       scale: updating ? 1 : spring(isPressed ? 1.1 : 1, springSetting1),
-                      zIndex: isPressed ? 1000 : i,
-                      motionKey: data.id
+                      zIndex: isPressed ? 1000 : i
                     };
                   } else {
                     y = (visualIndex - i) * totalSlideHeight;
@@ -281,19 +280,17 @@ class SlideList extends Component {
                       translateX: updating ? 0 : spring(0, springSetting2),
                       translateY: updating ? y : spring(y, springSetting2),
                       scale: 1,
-                      zIndex: i,
-                      motionKey: data.id
+                      zIndex: i
                     };
                   }
 
                   return (
-                    <div style={{ ...style, position: "relative" }}>
-                    <Motion key={key} style={motionStyle}>
-                      {({ translateY, translateX, scale, zIndex, motionKey }) => (
+                    <div key={key} style={{ ...style, position: "relative" }}>
+                    <Motion style={motionStyle}>
+                      {({ translateY, translateX, scale, zIndex }) => (
                         <div
                           className={styles.slideWrapper}
                           ref={(ref) => { this[data.id] = ref; }}
-                          key={motionKey + zIndex}
                           onMouseDown={this.handleMouseDown.bind(this, data.id, i)}
                           onTouchStart={this.handleTouchStart.bind(this, data.id, i)}
                           style={{
