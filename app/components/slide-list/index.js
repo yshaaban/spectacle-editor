@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
 import { autorun } from "mobx";
-import { Motion, spring } from "react-motion";
+import { Motion, TransitionMotion, spring } from "react-motion";
 
 import SlideMenu from "./slide-menu";
 import styles from "./index.css";
 
 // NOTE: These must match up to the actual styles.
 const slideHeight = 65;
+const slideWidth = 100;
 // NOTE: These are half the value since vertical margins collapse
 const slideTopMargin = 5;
 const slideBottomMargin = 5;
@@ -59,7 +60,7 @@ class SlideList extends Component {
 
     // We're storing local state for drag/drop functionality
     // Update state whenever our store slides change
-    // TODO: Make this animate when undo/redo trigger it.
+    // TODO: Make this animate when undo/redo/add/delete trigger it.
     autorun(() => {
       const slideList = context.store.slides;
 
@@ -216,7 +217,6 @@ class SlideList extends Component {
 
   render() {
     const {
-      slideList,
       currentDragIndex,
       delta,
       outside,
@@ -225,69 +225,92 @@ class SlideList extends Component {
       updating
     } = this.state;
 
-    // If we're outside the column, fill in the vacant spot
-    let visualIndex = 0;
-
     return (
       <div className={styles.list}>
         <SlideMenu />
-        {slideList.map((slide, i) => {
-          let style;
-          let x;
-          let y;
-
-          // Leave a space in this location if we're within column bounds
-          if (!outside && visualIndex === currentDragIndex) {
-            visualIndex += 1;
-          }
-
-          if (i === originalDragIndex) {
-            [x, y] = delta;
-
-            y = isPressed ? y : (currentDragIndex - i) * totalSlideHeight;
-
-            style = {
-              translateX: updating ? x : spring(x, springSetting2),
-              translateY: updating ? y : spring(y, springSetting2),
-              scale: updating ? 1 : spring(isPressed ? 1.1 : 1, springSetting1),
-              zIndex: isPressed ? 1000 : i,
-              key: slide.id
+        <TransitionMotion
+          willLeave={() => ({ left: spring(-200, springSetting2), height: spring(0, springSetting2), padding: spring(0, springSetting2) })}
+          willEnter={() => (this.state.slideList.map(() => {
+            return { left: -300 }; // DOES NOT WORK :(
+          }))}
+          styles={this.state.slideList.map(slide => {
+            return {
+              key: slide.id + "key",
+              style: { left: 0, height: slideHeight, padding: 5 },
+              data: slide
             };
-          } else {
-            y = (visualIndex - i) * totalSlideHeight;
-            visualIndex += 1;
+          })}>
+          {(slideListStyles) => {
+            // If we're outside the column, fill in the vacant spot
+            let visualIndex = 0;
 
-            style = {
-              translateX: updating ? 0 : spring(0, springSetting2),
-              translateY: updating ? y : spring(y, springSetting2),
-              scale: 1,
-              zIndex: i,
-              key: slide.id
-            };
-          }
+            // first render: a, b, c. Second: still a, b, c! Only last one's a, b.
+            return (
+              <div>
+                {slideListStyles.map(({style, data, key}, i) => {
+                  let motionStyle;
+                  let x;
+                  let y;
 
-          return (
-            <Motion key={slide.id} style={style}>
-              {({ translateY, translateX, scale, zIndex, key }) => (
-                <div
-                  className={styles.slideWrapper}
-                  ref={(ref) => { this[slide.id] = ref; }}
-                  key={key}
-                  onMouseDown={this.handleMouseDown.bind(this, slide.id, i)}
-                  onTouchStart={this.handleTouchStart.bind(this, slide.id, i)}
-                  style={{
-                    zIndex,
-                    margin: 10,
-                    backgroundColor: slide.color,
-                    transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
-                  }}
-                >
-                  <div>{slide.id}</div>
-                </div>
-              )}
-            </Motion>
-          );
-        })}
+                  // Leave a space in this location if we're within column bounds
+                  if (!outside && visualIndex === currentDragIndex) {
+                    visualIndex += 1;
+                  }
+
+                  if (i === originalDragIndex) {
+                    [x, y] = delta;
+
+                    y = isPressed ? y : (currentDragIndex - i) * totalSlideHeight;
+
+                    motionStyle = {
+                      translateX: updating ? x : spring(x, springSetting2),
+                      translateY: updating ? y : spring(y, springSetting2),
+                      scale: updating ? 1 : spring(isPressed ? 1.1 : 1, springSetting1),
+                      zIndex: isPressed ? 1000 : i,
+                      key: data.id
+                    };
+                  } else {
+                    y = (visualIndex - i) * totalSlideHeight;
+                    visualIndex += 1;
+
+                    motionStyle = {
+                      translateX: updating ? 0 : spring(0, springSetting2),
+                      translateY: updating ? y : spring(y, springSetting2),
+                      scale: 1,
+                      zIndex: i,
+                      key: data.id
+                    };
+                  }
+
+                  console.log(key, motionStyle.translateY);
+                  return (
+                    <div style={{...style, position: "relative"}}>
+                    <Motion key={key} style={motionStyle}>
+                      {({ translateY, translateX, scale, zIndex, key }) => (
+                        <div
+                          className={styles.slideWrapper}
+                          ref={(ref) => { this[data.id] = ref; }}
+                          key={key + zIndex}
+                          onMouseDown={this.handleMouseDown.bind(this, data.id, i)}
+                          onTouchStart={this.handleTouchStart.bind(this, data.id, i)}
+                          style={{
+                            zIndex,
+                            backgroundColor: data.color,
+                            transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
+                          }}
+                        >
+                          <div>{data.id}</div>
+                        </div>
+                      )}
+                    </Motion>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }}
+        </TransitionMotion>
+
       </div>
     );
   }
