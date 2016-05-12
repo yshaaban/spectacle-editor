@@ -2,11 +2,11 @@ import React, { Component, PropTypes } from "react";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
-import HistoryMenu from "./history-menu";
-import PropertyEditor from "./property-editor";
-import ElementList from "./element-list";
-import SlideList from "./slide-list";
-import Canvas from "./canvas";
+import HistoryMenu from "../history-menu";
+import PropertyEditor from "../property-editor";
+import ElementList from "../element-list";
+import SlideList from "../slide-list";
+import Canvas from "../canvas";
 import defaultTheme from "../themes/default";
 import styles from "./home.css";
 

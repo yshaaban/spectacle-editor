@@ -1,6 +1,7 @@
 .canvasElement {
   position: relative;
   display: inline-block;
+
   /* so adding a border doesn't change size */
   border: 1px solid transparent;
 }
@@ -9,8 +10,8 @@
   border: 1px solid #eef;
 }
 
-/* Need this to capture all click events on elements*/
-.canvasElement:before {
+/* Need this to capture all click events on elements */
+.canvasElement::before {
   content: "";
   position: absolute;
   width: 100%;
