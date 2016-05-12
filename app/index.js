@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import { Router, hashHistory } from "react-router";
 import routes from "./routes";
-import SlidesStore from "./store/slides-store";
+import SlidesStore from "./stores/slides-store";
 import Provider from "./components/utils/provider";
 
 import "./app.global.css";
