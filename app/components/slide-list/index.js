@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { findDOMNode } from "react-dom";
+// import { findDOMNode } from "react-dom"; // TODO: Uncomment for getBoundingClientRect or remove
 import { autorun } from "mobx";
 import { Motion, TransitionMotion, spring } from "react-motion";
 
@@ -8,7 +8,6 @@ import styles from "./index.css";
 
 // NOTE: These must match up to the actual styles.
 const slideHeight = 65;
-const slideWidth = 100;
 // NOTE: These are half the value since vertical margins collapse
 const slideTopMargin = 5;
 const slideBottomMargin = 5;
@@ -229,17 +228,22 @@ class SlideList extends Component {
       <div className={styles.list}>
         <SlideMenu />
         <TransitionMotion
-          willLeave={() => ({ left: spring(-200, springSetting2), height: spring(0, springSetting2), padding: spring(0, springSetting2) })}
+          willLeave={() => ({
+            left: spring(-200, springSetting2),
+            height: spring(0, springSetting2),
+            padding: spring(0, springSetting2)
+          })}
           willEnter={() => (this.state.slideList.map(() => {
-            return { left: -300 }; // DOES NOT WORK :(
+            const left = -300; // Just here for lint
+
+            return { left }; // DOES NOT WORK :(
           }))}
-          styles={this.state.slideList.map(slide => {
-            return {
-              key: slide.id + "key",
-              style: { left: 0, height: slideHeight, padding: 5 },
-              data: slide
-            };
-          })}>
+          styles={this.state.slideList.map(slide => ({
+            key: `${slide.id}key`,
+            style: { left: 0, height: slideHeight, padding: 5 },
+            data: slide
+          }))}
+        >
           {(slideListStyles) => {
             // If we're outside the column, fill in the vacant spot
             let visualIndex = 0;
@@ -247,7 +251,7 @@ class SlideList extends Component {
             // first render: a, b, c. Second: still a, b, c! Only last one's a, b.
             return (
               <div>
-                {slideListStyles.map(({style, data, key}, i) => {
+                {slideListStyles.map(({ style, data, key }, i) => {
                   let motionStyle;
                   let x;
                   let y;
@@ -267,7 +271,7 @@ class SlideList extends Component {
                       translateY: updating ? y : spring(y, springSetting2),
                       scale: updating ? 1 : spring(isPressed ? 1.1 : 1, springSetting1),
                       zIndex: isPressed ? 1000 : i,
-                      key: data.id
+                      motionKey: data.id
                     };
                   } else {
                     y = (visualIndex - i) * totalSlideHeight;
@@ -278,25 +282,28 @@ class SlideList extends Component {
                       translateY: updating ? y : spring(y, springSetting2),
                       scale: 1,
                       zIndex: i,
-                      key: data.id
+                      motionKey: data.id
                     };
                   }
 
-                  console.log(key, motionStyle.translateY);
                   return (
-                    <div style={{...style, position: "relative"}}>
+                    <div style={{ ...style, position: "relative" }}>
                     <Motion key={key} style={motionStyle}>
-                      {({ translateY, translateX, scale, zIndex, key }) => (
+                      {({ translateY, translateX, scale, zIndex, motionKey }) => (
                         <div
                           className={styles.slideWrapper}
                           ref={(ref) => { this[data.id] = ref; }}
-                          key={key + zIndex}
+                          key={motionKey + zIndex}
                           onMouseDown={this.handleMouseDown.bind(this, data.id, i)}
                           onTouchStart={this.handleTouchStart.bind(this, data.id, i)}
                           style={{
                             zIndex,
                             backgroundColor: data.color,
-                            transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
+                            transform: `
+                              translate3d(${translateX}px,
+                              ${translateY}px, 0)
+                              scale(${scale})
+                            `
                           }}
                         >
                           <div>{data.id}</div>

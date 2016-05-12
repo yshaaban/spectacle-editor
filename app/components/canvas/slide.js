@@ -11,7 +11,6 @@ const slideTarget = {
     const { elementType } = monitor.getItem();
 
     component.context.store.dropElement(elementType);
-    console.log("DROPPIN YO", elementType);
   }
 };
 
@@ -23,6 +22,12 @@ const collect = (connect, monitor) => ({
 
 @observer
 class Slide extends Component {
+  static propTypes = {
+    hoverItem: PropTypes.object,
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool.isRequired
+  };
+
   static contextTypes = {
     store: React.PropTypes.object
   };
@@ -46,12 +51,6 @@ class Slide extends Component {
     );
   }
 }
-
-Slide.propTypes = {
-  hoverItem: PropTypes.object,
-  connectDropTarget: PropTypes.func.isRequired,
-  isOver: PropTypes.bool.isRequired
-};
 
 export default DropTarget( // eslint-disable-line new-cap
   DraggableTypes.UI_ELEMENT,

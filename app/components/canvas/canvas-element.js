@@ -6,8 +6,13 @@ import styles from "./canvas-element.css";
 
 @observer
 class CanvasElement extends Component {
+  static propTypes = {
+    elementIndex: PropTypes.number,
+    component: PropTypes.object
+  };
+
   static contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
   };
 
   onClick = (ev) => {

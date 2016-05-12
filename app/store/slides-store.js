@@ -1,7 +1,6 @@
 import { observable, computed, transaction } from "mobx";
 import Immutable from "seamless-immutable";
 import { generate } from "shortid";
-import { findIndex } from "lodash";
 
 import elementMap from "../elements";
 

@@ -4,7 +4,7 @@ import styles from "./slide-menu.css";
 
 class SlideMenu extends Component {
   static contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
   };
 
   onClickAddSlide = () => {

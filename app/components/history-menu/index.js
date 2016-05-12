@@ -6,7 +6,7 @@ import styles from "./index.css";
 @observer
 class HistoryMenu extends Component {
   static contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
   };
 
   onClickUndo = () => {
@@ -28,10 +28,5 @@ class HistoryMenu extends Component {
     );
   }
 }
-
-HistoryMenu.propTypes = {
-  connectDropTarget: PropTypes.func.isRequired,
-  isOver: PropTypes.bool.isRequired
-};
 
 export default HistoryMenu;
