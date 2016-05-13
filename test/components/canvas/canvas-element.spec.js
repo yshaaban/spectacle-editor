@@ -15,9 +15,10 @@ describe("CanvasElement", () => {
   });
 
 
-  it("should render", () => {
-    const wrapper = shallow(<CanvasElement />);
-
-    expect(wrapper).to.be.ok;
+  it("shouldn't render without the required props", () => {
+    expect(shallow.bind(
+      null,
+      <CanvasElement />
+    )).to.throw();
   });
 });
