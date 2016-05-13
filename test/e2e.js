@@ -32,7 +32,8 @@
 //     await this.driver.quit();
 //   });
 //
-//   const findCounter = () => this.driver.findElement(webdriver.By.className(counterStyles.counter));
+//   const findCounter = () =>
+//    this.driver.findElement(webdriver.By.className(counterStyles.counter));
 //
 //   const findButtons = () => this.driver.findElements(webdriver.By.className(counterStyles.btn));
 //
