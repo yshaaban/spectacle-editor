@@ -13,33 +13,37 @@ const allColors = [
 export default class SlidesStore {
   // Default slides state
   // history will be an array of slides arrays
-  @observable history = Immutable.from([[{
-    // Default first slide
-    id: generate(),
-    props: {},
-    children: [],
-    color: allColors[0]
-  }, {
-    id: generate(),
-    props: {},
-    children: [],
-    color: allColors[1]
-  }, {
-    id: generate(),
-    props: {},
-    children: [],
-    color: allColors[2]
-  }, {
-    id: generate(),
-    props: {},
-    children: [],
-    color: allColors[3]
-  }, {
-    id: generate(),
-    props: {},
-    children: [],
-    color: allColors[4]
-  }]]);
+  @observable history = Immutable.from([{
+    currentSlideIndex: this.currentSlideIndex,
+    currentElementIndex: this.currentElementIndex,
+    slides: [{
+      // Default first slide
+      id: generate(),
+      props: {},
+      children: [],
+      color: allColors[0]
+    }, {
+      id: generate(),
+      props: {},
+      children: [],
+      color: allColors[1]
+    }, {
+      id: generate(),
+      props: {},
+      children: [],
+      color: allColors[2]
+    }, {
+      id: generate(),
+      props: {},
+      children: [],
+      color: allColors[3]
+    }, {
+      id: generate(),
+      props: {},
+      children: [],
+      color: allColors[4]
+    }
+  ]}]);
 
   @observable historyIndex = 0;
   // TODO: Should these be part of history?
@@ -50,7 +54,7 @@ export default class SlidesStore {
 
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get slides() {
-    return this.history[this.historyIndex].asMutable({ deep: true });
+    return this.history[this.historyIndex].slides.asMutable({ deep: true });
   }
 
   // Returns a new mutable object. Functions as a cloneDeep.
@@ -179,7 +183,11 @@ export default class SlidesStore {
       }
 
       // Wrapp the new slides array in an array so they aren't concatted as individual slide objects
-      this.history = this.history.concat([Immutable.from(newSlides)]);
+      this.history = this.history.concat([Immutable.from({
+        currentSlideIndex: this.currentSlideIndex,
+        currentElementIndex: this.currentElementIndex,
+        slides: newSlides
+      })]);
       this.historyIndex += 1;
     });
   }
