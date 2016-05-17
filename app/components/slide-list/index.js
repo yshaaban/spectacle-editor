@@ -236,14 +236,12 @@ class SlideList extends Component {
             height: spring(0, springSetting2),
             padding: spring(0, springSetting2)
           })}
-          willEnter={() => (this.state.slideList.map(() => {
-            const left = -300; // Just here for lint
-
-            return { left }; // DOES NOT WORK :(
-          }))}
+          willEnter={() => ({
+            left: -200
+          })}
           styles={this.state.slideList.map(slide => ({
             key: `${slide.id}key`,
-            style: { left: 0, height: slideHeight, padding: 5 },
+            style: { left: spring(0), height: slideHeight, padding: 5 },
             data: slide
           }))}
         >
