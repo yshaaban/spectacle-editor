@@ -64,8 +64,10 @@ class SlideList extends Component {
     // TODO: Make this animate when undo/redo/add/delete trigger it.
     autorun(() => {
       const slideList = this.context.store.slides;
+      const currentSlideIndex = this.context.store.currentSlideIndex
 
       this.setState({
+        currentSlideIndex,
         slideList,
         updating: false
       });
@@ -216,6 +218,7 @@ class SlideList extends Component {
 
   render() {
     const {
+      currentSlideIndex,
       currentDragIndex,
       delta,
       outside,
@@ -284,6 +287,8 @@ class SlideList extends Component {
                     };
                   }
 
+                  let borderStyle = currentSlideIndex === i ? 'solid 1px #fff' : '0px'
+
                   return (
                     <div key={key} style={{ ...style, position: "relative" }}>
                     <Motion style={motionStyle}>
@@ -296,6 +301,7 @@ class SlideList extends Component {
                           style={{
                             zIndex,
                             backgroundColor: data.color,
+                            border: borderStyle,
                             transform: `
                               translate3d(${translateX}px,
                               ${translateY}px, 0)

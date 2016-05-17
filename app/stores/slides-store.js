@@ -14,8 +14,8 @@ export default class SlidesStore {
   // Default slides state
   // history will be an array of slides arrays
   @observable history = Immutable.from([{
-    currentSlideIndex: this.currentSlideIndex,
-    currentElementIndex: this.currentElementIndex,
+    currentSlideIndex: 0,
+    currentElementIndex: null,
     slides: [{
       // Default first slide
       id: generate(),
@@ -46,15 +46,18 @@ export default class SlidesStore {
   ]}]);
 
   @observable historyIndex = 0;
-  // TODO: Should these be part of history?
-  // If we're undoing/redoing on a hidden slide, that is bad right?
-  // NOTE: Keynote keeps both of these in history
-  @observable currentSlideIndex = 0;
-  @observable currentElementIndex = null;
 
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get slides() {
     return this.history[this.historyIndex].slides.asMutable({ deep: true });
+  }
+
+  @computed get currentSlideIndex() {
+    return this.history[this.historyIndex].currentSlideIndex
+  }
+
+  @computed get currentElementIndex() {
+    return this.history[this.historyIndex].currentElementIndex
   }
 
   // Returns a new mutable object. Functions as a cloneDeep.
@@ -77,7 +80,11 @@ export default class SlidesStore {
 
   constructor(slides) {
     if (slides) {
-      this.history = Immutable.from([slides]);
+      this.history = Immutable.from([{
+        currentSlideIndex: 0,
+        currentElementIndex: null,
+        slides
+      }]);
     }
   }
 
@@ -91,24 +98,38 @@ export default class SlidesStore {
     });
 
     newSlidesArray[this.currentSlideIndex] = slideToAddTo;
-
-    transaction(() => {
-      this.currentElementIndex = this.currentElementIndex ?
+    const elementIndex = this.currentElementIndex ?
         this.currentElementIndex + 1 :
         slideToAddTo.children.length - 1;
-      this._addToHistory(newSlidesArray);
+
+    this._addToHistory({
+      currentSlideIndex: this.currentSlideIndex,
+      currentElementIndex: elementIndex,
+      slides: newSlidesArray
     });
+  }
+
+  cloneHistory() {
+    return Immutable(this.history).asMutable({ deep:true });
   }
 
   setCurrentElementIndex(newIndex) {
-    this.currentElementIndex = newIndex;
+    let history = this.cloneHistory();
+    let snapshot = history[this.historyIndex];
+    snapshot.currentElementIndex = newIndex;
+    history.splice(history.length, 1);
+    history.concat([snapshot]);
+    this.history = Immutable.from(history);
   }
 
   setSelectedSlideIndex(newSlideIndex) {
-    transaction(() => {
-      this.currentElementIndex = null;
-      this.currentSlideIndex = newSlideIndex;
-    });
+    let history = this.cloneHistory();
+    let snapshot = history[this.historyIndex];
+    snapshot.currentElementIndex = null;
+    snapshot.currentSlideIndex = newSlideIndex;
+    history.splice(history.length, 1);
+    history.concat([snapshot]);
+    this.history = Immutable.from(history);
   }
 
   moveSlide(currentIndex, newIndex) {
@@ -116,10 +137,9 @@ export default class SlidesStore {
 
     slidesArray.splice(newIndex, 0, slidesArray.splice(currentIndex, 1)[0]);
 
-    transaction(() => {
-      this.currentElementIndex = null;
-      this.currentSlideIndex = newIndex;
-      this._addToHistory(slidesArray);
+    this._addToHistory({
+      currentSlideIndex: newIndex,
+      slides: slidesArray
     });
   }
 
@@ -134,24 +154,26 @@ export default class SlidesStore {
       color: allColors[6]
     };
 
-    slidesArray.splice(this.currentSlideIndex + 1, 0, newSlide);
+    const index = this.currentSlideIndex + 1;
+    slidesArray.splice(index, 0, newSlide);
 
-    transaction(() => {
-      this.currentElementIndex = null;
-      this.currentSlideIndex = this.currentSlideIndex + 1;
-      this._addToHistory(slidesArray);
+    this._addToHistory({
+      currentSlideIndex: index,
+      currentElementIndex: null,
+      slides: slidesArray
     });
   }
 
   deleteSlide() {
     const slidesArray = this.slides;
+    const index = this.currentSlideIndex === 0 ? 0 : this.currentSlideIndex - 1 ;
 
     slidesArray.splice(this.currentSlideIndex, 1);
 
-    transaction(() => {
-      this.currentElementIndex = null;
-      this.currentSlideIndex = this.currentSlideIndex - 1;
-      this._addToHistory(slidesArray);
+    this._addToHistory({
+      currentSlideIndex: index,
+      currentElementIndex: null,
+      slides: slidesArray
     });
   }
 
@@ -174,7 +196,7 @@ export default class SlidesStore {
   }
 
   // TODO: Cap history length to some number to prevent absurd memory leaks
-  _addToHistory(newSlides) {
+  _addToHistory(snapshot) {
     // Only notify observers once all expressions have completed
     transaction(() => {
       // If we have a future and we do an action, remove the future.
@@ -183,11 +205,7 @@ export default class SlidesStore {
       }
 
       // Wrapp the new slides array in an array so they aren't concatted as individual slide objects
-      this.history = this.history.concat([Immutable.from({
-        currentSlideIndex: this.currentSlideIndex,
-        currentElementIndex: this.currentElementIndex,
-        slides: newSlides
-      })]);
+      this.history = this.history.concat([Immutable.from(snapshot)]);
       this.historyIndex += 1;
     });
   }
