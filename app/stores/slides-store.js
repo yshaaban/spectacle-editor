@@ -43,7 +43,7 @@ export default class SlidesStore {
       children: [],
       color: allColors[4]
     }
-  ]}]);
+  ] }]);
 
   @observable historyIndex = 0;
 
@@ -53,11 +53,11 @@ export default class SlidesStore {
   }
 
   @computed get currentSlideIndex() {
-    return this.history[this.historyIndex].currentSlideIndex
+    return this.history[this.historyIndex].currentSlideIndex;
   }
 
   @computed get currentElementIndex() {
-    return this.history[this.historyIndex].currentElementIndex
+    return this.history[this.historyIndex].currentElementIndex;
   }
 
   // Returns a new mutable object. Functions as a cloneDeep.
@@ -110,12 +110,12 @@ export default class SlidesStore {
   }
 
   cloneHistory() {
-    return Immutable(this.history).asMutable({ deep:true });
+    return this.history.asMutable({ deep: true });
   }
 
   setCurrentElementIndex(newIndex) {
-    let history = this.cloneHistory();
-    let snapshot = history[this.historyIndex];
+    const history = this.cloneHistory();
+    const snapshot = history[this.historyIndex];
     snapshot.currentElementIndex = newIndex;
     history.splice(history.length, 1);
     history.concat([snapshot]);
@@ -123,8 +123,8 @@ export default class SlidesStore {
   }
 
   setSelectedSlideIndex(newSlideIndex) {
-    let history = this.cloneHistory();
-    let snapshot = history[this.historyIndex];
+    const history = this.cloneHistory();
+    const snapshot = history[this.historyIndex];
     snapshot.currentElementIndex = null;
     snapshot.currentSlideIndex = newSlideIndex;
     history.splice(history.length, 1);
@@ -166,7 +166,7 @@ export default class SlidesStore {
 
   deleteSlide() {
     const slidesArray = this.slides;
-    const index = this.currentSlideIndex === 0 ? 0 : this.currentSlideIndex - 1 ;
+    const index = this.currentSlideIndex === 0 ? 0 : this.currentSlideIndex - 1;
 
     slidesArray.splice(this.currentSlideIndex, 1);
 
