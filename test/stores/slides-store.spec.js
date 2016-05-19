@@ -105,4 +105,48 @@ describe("SlidesStore", () => {
     expect(undoDisabledSpy).to.not.have.been.called;
     expect(redoDisabledSpy).to.not.have.been.called;
   });
+
+  it("should track history when changed", () => {
+    const initialLength = slideStore.slides.length;
+    slideStore.addSlide();
+    expect(historySpy).to.have.been.called;
+    expect(slideStore.slides.length).to.equal(initialLength + 1);
+    slideStore.undo();
+    expect(slideStore.slides.length).to.equal(initialLength);
+    slideStore.redo();
+    expect(slideStore.slides.length).to.equal(initialLength + 1);
+  });
+
+  it("should keep accurate history state with aggressive undo/redo", () => {
+    // TODO: this test will need to chage when the initial slides change
+    // TODO: write a better test for aggressive changes
+
+    // initial length: 5
+    const initialLength = slideStore.slides.length;
+    const expectedLength = initialLength + 7;
+
+    // add 10 slides, total: 15
+    for (let i = 0; i < 10; i++) {
+      slideStore.addSlide();
+    }
+
+    // undo 4 times, total: 11
+    slideStore.undo();
+    slideStore.undo();
+    slideStore.undo();
+    slideStore.undo();
+
+    // redo 3 times, total: 14
+    slideStore.redo();
+    slideStore.redo();
+    slideStore.redo();
+
+    // delete 2 slides, total: 12
+    slideStore.setSelectedSlideIndex(1);
+    slideStore.deleteSlide();
+    slideStore.deleteSlide();
+
+    // expect slides length of 12
+    expect(slideStore.slides.length).to.equal(expectedLength);
+  });
 });
