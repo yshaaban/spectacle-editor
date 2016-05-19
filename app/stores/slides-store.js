@@ -109,27 +109,25 @@ export default class SlidesStore {
     });
   }
 
-  cloneHistory() {
-    return this.history.asMutable({ deep: true });
-  }
-
   setCurrentElementIndex(newIndex) {
-    const history = this.cloneHistory();
-    const snapshot = history[this.historyIndex];
+    const snapshot = this.history[this.historyIndex].asMutable({ deep: true });
     snapshot.currentElementIndex = newIndex;
-    history.splice(history.length, 1);
-    history.concat([snapshot]);
-    this.history = Immutable.from(history);
+
+    transaction(() => {
+      this.history = this.history.slice(0, -1);
+      this.history = this.history.concat([snapshot]);
+    });
   }
 
   setSelectedSlideIndex(newSlideIndex) {
-    const history = this.cloneHistory();
-    const snapshot = history[this.historyIndex];
+    const snapshot = this.history[this.historyIndex].asMutable({ deep: true });
     snapshot.currentElementIndex = null;
     snapshot.currentSlideIndex = newSlideIndex;
-    history.splice(history.length, 1);
-    history.concat([snapshot]);
-    this.history = Immutable.from(history);
+
+    transaction(() => {
+      this.history = this.history.slice(0, -1);
+      this.history = this.history.concat([snapshot]);
+    });
   }
 
   moveSlide(currentIndex, newIndex) {
