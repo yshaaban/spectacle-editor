@@ -102,13 +102,10 @@ export default class SlidesStore {
     });
 
     newSlidesArray[this.currentSlideIndex] = slideToAddTo;
-    const elementIndex = this.currentElementIndex ?
-        this.currentElementIndex + 1 :
-        slideToAddTo.children.length - 1;
 
     this._addToHistory({
       currentSlideIndex: this.currentSlideIndex,
-      currentElementIndex: elementIndex,
+      currentElementIndex: slideToAddTo.children.length - 1,
       slides: newSlidesArray
     });
   }
