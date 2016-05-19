@@ -36,12 +36,12 @@ class Slide extends Component {
     const { connectDropTarget, isOver, hoverItem } = this.props;
     const { store: { currentSlide } } = this.context;
 
-    const slideClass = isOver ?
+    const slideClass = true ?
       `${styles.slide} ${styles.isOver}` :
       styles.slide;
 
     return connectDropTarget(
-      <div className={slideClass}>
+      <div className={slideClass} id="canvas">
         <div>{`Slide with ${currentSlide && currentSlide.id}`}</div>
         <div>{isOver && hoverItem && `${hoverItem.elementType} BOUTS TO DROP`}</div>
         {currentSlide && currentSlide.children.map((childObj, i) => (

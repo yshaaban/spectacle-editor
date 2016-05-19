@@ -6,7 +6,7 @@ import SlidesStore from "../stores/slides-store";
 import Provider from "../components/utils/provider";
 import HistoryMenu from "../components/history-menu";
 import PropertyEditor from "../components/property-editor";
-import ElementList from "../components/element-list";
+import MenuBar from "../components/menu-bar";
 import SlideList from "../components/slide-list";
 import Canvas from "../components/canvas";
 import defaultTheme from "../themes/default";
@@ -33,7 +33,7 @@ class Home extends Component {
     return (
       <Provider store={store}>
         <div className={styles.home}>
-          <ElementList />
+          <MenuBar />
           <HistoryMenu />
           <div className={styles.container}>
             <SlideList />

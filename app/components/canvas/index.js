@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
 
+// Nesting the ElementList here so drag and drop state is controlled by this component
+import ElementList from "../element-list";
 import Slide from "./slide";
 import styles from "./index.css";
 
@@ -38,17 +40,20 @@ class SlideList extends Component {
     const { scale } = this.state;
 
     return (
-      <div className={styles.canvas}>
-        <div className={styles.slideWrapper} ref={(ref) => { this.container = ref; }}>
-          <div
-            className={styles.slideContent}
-            style={{
-              transform: `scale(${scale})`,
-              width: 1100, // Hardcoded to 1100:850 aspect ratio
-              height: 850
-            }}
-          >
-            <Slide />
+      <div className={styles.canvasWrapper}>
+        <ElementList />
+        <div className={styles.canvas}>
+          <div className={styles.slideWrapper} ref={(ref) => { this.container = ref; }}>
+            <div
+              className={styles.slideContent}
+              style={{
+                transform: `scale(${scale})`,
+                width: 1100, // Hardcoded to 1100:850 aspect ratio
+                height: 850
+              }}
+            >
+              <Slide />
+            </div>
           </div>
         </div>
       </div>
