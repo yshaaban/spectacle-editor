@@ -1,6 +1,7 @@
 import { observable, computed, transaction } from "mobx";
 import Immutable from "seamless-immutable";
 import { generate } from "shortid";
+import { cloneDeep } from "lodash";
 
 import elementMap from "../elements";
 
@@ -114,13 +115,14 @@ export default class SlidesStore {
   }
 
   setCurrentElementIndex(newIndex) {
-    var snapshot = this.snapshot
-    this.snapshot.currentElementIndex = newIndex;
+    var snapshot = this.snapshot;
+    snapshot.currentElementIndex = newIndex;
 
     transaction(() => {
-      this.history = this.history.slice(0, -1);
-      this.history = this.history.concat([snapshot]);
-    });
+      const left = this.history.slice(0, this.historyIndex);
+      const right = this.history.slice(this.historyIndex + 1, this.history.length);
+      this.history = left.concat([snapshot], right);
+    })
   }
 
   setSelectedSlideIndex(newSlideIndex) {
@@ -129,9 +131,10 @@ export default class SlidesStore {
     snapshot.currentSlideIndex = newSlideIndex;
 
     transaction(() => {
-      this.history = this.history.slice(0, -1);
-      this.history = this.history.concat([snapshot]);
-    });
+      const left = this.history.slice(0, this.historyIndex);
+      const right = this.history.slice(this.historyIndex + 1, this.history.length);
+      this.history = left.concat([snapshot], right);
+    })
   }
 
   moveSlide(currentIndex, newIndex) {
