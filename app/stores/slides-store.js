@@ -78,7 +78,7 @@ export default class SlidesStore {
     return this.historyIndex >= this.history.length - 1;
   }
 
-  @computed get snapshot() {
+  @computed get currentState() {
     return this.history[this.historyIndex].asMutable({ deep: true });
   }
 
@@ -114,7 +114,7 @@ export default class SlidesStore {
   }
 
   setCurrentElementIndex(newIndex) {
-    const snapshot = this.snapshot;
+    const snapshot = this.currentState;
     snapshot.currentElementIndex = newIndex;
 
     transaction(() => {
@@ -125,7 +125,7 @@ export default class SlidesStore {
   }
 
   setSelectedSlideIndex(newSlideIndex) {
-    const snapshot = this.snapshot;
+    const snapshot = this.currentState;
     snapshot.currentElementIndex = null;
     snapshot.currentSlideIndex = newSlideIndex;
 
