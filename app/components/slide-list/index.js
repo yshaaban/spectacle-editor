@@ -248,7 +248,7 @@ class SlideList extends Component {
 
             // first render: a, b, c. Second: still a, b, c! Only last one's a, b.
             return (
-              <div>
+              <div className={styles.listWrapper}>
                 {slideListStyles.map(({ style, data, key }, i) => {
                   let motionStyle;
                   let x;

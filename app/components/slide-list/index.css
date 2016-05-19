@@ -5,6 +5,11 @@
   position: relative;
 }
 
+.listWrapper {
+  overflow-y: scroll;
+  height: 100%;
+}
+
 .slideWrapper {
   width: 150px;
   height: 65px;
