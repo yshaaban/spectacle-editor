@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from "react";
 import { Motion, spring } from "react-motion";
 
+import Elements from "../../elements";
+import { ElementTypes } from "../../constants";
 import styles from "./element-item.css";
 
 const springSetting2 = { stiffness: 1000, damping: 50 };
 
-// Move to inside element info
-const elementHeight = 100;
-const elementWidth = 100;
 const margin = 20;
 const top = 25;
 
@@ -34,15 +33,23 @@ class ElementItem extends Component {
   }
 
   handleMouseMove = ({ pageX, pageY, offsetX, offsetY, target: { id } }) => {
-    const { mouseStart: [x, y] } = this.state;
+    const { mouseStart: [x, y], isOverCanvas } = this.state;
     const newDelta = [pageX - x, pageY - y];
 
+    let newIsOverCanvas = false;
+
     if (id === "canvas") {
+      newIsOverCanvas = true;
       console.log(offsetX, offsetY);
     }
 
+    if (newIsOverCanvas !== isOverCanvas) {
+      this.props.onIsOverChange(newIsOverCanvas);
+    }
+
     this.setState({
-      delta: newDelta
+      delta: newDelta,
+      isOverCanvas: newIsOverCanvas
     });
   }
 
@@ -52,11 +59,13 @@ class ElementItem extends Component {
 
     const { pageX, pageY } = ev;
     const { offsetTop, offsetLeft } = this.elementSource;
+    const element = Elements[this.props.elementType];
+    const { width, height } = element;
 
     // Position the mouse at the center of the element.
-    const mouseOffsetX = (elementWidth / 2) - pageX + offsetLeft;
+    const mouseOffsetX = (width / 2) - pageX + offsetLeft;
     // For some reason offsetTop is off by both top and bottom margins and positioning top
-    const mouseOffsetY = (elementHeight / 2) - pageY + offsetTop - top - margin - margin;
+    const mouseOffsetY = (height / 2) - pageY + offsetTop - top - margin - margin;
 
     console.log(offsetLeft, pageX, offsetTop, pageY);
     console.log(mouseOffsetX, mouseOffsetY);
@@ -67,6 +76,8 @@ class ElementItem extends Component {
     // Only do drag if we hold the mouse down for a bit
     this.mouseClickTimeout = setTimeout(() => {
       this.mouseClickTimeout = null;
+
+      this.props.onIsDraggingChange(true);
 
       this.setState({
         mouseOffset: [mouseOffsetX, mouseOffsetY],
@@ -101,6 +112,9 @@ class ElementItem extends Component {
       isPressed: false
     };
 
+    this.props.onIsOverChange(false);
+    this.props.onIsDraggingChange(false);
+
     // TODO: allow for animations to take place before updating the store
     this.setState(state, () => {
       setTimeout(() => {
@@ -118,6 +132,10 @@ class ElementItem extends Component {
   render() {
     const { elementType } = this.props;
     const { isPressed, delta: [x, y], mouseOffset: [offsetX, offsetY] } = this.state;
+    const element = Elements[elementType];
+
+    console.log(element, Elements, elementType);
+    const { ComponentClass, height: elementHeight, width: elementWidth, props, children } = element;
 
     return (
       <div
@@ -134,31 +152,44 @@ class ElementItem extends Component {
           style={{
             translateX: spring(x - offsetX, springSetting2),
             translateY: spring(y - offsetY, springSetting2),
-            height: spring(isPressed ? 100 : 0, springSetting2),
-            width: spring(isPressed ? 100 : 0, springSetting2)
+            height: spring(isPressed ? elementHeight : 0, springSetting2),
+            width: spring(isPressed ? elementWidth : 0, springSetting2)
           }}
         >
-          {({ height, width, translateY, translateX }) => (
-            <div
-              style={{
-                height,
-                width,
-                transform: `translate3d(${translateX}px, ${translateY}px, 0)`,
-                zIndex: 1000,
-                position: "absolute",
-                backgroundColor: "#fff",
-                pointerEvents: "none"
-              }}
-            >
-            </div>
-          )}
+          {({ height, width, translateY, translateX }) => {
+            const elementStyles = {
+              ...props.style,
+              overflow: "hidden",
+              height,
+              width,
+              transform: `
+                translate3d(${translateX}px,
+                ${translateY}px, 0)
+                scale(${this.props.scale})
+              `,
+              zIndex: 1000,
+              position: "absolute",
+              backgroundColor: "#fff",
+              pointerEvents: "none"
+            };
+
+            if (elementType !== ElementTypes.IMAGE || elementType !== ElementTypes.PLOTLY) {
+              return (
+                <ComponentClass {...props} style={{ ...props.style, ...elementStyles }}>
+                  {children}
+                </ComponentClass>
+              );
+            }
+
+            return <ComponentClass {...props} style={elementStyles} />;
+          }}
         </Motion>
         <div
           className={styles.item}
           onMouseDown={this.handleMouseDown}
           onTouchStart={this.handleTouchStart}
         >
-          <h4 style={{ position: "relative", zIndex: 1001, }}>{elementType}</h4>
+          <h4 style={{ position: "relative", zIndex: 1001 }}>{elementType}</h4>
         </div>
       </div>
     );

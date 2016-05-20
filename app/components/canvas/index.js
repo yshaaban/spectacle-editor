@@ -11,7 +11,9 @@ class SlideList extends Component {
     super(props);
 
     this.state = {
-      scale: 1
+      scale: 1,
+      isOver: false,
+      isDragging: false
     };
   }
 
@@ -27,6 +29,22 @@ class SlideList extends Component {
     window.removeEventListener("resize", this.resize);
   }
 
+  changeIsOverState = (newIsOver) => {
+    console.log(newIsOver);
+
+    this.setState({
+      isOver: newIsOver
+    });
+  }
+
+  changeIsDraggingState = (newIsDragging) => {
+    console.log(newIsDragging);
+
+    this.setState({
+      isDragging: newIsDragging
+    });
+  }
+
   resize = () => {
     const container = findDOMNode(this.container);
 
@@ -37,11 +55,15 @@ class SlideList extends Component {
   }
 
   render() {
-    const { scale } = this.state;
+    const { scale, isOver, isDragging } = this.state;
 
     return (
       <div className={styles.canvasWrapper}>
-        <ElementList />
+        <ElementList
+          scale={scale}
+          onIsOverChange={this.changeIsOverState}
+          onIsDraggingChange={this.changeIsDraggingState}
+        />
         <div className={styles.canvas}>
           <div className={styles.slideWrapper} ref={(ref) => { this.container = ref; }}>
             <div
@@ -52,7 +74,7 @@ class SlideList extends Component {
                 height: 850
               }}
             >
-              <Slide />
+              <Slide isOver={isOver} isDragging={isDragging} />
             </div>
           </div>
         </div>

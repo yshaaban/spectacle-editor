@@ -8,11 +8,9 @@ class ElementList extends Component {
   render() {
     return (
       <div className={styles.list}>
-        <ElementItem elementType={ElementTypes.TEXT} />
-        <ElementItem elementType={ElementTypes.IMAGE} />
-        <ElementItem elementType={ElementTypes.PLOTLY} />
-        <ElementItem elementType={ElementTypes.CODE} />
-        <ElementItem elementType={ElementTypes.QUOTE} />
+        <ElementItem elementType={ElementTypes.TEXT} {...this.props} />
+        <ElementItem elementType={ElementTypes.IMAGE} {...this.props} />
+        <ElementItem elementType={ElementTypes.PLOTLY} {...this.props} />
       </div>
     );
   }

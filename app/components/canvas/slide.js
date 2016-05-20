@@ -1,30 +1,13 @@
 import React, { Component, PropTypes } from "react";
 import { observer } from "mobx-react";
-import { DropTarget } from "react-dnd";
 
-import { DraggableTypes } from "../../constants";
 import CanvasElement from "./canvas-element";
 import styles from "./slide.css";
-
-const slideTarget = {
-  drop(props, monitor, component) {
-    const { elementType } = monitor.getItem();
-
-    component.context.store.dropElement(elementType);
-  }
-};
-
-const collect = (connect, monitor) => ({
-  connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver(),
-  hoverItem: monitor.getItem()
-});
 
 @observer
 class Slide extends Component {
   static propTypes = {
-    hoverItem: PropTypes.object,
-    connectDropTarget: PropTypes.func.isRequired,
+    isDragging: PropTypes.bool.isRequired,
     isOver: PropTypes.bool.isRequired
   };
 
@@ -33,17 +16,25 @@ class Slide extends Component {
   };
 
   render() {
-    const { connectDropTarget, isOver, hoverItem } = this.props;
+    const { isDragging, isOver } = this.props;
     const { store: { currentSlide } } = this.context;
 
-    const slideClass = true ?
-      `${styles.slide} ${styles.isOver}` :
-      styles.slide;
+    console.log(isDragging);
 
-    return connectDropTarget(
+    let slideClass = styles.slide;
+
+    if (isDragging) {
+      slideClass += ` ${styles.isDragging}`;
+    }
+
+    if (isOver) {
+      slideClass += ` ${styles.isOver}`;
+    }
+
+    return (
       <div className={slideClass} id="canvas">
         <div>{`Slide with ${currentSlide && currentSlide.id}`}</div>
-        <div>{isOver && hoverItem && `${hoverItem.elementType} BOUTS TO DROP`}</div>
+        <div>BOUTS TO DROP</div>
         {currentSlide && currentSlide.children.map((childObj, i) => (
           <CanvasElement key={childObj.id} component={childObj} elementIndex= {i} />
         ))}
@@ -52,8 +43,4 @@ class Slide extends Component {
   }
 }
 
-export default DropTarget( // eslint-disable-line new-cap
-  DraggableTypes.UI_ELEMENT,
-  slideTarget,
-  collect
-)(Slide);
+export default Slide;
