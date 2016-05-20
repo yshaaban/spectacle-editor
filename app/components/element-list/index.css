@@ -1,8 +1,8 @@
 .list {
   border: 2px solid #999;
-  overflow-x: scroll;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 120px;
+  flex: 0 0 auto;
 }
