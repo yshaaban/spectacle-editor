@@ -23,12 +23,11 @@ const springSetting2 = { stiffness: 1000, damping: 50 };
 
 // NOTE: If dragging hits perf issues, memoize this function
 // TODO: HANDLE SCROLL!
-const getDragIndex = (topOfSlide, currentDragIndex) => {
-  const effectiveTop = topOfSlide - listTop;
+const getDragIndex = (topOfSlide, currentDragIndex, scrollTop) => {
+  const effectiveTop = topOfSlide - listTop + scrollTop;
   const interSlideTop = effectiveTop % totalSlideHeight;
 
   let index = Math.floor(effectiveTop / totalSlideHeight);
-
   // Account for margins
   if (index < currentDragIndex && interSlideTop > slideTopMargin) {
     index += 1;
@@ -87,9 +86,9 @@ class SlideList extends Component {
     this.handleMouseMove(ev.touches[0]);
   }
 
-  handleMouseMove = ({ pageX, pageY }) => {
+  handleMouseMove = ({ pageX, pageY, target }) => {
     const { mouseOffset, mouseStart: [x, y], currentDragIndex, originalDragIndex } = this.state;
-
+    const scrollTop = target.parentNode.parentNode.scrollTop;
     const newDelta = [pageX - x, pageY - y];
     const topOfSlide = pageY + mouseOffset.top;
     const leftOfSlide = pageX + mouseOffset.left;
@@ -122,7 +121,7 @@ class SlideList extends Component {
       return;
     }
 
-    let newIndex = getDragIndex(topOfSlide, currentDragIndex);
+    let newIndex = getDragIndex(topOfSlide, currentDragIndex, scrollTop);
 
     const slides = this.context.store.slides;
 
@@ -251,7 +250,7 @@ class SlideList extends Component {
 
             // first render: a, b, c. Second: still a, b, c! Only last one's a, b.
             return (
-              <div>
+              <div className={styles.listWrapper}>
                 {slideListStyles.map(({ style, data, key }, i) => {
                   let motionStyle;
                   let x;
