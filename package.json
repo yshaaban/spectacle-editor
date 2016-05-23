@@ -1,5 +1,5 @@
 {
-  "name": "spectaculator",
+  "name": "spectacle-editor",
   "version": "0.0.1",
   "description": "Drag and drop Spectacle editor",
   "main": "main.js",
@@ -25,14 +25,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FormidableLabs/spectaculator.git"
+    "url": "git+https://github.com/FormidableLabs/spectacle-editor.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FormidableLabs/spectaculator/issues"
+    "url": "https://github.com/FormidableLabs/spectacle-editor/issues"
   },
-  "homepage": "https://github.com/FormidableLabs/spectaculator#readme",
+  "homepage": "https://github.com/FormidableLabs/spectacle-editor#readme",
   "bin": {
     "electron": "./node_modules/.bin/electron"
   },
