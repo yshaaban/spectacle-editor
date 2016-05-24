@@ -1,8 +1,14 @@
 .list {
-  flex: 0 0 150px;
-  margin-top: 50px;
   order: 2;
   position: relative;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.listWrapper {
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .slideWrapper {
