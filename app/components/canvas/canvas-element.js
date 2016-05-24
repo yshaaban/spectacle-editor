@@ -25,14 +25,28 @@ class CanvasElement extends Component {
     const { elementIndex, component: { type, ComponentClass, props, children } } = this.props;
 
     const selected = elementIndex === this.context.store.currentElementIndex;
-
     const extraClasses = selected ? ` ${styles.selected}` : "";
 
+    const wrapperStyle = {};
+    let elementStyle = props.style ? { ...props.style } : {};
+
+    if (props.style && props.style.position === "absolute") {
+      wrapperStyle.position = "absolute";
+      wrapperStyle.left = props.style.left;
+      wrapperStyle.top = props.style.top;
+
+      elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
+    }
+
     return (
-      <div className={styles.canvasElement + extraClasses} onClick={this.onClick}>
+      <div
+        className={styles.canvasElement + extraClasses}
+        style={wrapperStyle}
+        onClick={this.onClick}
+      >
         {type !== ElementTypes.IMAGE ?
-          <ComponentClass {...props}>{children}</ComponentClass> :
-          <ComponentClass {...props} />
+          <ComponentClass {...props} style={elementStyle}>{children}</ComponentClass> :
+          <ComponentClass {...props} style={elementStyle} />
         }
       </div>
     );

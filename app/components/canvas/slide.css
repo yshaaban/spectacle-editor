@@ -1,8 +1,23 @@
 .slide {
   width: 100%;
   height: 100%;
+  position: relative;
+}
+
+.isDragging {
+  background-color: #555;
+}
+
+.isDragging::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000000;
 }
 
 .isOver {
-  background-color: #999;
+  background-color: #333;
 }

@@ -92,12 +92,15 @@ export default class SlidesStore {
     }
   }
 
-  dropElement(elementType) {
+  dropElement(elementType, extraProps) {
     const slideToAddTo = this.currentSlide;
     const newSlidesArray = this.slides;
+    const element = elementMap[elementType];
+    const mergedProps = { ...element.props, ...extraProps };
 
     slideToAddTo.children.push({
-      ...elementMap[elementType],
+      ...element,
+      props: mergedProps,
       id: generate()
     });
 

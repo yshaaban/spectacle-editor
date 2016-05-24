@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
 
+// Nesting the ElementList here so drag and drop state is controlled by this component
+import ElementList from "../element-list";
 import Slide from "./slide";
 import styles from "./index.css";
 
@@ -9,7 +11,9 @@ class SlideList extends Component {
     super(props);
 
     this.state = {
-      scale: 1
+      scale: 1,
+      isOver: false,
+      isDragging: false
     };
   }
 
@@ -25,6 +29,18 @@ class SlideList extends Component {
     window.removeEventListener("resize", this.resize);
   }
 
+  changeIsOverState = (newIsOver) => {
+    this.setState({
+      isOver: newIsOver
+    });
+  }
+
+  changeIsDraggingState = (newIsDragging) => {
+    this.setState({
+      isDragging: newIsDragging
+    });
+  }
+
   resize = () => {
     const container = findDOMNode(this.container);
 
@@ -35,20 +51,27 @@ class SlideList extends Component {
   }
 
   render() {
-    const { scale } = this.state;
+    const { scale, isOver, isDragging } = this.state;
 
     return (
-      <div className={styles.canvas}>
-        <div className={styles.slideWrapper} ref={(ref) => { this.container = ref; }}>
-          <div
-            className={styles.slideContent}
-            style={{
-              transform: `scale(${scale})`,
-              width: 1100, // Hardcoded to 1100:850 aspect ratio
-              height: 850
-            }}
-          >
-            <Slide />
+      <div className={styles.canvasWrapper}>
+        <ElementList
+          scale={scale}
+          onIsOverCanvasChange={this.changeIsOverState}
+          onIsDraggingChange={this.changeIsDraggingState}
+        />
+        <div className={styles.canvas}>
+          <div className={styles.slideWrapper} ref={(ref) => { this.container = ref; }}>
+            <div
+              className={styles.slideContent}
+              style={{
+                transform: `scale(${scale})`,
+                width: 1100, // Hardcoded to 1100:850 aspect ratio
+                height: 850
+              }}
+            >
+              <Slide isOver={isOver} isDragging={isDragging} />
+            </div>
           </div>
         </div>
       </div>

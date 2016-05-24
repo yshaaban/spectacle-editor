@@ -1,8 +1,8 @@
 .list {
-  border: 2px solid #999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 120px;
-  flex: 0 0 auto;
+  overflow: visible;
+  height: 50px;
+  width: 300px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

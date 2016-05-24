@@ -1,13 +1,19 @@
-.canvas {
+.canvasWrapper {
   border: 2px solid #999;
+  flex: 1 1 auto;
+  order: 2;
+  overflow: visible;
+  margin: 20px;
+  display: flex;
+}
+
+.canvas {
+  border: 2px solid #666;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1 1 auto;
-  order: 2;
-  padding: 30px;
   overflow: scroll;
-  margin: 20px;
 }
 
 .slideWrapper {
