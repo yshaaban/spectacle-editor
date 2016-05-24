@@ -50,6 +50,7 @@ class ElementList extends Component {
       <div className={styles.list}>
         {elements.map((elementType, i) => (
           <ElementItem
+            key={elementType}
             elementType={elementType}
             {...this.props}
             elementTop={elementTop}
