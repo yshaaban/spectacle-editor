@@ -30,16 +30,12 @@ class SlideList extends Component {
   }
 
   changeIsOverState = (newIsOver) => {
-    console.log(newIsOver);
-
     this.setState({
       isOver: newIsOver
     });
   }
 
   changeIsDraggingState = (newIsDragging) => {
-    console.log(newIsDragging);
-
     this.setState({
       isDragging: newIsDragging
     });

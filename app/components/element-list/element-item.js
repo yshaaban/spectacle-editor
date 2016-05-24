@@ -9,7 +9,14 @@ const springSetting2 = { stiffness: 1000, damping: 50 };
 
 class ElementItem extends Component {
   static propTypes = {
-    elementType: PropTypes.string.isRequired
+    elementType: PropTypes.string.isRequired,
+    onIsDraggingChange: PropTypes.func.isRequired,
+    onIsOverCanvasChange: PropTypes.func.isRequired,
+    elementLeft: PropTypes.number.isRequired,
+    elementTop: PropTypes.number.isRequired,
+    elementWidth: PropTypes.number.isRequired,
+    elementHeight: PropTypes.number.isRequired,
+    scale: PropTypes.number.isRequired
   };
 
   static contextTypes = {
@@ -70,7 +77,7 @@ class ElementItem extends Component {
     ev.preventDefault();
 
     const { pageX, pageY } = ev;
-    const { elementLeft, elementTop, elementType, scale } = this.props;
+    const { elementLeft, elementTop, elementType } = this.props;
     const element = Elements[elementType];
     const { width, height } = element;
 
@@ -161,12 +168,20 @@ class ElementItem extends Component {
       elementLeft,
       elementTop,
       elementWidth,
-      elementHeight
+      elementHeight,
+      scale
     } = this.props;
+
     const { isPressed, isUpdating, delta: [x, y], mouseOffset: [offsetX, offsetY] } = this.state;
     const element = Elements[elementType];
 
-    const { ComponentClass, height: draggingHeight, width: draggingWidth, props, children } = element;
+    const {
+      ComponentClass,
+      height: draggingHeight,
+      width: draggingWidth,
+      props,
+      children
+     } = element;
 
     let motionStyles = {
       translateX: spring(x - offsetX, springSetting2),
@@ -210,7 +225,7 @@ class ElementItem extends Component {
               transform: `
                 translate3d(${translateX}px,
                 ${translateY}px, 0)
-                scale(${this.props.scale})
+                scale(${scale})
               `,
               zIndex: 1002,
               position: "absolute",
