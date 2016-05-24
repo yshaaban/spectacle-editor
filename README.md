@@ -1,6 +1,6 @@
 # Spectacle Editor
 
-An [Electron](https://github.com/electron/electron) based app for creating, editing, saving, and publishing (Spectacle)[https://github.com/FormidableLabs/spectacle] presentations. With integrated (Plotly)[https://plot.ly] support.
+An [Electron](https://github.com/electron/electron) based app for creating, editing, saving, and publishing [Spectacle](https://github.com/FormidableLabs/spectacle) presentations. With integrated [Plotly](https://plot.ly) support.
 
 This project is a joint effort between (Formidable)[http://formidable.com] and (Plotly)[https://plot.ly].
 
