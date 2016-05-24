@@ -7,10 +7,15 @@ import styles from "./element-item.css";
 
 const springSetting2 = { stiffness: 1000, damping: 50 };
 
-const margin = 20;
-const top = 25;
-
 class ElementItem extends Component {
+  static propTypes = {
+    elementType: PropTypes.string.isRequired
+  };
+
+  static contextTypes = {
+    store: React.PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
 
@@ -37,19 +42,26 @@ class ElementItem extends Component {
     const newDelta = [pageX - x, pageY - y];
 
     let newIsOverCanvas = false;
+    let newIsOverSlide = false;
 
     if (id === "canvas") {
       newIsOverCanvas = true;
-      console.log(offsetX, offsetY);
+    }
+
+    if (id === "slide") {
+      newIsOverSlide = true;
+      newIsOverCanvas = true;
     }
 
     if (newIsOverCanvas !== isOverCanvas) {
-      this.props.onIsOverChange(newIsOverCanvas);
+      this.props.onIsOverCanvasChange(newIsOverCanvas);
     }
 
     this.setState({
       delta: newDelta,
-      isOverCanvas: newIsOverCanvas
+      isOverCanvas: newIsOverCanvas,
+      isOverSlide: newIsOverSlide,
+      canvasOffset: [offsetX, offsetY]
     });
   }
 
@@ -58,17 +70,13 @@ class ElementItem extends Component {
     ev.preventDefault();
 
     const { pageX, pageY } = ev;
-    const { offsetTop, offsetLeft } = this.elementSource;
-    const element = Elements[this.props.elementType];
+    const { elementLeft, elementTop, elementType, scale } = this.props;
+    const element = Elements[elementType];
     const { width, height } = element;
 
     // Position the mouse at the center of the element.
-    const mouseOffsetX = (width / 2) - pageX + offsetLeft;
-    // For some reason offsetTop is off by both top and bottom margins and positioning top
-    const mouseOffsetY = (height / 2) - pageY + offsetTop - top - margin - margin;
-
-    console.log(offsetLeft, pageX, offsetTop, pageY);
-    console.log(mouseOffsetX, mouseOffsetY);
+    const mouseOffsetX = (width / 2) - pageX + elementLeft;
+    const mouseOffsetY = (height / 2) - pageY + elementTop;
 
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("touchend", this.handleMouseUp);
@@ -99,6 +107,8 @@ class ElementItem extends Component {
 
       this.mouseClickTimeout = null;
 
+      this.context.store.dropElement(this.props.elementType);
+
       return;
     }
 
@@ -109,38 +119,78 @@ class ElementItem extends Component {
 
     const state = {
       delta: [0, 0],
+      mouseOffset: [0, 0],
+      mouseStart: [0, 0],
+      canvasOffset: [0, 0],
+      isOverCanvas: false,
+      isOverSlide: false,
       isPressed: false
     };
 
-    this.props.onIsOverChange(false);
+    this.props.onIsOverCanvasChange(false);
     this.props.onIsDraggingChange(false);
 
-    // TODO: allow for animations to take place before updating the store
+    if (this.state.isOverSlide) {
+      const element = Elements[this.props.elementType];
+      const { height, width } = element;
+
+      // Don't show return animation if dropping the element on the canvas
+      state.isUpdating = true;
+      this.context.store.dropElement(this.props.elementType, /* props */{
+        style: {
+          position: "absolute",
+          left: this.state.canvasOffset[0] - (width / 2),
+          top: this.state.canvasOffset[1] - (height / 2)
+        }
+      });
+    }
+
     this.setState(state, () => {
       setTimeout(() => {
         this.setState({
-          mouseOffset: [0, 0],
-          mouseStart: [0, 0],
-          delta: [0, 0], // difference between mouse and circle pos, for dragging
-          isPressed: false
+          isUpdating: false
         });
-      }, 200);
+      }, 1);
     });
   }
 
 
   render() {
-    const { elementType } = this.props;
-    const { isPressed, delta: [x, y], mouseOffset: [offsetX, offsetY] } = this.state;
+    const {
+      elementType,
+      elementLeft,
+      elementTop,
+      elementWidth,
+      elementHeight
+    } = this.props;
+    const { isPressed, isUpdating, delta: [x, y], mouseOffset: [offsetX, offsetY] } = this.state;
     const element = Elements[elementType];
 
-    console.log(element, Elements, elementType);
-    const { ComponentClass, height: elementHeight, width: elementWidth, props, children } = element;
+    const { ComponentClass, height: draggingHeight, width: draggingWidth, props, children } = element;
+
+    let motionStyles = {
+      translateX: spring(x - offsetX, springSetting2),
+      translateY: spring(y - offsetY, springSetting2),
+      height: spring(isPressed ? draggingHeight : 0, springSetting2),
+      width: spring(isPressed ? draggingWidth : 0, springSetting2)
+    };
+
+    if (isUpdating) {
+      motionStyles.translateX = 0;
+      motionStyles.translateY = 0;
+      motionStyles.height = 0;
+      motionStyles.width = 0;
+    }
 
     return (
       <div
-        style={{ position: "relative", margin, top, width: 60, height: 25 }}
-        ref={(ref) => { this.elementSource = ref; }}
+        className={styles.wrapper}
+        style={{
+          left: elementLeft,
+          top: elementTop,
+          width: elementWidth,
+          height: elementHeight
+        }}
       >
         <Motion
           defaultStyle={{
@@ -149,12 +199,7 @@ class ElementItem extends Component {
             height: 0,
             width: 0
           }}
-          style={{
-            translateX: spring(x - offsetX, springSetting2),
-            translateY: spring(y - offsetY, springSetting2),
-            height: spring(isPressed ? elementHeight : 0, springSetting2),
-            width: spring(isPressed ? elementWidth : 0, springSetting2)
-          }}
+          style={motionStyles}
         >
           {({ height, width, translateY, translateX }) => {
             const elementStyles = {
@@ -167,7 +212,7 @@ class ElementItem extends Component {
                 ${translateY}px, 0)
                 scale(${this.props.scale})
               `,
-              zIndex: 1000,
+              zIndex: 1002,
               position: "absolute",
               backgroundColor: "#fff",
               pointerEvents: "none"
@@ -189,15 +234,13 @@ class ElementItem extends Component {
           onMouseDown={this.handleMouseDown}
           onTouchStart={this.handleTouchStart}
         >
-          <h4 style={{ position: "relative", zIndex: 1001 }}>{elementType}</h4>
+          <h4 style={{ position: "relative", zIndex: 1001, pointerEvents: "none" }}>
+            {elementType}
+          </h4>
         </div>
       </div>
     );
   }
 }
-
-ElementItem.propTypes = {
-  elementType: PropTypes.string.isRequired
-};
 
 export default ElementItem;

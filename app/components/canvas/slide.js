@@ -19,8 +19,6 @@ class Slide extends Component {
     const { isDragging, isOver } = this.props;
     const { store: { currentSlide } } = this.context;
 
-    console.log(isDragging);
-
     let slideClass = styles.slide;
 
     if (isDragging) {
@@ -32,9 +30,7 @@ class Slide extends Component {
     }
 
     return (
-      <div className={slideClass} id="canvas">
-        <div>{`Slide with ${currentSlide && currentSlide.id}`}</div>
-        <div>BOUTS TO DROP</div>
+      <div className={slideClass} id="slide">
         {currentSlide && currentSlide.children.map((childObj, i) => (
           <CanvasElement key={childObj.id} component={childObj} elementIndex= {i} />
         ))}

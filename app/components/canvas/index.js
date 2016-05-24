@@ -61,7 +61,7 @@ class SlideList extends Component {
       <div className={styles.canvasWrapper}>
         <ElementList
           scale={scale}
-          onIsOverChange={this.changeIsOverState}
+          onIsOverCanvasChange={this.changeIsOverState}
           onIsDraggingChange={this.changeIsDraggingState}
         />
         <div className={styles.canvas}>

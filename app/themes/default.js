@@ -147,7 +147,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         textAlign: "left",
         position: "relative",
         display: "inline-block",
-        margin: 20
+        margin: 0
       },
       quote: {
         borderLeft: `1px solid ${colors.primary}`,
@@ -163,7 +163,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         display: "block",
         clear: "left",
         fontSize: "2rem",
-        marginTop: "1rem"
+        marginTop: 0
       },
       content: {
         margin: "0 auto",
@@ -187,7 +187,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         color: "black",
         fontSize: "2.66rem",
         fontFamily: fonts.tertiary,
-        margin: "0.25rem auto",
+        margin: 0,
         backgroundColor: "rgba(0,0,0,0.15)",
         padding: "0 10px",
         borderRadius: 3
@@ -216,7 +216,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
           fontFamily: fonts.secondary,
           lineHeight: 1,
           fontWeight: "bold",
-          margin: "0.5rem auto"
+          margin: 0
         },
         h4: {
           color: "black",
@@ -224,7 +224,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
           fontFamily: fonts.primary,
           lineHeight: 1,
           fontWeight: "bold",
-          margin: "0.5rem auto"
+          margin: 0
         },
         h5: {
           color: "black",
@@ -232,7 +232,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
           fontFamily: fonts.primary,
           lineHeight: 1,
           fontWeight: "bold",
-          margin: "0.5rem auto"
+          margin: 0
         },
         h6: {
           color: "black",
@@ -240,12 +240,12 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
           fontFamily: fonts.primary,
           lineHeight: 1,
           fontWeight: "bold",
-          margin: "0.5rem auto"
+          margin: 0
         }
       },
       image: {
         display: "block",
-        margin: "0.5rem auto"
+        margin: 0
       },
       link: {
         textDecoration: "none"
@@ -275,7 +275,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         color: "black",
         fontSize: "2.66rem",
         fontFamily: fonts.primary,
-        margin: "0.25rem auto"
+        margin: 0
       }
     }
   };
