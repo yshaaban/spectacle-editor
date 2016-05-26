@@ -1,5 +1,6 @@
 /* eslint max-len: 0 */
 import webpack from "webpack";
+
 import baseConfig from "./webpack.config.base";
 
 const config = {
@@ -37,6 +38,14 @@ const config = {
         loaders: [
           "style-loader",
           "css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]"
+        ]
+      },
+
+      {
+        test: /.svg$/,
+        loaders: [
+          "raw-loader",
+          "image-webpack-loader"
         ]
       }
     ]

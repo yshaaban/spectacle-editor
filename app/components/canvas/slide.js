@@ -32,7 +32,12 @@ class Slide extends Component {
     return (
       <div className={slideClass} id="slide">
         {currentSlide && currentSlide.children.map((childObj, i) => (
-          <CanvasElement key={childObj.id} component={childObj} elementIndex= {i} />
+          <CanvasElement
+            key={childObj.id}
+            component={childObj}
+            elementIndex={i}
+            isDragging={isDragging}
+          />
         ))}
       </div>
     );

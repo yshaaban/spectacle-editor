@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from "react";
 import { Motion, spring } from "react-motion";
 
-import Elements from "../../elements";
-import { ElementTypes } from "../../constants";
+import { SpringSettings, IconTypes } from "../../constants";
+import Icon from "../icon";
 import styles from "./element-item.css";
 
-const springSetting2 = { stiffness: 1000, damping: 50 };
+const addedPadding = 2;
 
 class ElementItem extends Component {
   static propTypes = {
@@ -28,9 +28,9 @@ class ElementItem extends Component {
 
     this.state = {
       delta: [0, 0],
-      isPressed: false,
       mouseStart: [0, 0],
-      mouseOffset: [0, 0]
+      mouseOffset: [0, 0],
+      isPressed: false
     };
   }
 
@@ -45,30 +45,33 @@ class ElementItem extends Component {
   }
 
   handleMouseMove = ({ pageX, pageY, offsetX, offsetY, target: { id } }) => {
-    const { mouseStart: [x, y], isOverCanvas } = this.state;
+    const { mouseStart: [x, y], isOverCanvasPosition } = this.state;
     const newDelta = [pageX - x, pageY - y];
 
-    let newIsOverCanvas = false;
-    let newIsOverSlide = false;
+    let isUpdating = false;
+    let newOverCanvasPosition = null;
 
     if (id === "canvas") {
-      newIsOverCanvas = true;
+      newOverCanvasPosition = [offsetX, offsetY];
+
+    // Switching from canvas element back to icon, do not animate icon
+    } else if (isOverCanvasPosition !== null) {
+      console.log("HERERE");
+      isUpdating = true;
     }
 
-    if (id === "slide") {
-      newIsOverSlide = true;
-      newIsOverCanvas = true;
-    }
-
-    if (newIsOverCanvas !== isOverCanvas) {
-      this.props.onIsOverCanvasChange(newIsOverCanvas);
-    }
+    this.props.onIsOverCanvasChange(newOverCanvasPosition, this.props.elementType);
 
     this.setState({
       delta: newDelta,
-      isOverCanvas: newIsOverCanvas,
-      isOverSlide: newIsOverSlide,
-      canvasOffset: [offsetX, offsetY]
+      // TODO: Clean up these two properties
+      canvasOffset: [offsetX, offsetY],
+      isOverCanvasPosition: newOverCanvasPosition,
+      isUpdating
+    }, () => {
+      this.setState({
+        isUpdating: false
+      });
     });
   }
 
@@ -77,13 +80,6 @@ class ElementItem extends Component {
     ev.preventDefault();
 
     const { pageX, pageY } = ev;
-    const { elementLeft, elementTop, elementType } = this.props;
-    const element = Elements[elementType];
-    const { width, height } = element;
-
-    // Position the mouse at the center of the element.
-    const mouseOffsetX = (width / 2) - pageX + elementLeft;
-    const mouseOffsetY = (height / 2) - pageY + elementTop;
 
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("touchend", this.handleMouseUp);
@@ -95,7 +91,7 @@ class ElementItem extends Component {
       this.props.onIsDraggingChange(true);
 
       this.setState({
-        mouseOffset: [mouseOffsetX, mouseOffsetY],
+        mouseOffset: [(addedPadding / 2), (addedPadding / 2)],
         delta: [0, 0],
         mouseStart: [pageX, pageY],
         isPressed: true
@@ -103,7 +99,7 @@ class ElementItem extends Component {
 
       window.addEventListener("touchmove", this.handleTouchMove);
       window.addEventListener("mousemove", this.handleMouseMove);
-    }, 300);
+    }, 150);
   }
 
   handleMouseUp = () => {
@@ -114,7 +110,7 @@ class ElementItem extends Component {
 
       this.mouseClickTimeout = null;
 
-      this.context.store.dropElement(this.props.elementType);
+      this.props.onDropElement(this.props.elementType);
 
       return;
     }
@@ -129,27 +125,20 @@ class ElementItem extends Component {
       mouseOffset: [0, 0],
       mouseStart: [0, 0],
       canvasOffset: [0, 0],
-      isOverCanvas: false,
-      isOverSlide: false,
       isPressed: false
     };
 
-    this.props.onIsOverCanvasChange(false);
+    this.props.onIsOverCanvasChange(null, null);
     this.props.onIsDraggingChange(false);
 
-    if (this.state.isOverSlide) {
-      const element = Elements[this.props.elementType];
-      const { height, width } = element;
-
+    if (this.state.isOverCanvasPosition) {
       // Don't show return animation if dropping the element on the canvas
       state.isUpdating = true;
-      this.context.store.dropElement(this.props.elementType, /* props */{
-        style: {
-          position: "absolute",
-          left: this.state.canvasOffset[0] - (width / 2),
-          top: this.state.canvasOffset[1] - (height / 2)
-        }
-      });
+
+      this.props.onDropElement(this.props.elementType, [
+        this.state.canvasOffset[0],
+        this.state.canvasOffset[1]
+      ]);
     }
 
     this.setState(state, () => {
@@ -168,33 +157,29 @@ class ElementItem extends Component {
       elementLeft,
       elementTop,
       elementWidth,
-      elementHeight,
-      scale
+      elementHeight
     } = this.props;
 
-    const { isPressed, isUpdating, delta: [x, y], mouseOffset: [offsetX, offsetY] } = this.state;
-    const element = Elements[elementType];
-
     const {
-      ComponentClass,
-      height: draggingHeight,
-      width: draggingWidth,
-      props,
-      children
-     } = element;
+      isUpdating,
+      isOverCanvasPosition,
+      isPressed,
+      delta: [x, y],
+      mouseOffset: [offsetX, offsetY]
+    } = this.state;
 
-    let motionStyles = {
-      translateX: spring(x - offsetX, springSetting2),
-      translateY: spring(y - offsetY, springSetting2),
-      height: spring(isPressed ? draggingHeight : 0, springSetting2),
-      width: spring(isPressed ? draggingWidth : 0, springSetting2)
+    const motionStyles = {
+      translateX: spring(x - offsetX, SpringSettings.DRAG),
+      translateY: spring(y - offsetY, SpringSettings.DRAG),
+      opacity: spring(isPressed ? 1 : 0, SpringSettings.DRAG),
+      padding: spring(isPressed ? 2 : 0, SpringSettings.DRAG)
     };
 
     if (isUpdating) {
-      motionStyles.translateX = 0;
-      motionStyles.translateY = 0;
-      motionStyles.height = 0;
-      motionStyles.width = 0;
+      motionStyles.translateX = isPressed ? x - offsetX : 0;
+      motionStyles.translateY = isPressed ? y - offsetY : 0;
+      motionStyles.padding = isPressed ? addedPadding : 0;
+      motionStyles.opacity = 1;
     }
 
     return (
@@ -207,48 +192,41 @@ class ElementItem extends Component {
           height: elementHeight
         }}
       >
-        <Motion
-          defaultStyle={{
-            translateX: 0,
-            translateY: 0,
-            height: 0,
-            width: 0
-          }}
-          style={motionStyles}
-        >
-          {({ height, width, translateY, translateX }) => {
-            const elementStyles = {
-              ...props.style,
-              overflow: "hidden",
-              height,
-              width,
-              transform: `
-                translate3d(${translateX}px,
-                ${translateY}px, 0)
-                scale(${scale})
-              `,
-              zIndex: 1002,
-              position: "absolute",
-              backgroundColor: "#fff",
-              pointerEvents: "none"
-            };
+        {!isOverCanvasPosition &&
+          <Motion
+            defaultStyle={isUpdating ? motionStyles : {
+              translateX: 0,
+              translateY: 0,
+              padding: 0,
+              opacity: 0
+            }}
+            style={motionStyles}
+          >
+            {({ translateY, translateX, opacity, padding }) => {
+              const dragIconStyles = {
+                overflow: "hidden",
+                transform: `
+                  translate3d(${translateX}px,
+                  ${translateY}px, 0)
+                `,
+                zIndex: 1002,
+                position: "absolute",
+                pointerEvents: "none",
+                backgroundColor: "#fff",
+                opacity,
+                padding
+              };
 
-            if (elementType !== ElementTypes.IMAGE || elementType !== ElementTypes.PLOTLY) {
-              return (
-                <ComponentClass {...props} style={{ ...props.style, ...elementStyles }}>
-                  {children}
-                </ComponentClass>
-              );
-            }
-
-            return <ComponentClass {...props} style={elementStyles} />;
-          }}
-        </Motion>
+              return <Icon name={IconTypes.TEXT} className={styles.icon} style={dragIconStyles} />;
+            }}
+          </Motion>
+        }
         <div
           className={styles.item}
           onMouseDown={this.handleMouseDown}
           onTouchStart={this.handleTouchStart}
         >
+          <Icon name={IconTypes.TEXT} className={styles.icon} />
           <h4 style={{ position: "relative", zIndex: 1001, pointerEvents: "none" }}>
             {elementType}
           </h4>

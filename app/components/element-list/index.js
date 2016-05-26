@@ -6,11 +6,11 @@ import { ElementTypes } from "../../constants";
 
 const elements = [ElementTypes.TEXT, ElementTypes.IMAGE, ElementTypes.PLOTLY];
 const elementWidth = 60;
-const elementHeight = 20;
+const elementHeight = 48;
 const elementMarginRight = 20;
 const wrapperWidth = elements.length * (elementWidth + elementMarginRight) - elementMarginRight;
 
-const elementTop = 20;
+const elementTop = 10;
 
 class ElementList extends Component {
   constructor(props) {

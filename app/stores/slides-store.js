@@ -96,7 +96,8 @@ export default class SlidesStore {
     const slideToAddTo = this.currentSlide;
     const newSlidesArray = this.slides;
     const element = elementMap[elementType];
-    const mergedProps = { ...element.props, ...extraProps };
+    // TODO: DEEP MERGE so styles and other objects don't get clobbered
+    const mergedProps = extraProps ? { ...element.props, ...extraProps } : element.props;
 
     slideToAddTo.children.push({
       ...element,

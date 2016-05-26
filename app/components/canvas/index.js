@@ -1,19 +1,32 @@
-import React, { Component } from "react";
+import React, { Component, PropTypes } from "react";
 import { findDOMNode } from "react-dom";
 
 // Nesting the ElementList here so drag and drop state is controlled by this component
 import ElementList from "../element-list";
+import Elements from "../../elements";
+import CanvasElement from "./canvas-element";
 import Slide from "./slide";
 import styles from "./index.css";
 
+const padding = 30;
+
 class SlideList extends Component {
+  static contextTypes = {
+    store: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
       scale: 1,
-      isOver: false,
-      isDragging: false
+      isOverPosition: null,
+      isDragging: false,
+      // TODO: Center and size element based on startup window size
+      width: 0,
+      height: 0,
+      slideTop: 0,
+      slideLeft: 0
     };
   }
 
@@ -29,9 +42,10 @@ class SlideList extends Component {
     window.removeEventListener("resize", this.resize);
   }
 
-  changeIsOverState = (newIsOver) => {
+  changeIsOverState = (newIsOverPosition, dragElementType) => {
     this.setState({
-      isOver: newIsOver
+      isOverPosition: newIsOverPosition,
+      dragElementType
     });
   }
 
@@ -41,39 +55,92 @@ class SlideList extends Component {
     });
   }
 
+  // Keep a 4:3 ratio with the inner element centered, 30px padding
   resize = () => {
-    const container = findDOMNode(this.container);
+    const { offsetWidth, offsetHeight } = findDOMNode(this.refs.container);
 
-    // TODO: Hardcoded to 1100:850 aspect ratio
-    const scale = (container.offsetWidth / 1100);
+    const effectiveWidth = offsetWidth - (padding * 2);
+    const effectiveHeight = offsetHeight - (padding * 2);
 
-    this.setState({ scale });
+    const isWidthConstrained = effectiveHeight / effectiveWidth > 0.75;
+
+    const width = isWidthConstrained ? effectiveWidth : effectiveHeight / 0.75;
+    const height = isWidthConstrained ? effectiveWidth * 0.75 : effectiveHeight;
+
+    const slideTop = isWidthConstrained ? (offsetHeight - height) / 2 : padding;
+    const slideLeft = isWidthConstrained ? padding : (offsetWidth - width) / 2;
+
+    // TODO: Assumes baseline of 1000. Breaks at large and small sizes
+    // TODO: need better logic for handling scale and content scale
+    const scale = 1 // width / 1000;
+
+    this.setState({ width, height, slideTop, slideLeft, scale });
+  }
+
+  dropElement = (elementType, position) => {
+    if (!position) {
+      this.context.store.dropElement(elementType, { style: { whiteSpace: "nowrap" } });
+
+      return;
+    }
+
+    const [x, y] = position;
+    const { slideLeft, slideTop } = this.state;
+    const element = Elements[elementType];
+    const { height, width } = element;
+
+
+    this.context.store.dropElement(elementType, /* props */{
+      style: {
+        position: "absolute",
+        left: x - (width / 2) - slideLeft,
+        top: y - (height / 2) - slideTop,
+        whiteSpace: "nowrap"
+      }
+    });
   }
 
   render() {
-    const { scale, isOver, isDragging } = this.state;
+    const {
+      scale,
+      isOverPosition,
+      isDragging,
+      dragElementType,
+      width,
+      height,
+      slideTop,
+      slideLeft
+    } = this.state;
+
+    let component = Elements[dragElementType];
 
     return (
       <div className={styles.canvasWrapper}>
+        <div className={styles.canvas} id="canvas" ref="container">
+          <div
+            style={{
+              position: "absolute",
+              transform: `scale(${scale})`,
+              width, // Hardcoded to 1100:850 aspect ratio
+              height,
+              top: slideTop,
+              left: slideLeft,
+              backgroundColor: "#999",
+              pointerEvents: isDragging ? "none" : "auto"
+            }}
+          >
+            <Slide isOver={isOverPosition} isDragging={isDragging} />
+          </div>
+          {isOverPosition &&
+            <CanvasElement mousePosition={isOverPosition} scale={scale} component={component} />
+          }
+        </div>
         <ElementList
           scale={scale}
           onIsOverCanvasChange={this.changeIsOverState}
           onIsDraggingChange={this.changeIsDraggingState}
+          onDropElement={this.dropElement}
         />
-        <div className={styles.canvas}>
-          <div className={styles.slideWrapper} ref={(ref) => { this.container = ref; }}>
-            <div
-              className={styles.slideContent}
-              style={{
-                transform: `scale(${scale})`,
-                width: 1100, // Hardcoded to 1100:850 aspect ratio
-                height: 850
-              }}
-            >
-              <Slide isOver={isOver} isDragging={isDragging} />
-            </div>
-          </div>
-        </div>
       </div>
     );
   }
