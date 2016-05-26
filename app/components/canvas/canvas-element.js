@@ -34,8 +34,7 @@ class CanvasElement extends Component {
       selected,
       component: { type, width, height, ComponentClass, props, children },
       mousePosition,
-      scale,
-      isDragging
+      scale
     } = this.props;
 
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
@@ -45,7 +44,7 @@ class CanvasElement extends Component {
     const motionStyles = {};
     let elementStyle = props.style ? { ...props.style } : {};
 
-    if (isDragging) {
+    if (this.context.store.isDragging) {
       wrapperStyle.pointerEvents = "none";
     }
 
@@ -65,7 +64,6 @@ class CanvasElement extends Component {
       );
 
       if (mousePosition) {
-        wrapperStyle.pointerEvents = "none";
         wrapperStyle.whiteSpace = "nowrap";
       }
 

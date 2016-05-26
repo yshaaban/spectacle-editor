@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import { findDOMNode } from "react-dom";
+import { observer } from "mobx-react";
 
 // Nesting the ElementList here so drag and drop state is controlled by this component
 import ElementList from "../element-list";
@@ -10,6 +11,7 @@ import styles from "./index.css";
 
 const padding = 30;
 
+@observer
 class SlideList extends Component {
   static contextTypes = {
     store: PropTypes.object
@@ -49,12 +51,6 @@ class SlideList extends Component {
     });
   }
 
-  changeIsDraggingState = (newIsDragging) => {
-    this.setState({
-      isDragging: newIsDragging
-    });
-  }
-
   // Keep a 4:3 ratio with the inner element centered, 30px padding
   resize = () => {
     const { offsetWidth, offsetHeight } = findDOMNode(this.refs.container);
@@ -72,7 +68,7 @@ class SlideList extends Component {
 
     // TODO: Assumes baseline of 1000. Breaks at large and small sizes
     // TODO: need better logic for handling scale and content scale
-    const scale = 1 // width / 1000;
+    const scale = 1; // width / 1000;
 
     this.setState({ width, height, slideTop, slideLeft, scale });
   }
@@ -104,7 +100,6 @@ class SlideList extends Component {
     const {
       scale,
       isOverPosition,
-      isDragging,
       dragElementType,
       width,
       height,
@@ -112,10 +107,18 @@ class SlideList extends Component {
       slideLeft
     } = this.state;
 
-    let component = Elements[dragElementType];
+    const { isDraggingElement, isDraggingSlide } = this.context.store;
+
+    const component = Elements[dragElementType];
 
     return (
-      <div className={styles.canvasWrapper}>
+      <div
+        className={styles.canvasWrapper}
+        style={{
+          cursor: isDraggingElement ? "-webkit-grabbing" : "auto",
+          pointerEvents: isDraggingSlide ? "none" : "auto"
+        }}
+      >
         <div className={styles.canvas} id="canvas" ref="container">
           <div
             style={{
@@ -126,10 +129,10 @@ class SlideList extends Component {
               top: slideTop,
               left: slideLeft,
               backgroundColor: "#999",
-              pointerEvents: isDragging ? "none" : "auto"
+              pointerEvents: isDraggingElement || isDraggingSlide ? "none" : "auto"
             }}
           >
-            <Slide isOver={isOverPosition} isDragging={isDragging} />
+            <Slide isOver={isOverPosition} />
           </div>
           {isOverPosition &&
             <CanvasElement mousePosition={isOverPosition} scale={scale} component={component} />
@@ -138,7 +141,6 @@ class SlideList extends Component {
         <ElementList
           scale={scale}
           onIsOverCanvasChange={this.changeIsOverState}
-          onIsDraggingChange={this.changeIsDraggingState}
           onDropElement={this.dropElement}
         />
       </div>

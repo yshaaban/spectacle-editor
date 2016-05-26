@@ -5,21 +5,33 @@
 }
 
 .icon {
-  width: 100%;
-  height: 25;
+  width: calc(100% - 2px);
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
+  border-radius: 3px;
 }
 
 .item h4 {
+  margin: 6px 0 0;
   line-height: 1;
-  margin: 0;
   color: #666;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .wrapper {
   position: absolute;
   display: inline-block;
+}
+
+.wrapper * {
+  pointer-events: none;
+}
+
+.isPressed {
+  cursor: grabbing;
 }

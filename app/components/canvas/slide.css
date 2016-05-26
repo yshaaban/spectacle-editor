@@ -6,7 +6,6 @@
 
 .isDragging {
   background-color: #555;
-  pointer-events: none;
 }
 
 .isOver {

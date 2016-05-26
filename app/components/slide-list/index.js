@@ -184,6 +184,7 @@ class SlideList extends Component {
 
     // Only do drag if we hold the mouse down for a bit
     this.mouseClickTimeout = setTimeout(() => {
+      // TODO: Notify store and change cursor
       this.mouseClickTimeout = null;
 
       this.setState({

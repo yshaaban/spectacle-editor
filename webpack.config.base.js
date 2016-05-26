@@ -9,6 +9,9 @@ export default {
     }, {
       test: /\.json$/,
       loader: "json-loader"
+    }, {
+      test: /\.(woff|woff2|eot|ttf)$/,
+      loader: "url-loader?limit=100000"
     }]
   },
   output: {

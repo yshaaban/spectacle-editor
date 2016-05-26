@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from "react";
+import { observer } from "mobx-react";
 
 import SlidesStore from "../stores/slides-store";
 import Provider from "../components/utils/provider";
@@ -12,6 +13,7 @@ import styles from "./home.css";
 
 const store = new SlidesStore();
 
+@observer
 class Home extends Component {
   // MOCKED FOR NOW
   // TODO: Remove when theming and styling is solved
@@ -28,9 +30,16 @@ class Home extends Component {
   }
 
   render() {
+    const wrapperStyles = {};
+
+    if (store.isDragging) {
+      wrapperStyles.cursor = "-webkit-grabbing";
+      wrapperStyles.pointerEvents = "none";
+    }
+
     return (
       <Provider store={store}>
-        <div className={styles.home}>
+        <div className={styles.home} style={wrapperStyles}>
           <MenuBar />
           <HistoryMenu />
           <div className={styles.container}>

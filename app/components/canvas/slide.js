@@ -16,8 +16,8 @@ class Slide extends Component {
   };
 
   render() {
-    const { isDragging, isOver } = this.props;
-    const { store: { currentSlide } } = this.context;
+    const { isOver } = this.props;
+    const { store: { currentSlide, isDragging } } = this.context;
 
     let slideClass = styles.slide;
 

@@ -10,7 +10,6 @@ const addedPadding = 2;
 class ElementItem extends Component {
   static propTypes = {
     elementType: PropTypes.string.isRequired,
-    onIsDraggingChange: PropTypes.func.isRequired,
     onIsOverCanvasChange: PropTypes.func.isRequired,
     elementLeft: PropTypes.number.isRequired,
     elementTop: PropTypes.number.isRequired,
@@ -56,7 +55,6 @@ class ElementItem extends Component {
 
     // Switching from canvas element back to icon, do not animate icon
     } else if (isOverCanvasPosition !== null) {
-      console.log("HERERE");
       isUpdating = true;
     }
 
@@ -88,7 +86,10 @@ class ElementItem extends Component {
     this.mouseClickTimeout = setTimeout(() => {
       this.mouseClickTimeout = null;
 
-      this.props.onIsDraggingChange(true);
+      this.context.store.updateElementDraggingState(true);
+
+      // Make the cursor dragging everywhere
+      document.body.style.cursor = "-webkit-grabbing";
 
       this.setState({
         mouseOffset: [(addedPadding / 2), (addedPadding / 2)],
@@ -120,6 +121,9 @@ class ElementItem extends Component {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.handleMouseUp);
 
+    // Reset the cursor dragging to auto
+    document.body.style.cursor = "auto";
+
     const state = {
       delta: [0, 0],
       mouseOffset: [0, 0],
@@ -129,7 +133,7 @@ class ElementItem extends Component {
     };
 
     this.props.onIsOverCanvasChange(null, null);
-    this.props.onIsDraggingChange(false);
+    this.context.store.updateElementDraggingState(false);
 
     if (this.state.isOverCanvasPosition) {
       // Don't show return animation if dropping the element on the canvas
@@ -184,12 +188,15 @@ class ElementItem extends Component {
 
     return (
       <div
+        onMouseDown={this.handleMouseDown}
+        onTouchStart={this.handleTouchStart}
         className={styles.wrapper}
         style={{
           left: elementLeft,
           top: elementTop,
           width: elementWidth,
-          height: elementHeight
+          height: elementHeight,
+          cursor: isPressed ? "-webkit-grabbing" : "-webkit-grab"
         }}
       >
         {!isOverCanvasPosition &&
@@ -211,7 +218,6 @@ class ElementItem extends Component {
                 `,
                 zIndex: 1002,
                 position: "absolute",
-                pointerEvents: "none",
                 backgroundColor: "#fff",
                 opacity,
                 padding
@@ -223,11 +229,9 @@ class ElementItem extends Component {
         }
         <div
           className={styles.item}
-          onMouseDown={this.handleMouseDown}
-          onTouchStart={this.handleTouchStart}
         >
           <Icon name={IconTypes.TEXT} className={styles.icon} />
-          <h4 style={{ position: "relative", zIndex: 1001, pointerEvents: "none" }}>
+          <h4 style={{ position: "relative", zIndex: 1001 }}>
             {elementType}
           </h4>
         </div>
