@@ -10,7 +10,7 @@ const elementHeight = 48;
 const elementMarginRight = 25;
 const wrapperWidth = elements.length * (elementWidth + elementMarginRight) - elementMarginRight;
 
-const elementTop = 10;
+const elementTop = 8;
 
 class ElementList extends Component {
   constructor(props) {

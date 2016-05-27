@@ -15,7 +15,9 @@ class CanvasElement extends Component {
       props: PropTypes.object,
       children: PropTypes.node
     }).isRequired,
-    selected: PropTypes.bool
+    selected: PropTypes.bool,
+    mousePosition: PropTypes.array,
+    scale: PropTypes.number
   };
 
   static contextTypes = {

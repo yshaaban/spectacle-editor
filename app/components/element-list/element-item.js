@@ -10,12 +10,12 @@ const addedPadding = 2;
 class ElementItem extends Component {
   static propTypes = {
     elementType: PropTypes.string.isRequired,
-    onIsOverCanvasChange: PropTypes.func.isRequired,
     elementLeft: PropTypes.number.isRequired,
     elementTop: PropTypes.number.isRequired,
     elementWidth: PropTypes.number.isRequired,
     elementHeight: PropTypes.number.isRequired,
-    scale: PropTypes.number.isRequired
+    onIsOverCanvasChange: PropTypes.func.isRequired,
+    onDropElement: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -29,7 +29,9 @@ class ElementItem extends Component {
       delta: [0, 0],
       mouseStart: [0, 0],
       mouseOffset: [0, 0],
-      isPressed: false
+      canvasOffset: [0, 0],
+      isPressed: false,
+      isUpdating: false
     };
   }
 
@@ -175,7 +177,7 @@ class ElementItem extends Component {
     const motionStyles = {
       translateX: spring(x - offsetX, SpringSettings.DRAG),
       translateY: spring(y - offsetY, SpringSettings.DRAG),
-      opacity: spring(isPressed ? 1 : 0, SpringSettings.DRAG),
+      opacity: spring(isPressed ? 0.9 : 0, SpringSettings.DRAG),
       padding: spring(isPressed ? 2 : 0, SpringSettings.DRAG)
     };
 
@@ -183,7 +185,7 @@ class ElementItem extends Component {
       motionStyles.translateX = isPressed ? x - offsetX : 0;
       motionStyles.translateY = isPressed ? y - offsetY : 0;
       motionStyles.padding = isPressed ? addedPadding : 0;
-      motionStyles.opacity = 1;
+      motionStyles.opacity = 0.9;
     }
 
     return (
@@ -209,29 +211,27 @@ class ElementItem extends Component {
             }}
             style={motionStyles}
           >
-            {({ translateY, translateX, opacity, padding }) => {
-              const dragIconStyles = {
-                overflow: "hidden",
-                transform: `
-                  translate3d(${translateX}px,
-                  ${translateY}px, 0)
-                `,
-                zIndex: 1002,
-                position: "absolute",
-                backgroundColor: "#fff",
-                opacity,
-                padding
-              };
-
-              return <Icon name={IconTypes.TEXT} className={styles.icon} style={dragIconStyles} />;
-            }}
+            {({ translateY, translateX, opacity, padding }) => (
+              <Icon
+                name={IconTypes.TEXT}
+                className={`${styles.icon} ${styles.dragIcon}`}
+                style={{
+                  transform: `
+                    translate3d(${translateX}px,
+                    ${translateY}px, 0)
+                  `,
+                  opacity,
+                  padding
+                }}
+              />
+            )}
           </Motion>
         }
         <div
           className={styles.item}
         >
           <Icon name={IconTypes.TEXT} className={styles.icon} />
-          <h4 style={{ position: "relative", zIndex: 1001 }}>
+          <h4>
             {elementType}
           </h4>
         </div>

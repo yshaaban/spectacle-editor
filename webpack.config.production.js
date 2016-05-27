@@ -1,7 +1,5 @@
 import webpack from "webpack";
 import ExtractTextPlugin from "extract-text-webpack-plugin";
-import rawLoader from "raw-loader";
-import imageWebpackLoader from "image-webpack-loader";
 
 import baseConfig from "./webpack.config.base";
 

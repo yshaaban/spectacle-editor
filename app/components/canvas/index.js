@@ -9,7 +9,7 @@ import CanvasElement from "./canvas-element";
 import Slide from "./slide";
 import styles from "./index.css";
 
-const padding = 30;
+const padding = 40;
 
 @observer
 class SlideList extends Component {
@@ -66,9 +66,8 @@ class SlideList extends Component {
     const slideTop = isWidthConstrained ? (offsetHeight - height) / 2 : padding;
     const slideLeft = isWidthConstrained ? padding : (offsetWidth - width) / 2;
 
-    // TODO: Assumes baseline of 1000. Breaks at large and small sizes
     // TODO: need better logic for handling scale and content scale
-    const scale = 1; // width / 1000;
+    const scale = 1;
 
     this.setState({ width, height, slideTop, slideLeft, scale });
   }
@@ -89,8 +88,8 @@ class SlideList extends Component {
     this.context.store.dropElement(elementType, /* props */{
       style: {
         position: "absolute",
-        left: x - (width / 2) - slideLeft,
-        top: y - (height / 2) - slideTop,
+        left: x - (width / 2) - slideLeft - 1, // 1px for slide border
+        top: y - (height / 2) - slideTop - 1, // 1px for slide border
         whiteSpace: "nowrap"
       }
     });
