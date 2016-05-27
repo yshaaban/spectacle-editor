@@ -1,46 +1,19 @@
+@import '../../variables.css';
+
 .canvasWrapper {
-  border: 2px solid #999;
   flex: 1 1 auto;
   order: 2;
   overflow: visible;
-  margin: 20px;
   display: flex;
 }
 
 .canvas {
-  border: 2px solid #666;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: scroll;
-}
-
-.slideWrapper {
-  width: 85%;
-  min-width: 400px;
-  max-width: calc(90vh / 0.7727);
   position: relative;
-  background-color: #eee;
-}
-
-.slideWrapper::after {
-  /* 22:17 ratio which is hardcoded in specatcle to 1100:850 */
-  padding-top: 77.27%;
-  display: block;
-  content: "";
-}
-
-.slideContent {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  transform-origin: 0 0;
-
-  /* 22:17 ratio which is hardcoded in specatcle to 1100:850 */
-  width: 1100;
-  height: 850;
-  background-color: #777;
+  border-right: 1px solid var(--primary-border-color);
+  border-left: 1px solid var(--primary-border-color);
 }

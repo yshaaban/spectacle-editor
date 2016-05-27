@@ -1,0 +1,13 @@
+:root {
+  /* Colors */
+  --primary-background-color: #f8f8f9;
+  --secondary-background-color: #fff;
+  --primary-border-color: #e7e8e9;
+  --secondary-border-color: #ccc;
+  --primary-font-color: #3d3d3d;
+  --secondary-font-color: #757575;
+
+  /* Drop Shadows */
+  --drag-shadow: 0 1px 3px 0 rgba(204, 204, 204, 0.6);
+  --slide-stage-shadow: 0 0 3px 0 rgba(204, 204, 204, 0.6);
+}

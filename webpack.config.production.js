@@ -1,5 +1,6 @@
 import webpack from "webpack";
 import ExtractTextPlugin from "extract-text-webpack-plugin";
+
 import baseConfig from "./webpack.config.base";
 
 const config = {
@@ -35,6 +36,14 @@ const config = {
           "style-loader",
           "css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]"
         )
+      },
+
+      {
+        test: /.svg$/,
+        loaders: [
+          "raw-loader",
+          "image-webpack-loader"
+        ]
       }
     ]
   },

@@ -47,6 +47,11 @@ export default class SlidesStore {
 
   @observable historyIndex = 0;
 
+  // Needed for handling cursor state and pointer events
+  @observable isDragging = false;
+  @observable isDraggingSlide = false;
+  @observable isDraggingElement = false;
+
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get slides() {
     return this.history[this.historyIndex].slides.asMutable({ deep: true });
@@ -96,7 +101,8 @@ export default class SlidesStore {
     const slideToAddTo = this.currentSlide;
     const newSlidesArray = this.slides;
     const element = elementMap[elementType];
-    const mergedProps = { ...element.props, ...extraProps };
+    // TODO: DEEP MERGE so styles and other objects don't get clobbered
+    const mergedProps = extraProps ? { ...element.props, ...extraProps } : element.props;
 
     slideToAddTo.children.push({
       ...element,
@@ -178,6 +184,20 @@ export default class SlidesStore {
       currentSlideIndex: index,
       currentElementIndex: null,
       slides: slidesArray
+    });
+  }
+
+  updateElementDraggingState(isDraggingElement) {
+    transaction(() => {
+      this.isDragging = isDraggingElement;
+      this.isDraggingElement = isDraggingElement;
+    });
+  }
+
+  updateSlideDraggingState(isDraggingSlide) {
+    transaction(() => {
+      this.isDragging = isDraggingSlide;
+      this.isDraggingSlide = isDraggingSlide;
     });
   }
 

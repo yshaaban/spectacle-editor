@@ -13,5 +13,13 @@ export const ElementTypes = {
   CODE: "Code",
   QUOTE: "Quote",
   TABLE: "Table",
-  IFrame: "IFrame"
+  IFRAME: "IFrame"
+};
+
+export const IconTypes = {
+  ...ElementTypes
+};
+
+export const SpringSettings = {
+  DRAG: { stiffness: 1000, damping: 50 }
 };
