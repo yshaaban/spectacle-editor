@@ -10,6 +10,7 @@ export const ElementTypes = {
   LINK: "Link",
   IMAGE: "Image",
   PLOTLY: "Plotly",
+  PLOTY_PLACEHOLDER_IMAGE: "Plotly Placeholder",
   CODE: "Code",
   QUOTE: "Quote",
   TABLE: "Table",

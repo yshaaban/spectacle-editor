@@ -3,6 +3,7 @@ import { findDOMNode } from "react-dom";
 import { observer } from "mobx-react";
 
 // Nesting the ElementList here so drag and drop state is controlled by this component
+import { ElementTypes } from "../../constants";
 import ElementList from "../element-list";
 import Elements from "../../elements";
 import CanvasElement from "./canvas-element";
@@ -108,7 +109,11 @@ class SlideList extends Component {
 
     const { isDraggingElement, isDraggingSlide } = this.context.store;
 
-    const component = Elements[dragElementType];
+    const PreviewElementType = dragElementType === ElementTypes.PLOTLY ?
+      ElementTypes.PLOTY_PLACEHOLDER_IMAGE :
+      dragElementType;
+
+    const component = Elements[PreviewElementType];
 
     return (
       <div
