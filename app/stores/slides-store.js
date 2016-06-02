@@ -1,6 +1,7 @@
 import { observable, computed, transaction } from "mobx";
 import Immutable from "seamless-immutable";
 import { generate } from "shortid";
+import { merge } from "lodash";
 
 import elementMap from "../elements";
 
@@ -72,7 +73,7 @@ export default class SlidesStore {
 
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get currentElement() {
-    return this.currentElementIndex && this.currentSlide[this.currentElementIndex];
+    return this.currentSlide.children[this.currentElementIndex];
   }
 
   @computed get undoDisabled() {
@@ -101,8 +102,7 @@ export default class SlidesStore {
     const slideToAddTo = this.currentSlide;
     const newSlidesArray = this.slides;
     const element = elementMap[elementType];
-    // TODO: DEEP MERGE so styles and other objects don't get clobbered
-    const mergedProps = extraProps ? { ...element.props, ...extraProps } : element.props;
+    const mergedProps = merge(element.props, extraProps);
 
     slideToAddTo.children.push({
       ...element,
@@ -199,6 +199,36 @@ export default class SlidesStore {
       this.isDragging = isDraggingSlide;
       this.isDraggingSlide = isDraggingSlide;
     });
+  }
+
+  updateCurrentSlide(slide) {
+    const snapshot = this.currentState;
+    const updatedSlide = merge(this.currentSlide, slide);
+    snapshot.slides = snapshot.slides.map((item) => {
+      console.log(item.id === slide.id, item.id, slide.id)
+      return item.id === slide.id ? slide : item;
+    })
+
+    transaction(() => {
+      const left = this.history.slice(0, this.historyIndex);
+      const right = this.history.slice(this.historyIndex + 1, this.history.length);
+      this.history = left.concat([snapshot], right);
+    });
+  }
+
+  updateCurrentElement(element) {
+    const slide = this.currentSlide;
+    const updatedElement = merge(this.currentElement, element);
+    slide.children = slide.children.map((item) => {
+      return item.id === element.id ? element : item;
+    });
+    this.updateCurrentSlide(slide);
+  }
+
+  updateElementProps(props) {
+    const element = this.currentElement;
+    element.props = merge(element.props, props);
+    this.updateCurrentElement(element);
   }
 
   undo() {

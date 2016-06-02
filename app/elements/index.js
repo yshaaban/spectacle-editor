@@ -13,7 +13,12 @@ elements[ElementTypes.TEXT] = {
   // TODO: Figure out defaults for text element
   type: ElementTypes.TEXT,
   ComponentClass: Heading,
-  props: { size: 4 },
+  props: {
+    size: 4,
+    style: {
+      color: '#3d3d3d'
+    }
+  },
   children: "totally text"
 };
 

@@ -1,4 +1,9 @@
 .editor {
   order: 5;
   width: 220px;
+  color: var(--secondary-font-color);
+}
+
+.editor h2 {
+  color: var(--secondary-font-color);
 }
