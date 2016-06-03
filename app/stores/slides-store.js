@@ -73,7 +73,9 @@ export default class SlidesStore {
 
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get currentElement() {
-    return this.currentSlide.children[this.currentElementIndex];
+    return (this.currentElementIndex === 0 || this.currentElementIndex) ?
+      this.currentSlide.children[this.currentElementIndex] :
+      null;
   }
 
   @computed get undoDisabled() {

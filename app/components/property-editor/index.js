@@ -61,7 +61,7 @@ class PropertyEditor extends Component {
                 onChange={(e) => this.onStyleChange(e, key)}
               />
             </li>);
-          })};
+          })}
         </ul>
       </div>);
     }
