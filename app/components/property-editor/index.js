@@ -1,34 +1,19 @@
 import React, { Component } from "react";
-import { autorun } from "mobx";
+import { observer } from "mobx-react";
 
-import { ElementTypes } from "../../constants";
 import styles from "./index.css";
 
+@observer
 class PropertyEditor extends Component {
   static contextTypes = {
     store: React.PropTypes.object
   };
 
-  constructor(props, context) {
-    super(props, context);
-    this.state = {}
-  }
-
-  componentDidMount() {
-    autorun(() => {
-      const currentElement = this.context.store.currentElement
-
-      this.setState({
-        currentElement
-      })
-    });
-  }
-
   onPropertyChange = (e, key) => {
     let value = e.target.value;
 
-    if (key === 'size') {
-      value = parseInt(value);
+    if (key === "size") {
+      value = parseInt(value, 10);
     }
 
     this.context.store.updateElementProps({ size: value });
@@ -36,39 +21,49 @@ class PropertyEditor extends Component {
 
   onStyleChange = (e, key) => {
     const style = {};
-    style[key] = e.target.value
+    style[key] = e.target.value;
     this.context.store.updateElementProps({ style });
   }
 
   render() {
-    const element = this.state.currentElement;
+    const { currentElement } = this.context.store;
     let content;
 
-    if (element) {
-      const props = element.props;
+    if (currentElement) {
+      const props = currentElement.props;
       const propertyKeys = Object.keys(props);
       const style = props.style;
       const styleKeys = Object.keys(style);
 
-      content = <div>
-        <h2>{element.type}</h2>
+      // TODO: which properties should actually be exposed to the user, and where is that defined
+      // TODO: where should the ui elements for each type be defined
+      content = (<div>
+        <h2>{currentElement.type}</h2>
         <ul>
           {propertyKeys.map((key) => {
-            if (key === 'style') return false;
-            return <li key={`${props.id}-${key}`}>
+            if (key === "style") return false;
+            return (<li key={`${props.id}-${key}`}>
               <h4>{key}</h4>
-              <input type="number" value={props[key]} onChange={(e) => this.onPropertyChange(e, key)} />
-            </li>
+              <input
+                type="number"
+                value={props[key]}
+                onChange={(e) => this.onPropertyChange(e, key)}
+              />
+            </li>);
           })}
           {styleKeys.map((key) => {
-            if (key === 'style') return false;
-            return <li key={`${props.id}-${key}`}>
+            if (key === "style") return false;
+            return (<li key={`${props.id}-${key}`}>
               <h4>{key}</h4>
-              <input type="text" value={style[key]} onChange={(e) => this.onStyleChange(e, key)} />
-            </li>
-          })}
+              <input
+                type="text"
+                value={style[key]}
+                onChange={(e) => this.onStyleChange(e, key)}
+              />
+            </li>);
+          })};
         </ul>
-      </div>
+      </div>);
     }
 
     return (

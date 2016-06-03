@@ -205,9 +205,11 @@ export default class SlidesStore {
     const snapshot = this.currentState;
     const updatedSlide = merge(this.currentSlide, slide);
     snapshot.slides = snapshot.slides.map((item) => {
-      console.log(item.id === slide.id, item.id, slide.id)
-      return item.id === slide.id ? slide : item;
-    })
+      if (item.id === updatedSlide.id) {
+        return updatedSlide;
+      }
+      return item;
+    });
 
     transaction(() => {
       const left = this.history.slice(0, this.historyIndex);
@@ -220,7 +222,10 @@ export default class SlidesStore {
     const slide = this.currentSlide;
     const updatedElement = merge(this.currentElement, element);
     slide.children = slide.children.map((item) => {
-      return item.id === element.id ? element : item;
+      if (item.id === updatedElement.id) {
+        return updatedElement;
+      }
+      return item;
     });
     this.updateCurrentSlide(slide);
   }

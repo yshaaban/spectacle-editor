@@ -5,6 +5,30 @@ import { Image, Heading } from "../spectacle-components";
 
 const elements = {};
 
+/*
+* TODO: define style properties exposed to user
+*
+* It may be useful to add something like `userProps` to each element that
+* defines which props are actually exposed to the user through the ui.
+*
+* Could be an array:
+*
+* userProps: ['size', 'font']
+*
+* Could be objects that provide more useful metadata & input rendering components:
+*
+* userProps: {
+*   size: {
+*     type: 'number',
+*     ComponentClass: NumberInput
+*   },
+*   color: {
+*     type: 'color',
+*     ComponentClass: ColorInput
+*   }
+* }
+*/
+
 elements[ElementTypes.TEXT] = {
   // Values calculated at scale: 1
   width: 281,
@@ -16,7 +40,7 @@ elements[ElementTypes.TEXT] = {
   props: {
     size: 4,
     style: {
-      color: '#3d3d3d'
+      color: "#3d3d3d"
     }
   },
   children: "totally text"
