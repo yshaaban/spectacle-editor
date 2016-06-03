@@ -201,39 +201,15 @@ export default class SlidesStore {
     });
   }
 
-  updateCurrentSlide(slide) {
-    const snapshot = this.currentState;
-    const updatedSlide = merge(this.currentSlide, slide);
-    snapshot.slides = snapshot.slides.map((item) => {
-      if (item.id === updatedSlide.id) {
-        return updatedSlide;
-      }
-      return item;
-    });
-
-    transaction(() => {
-      const left = this.history.slice(0, this.historyIndex);
-      const right = this.history.slice(this.historyIndex + 1, this.history.length);
-      this.history = left.concat([snapshot], right);
-    });
-  }
-
-  updateCurrentElement(element) {
-    const slide = this.currentSlide;
-    const updatedElement = merge(this.currentElement, element);
-    slide.children = slide.children.map((item) => {
-      if (item.id === updatedElement.id) {
-        return updatedElement;
-      }
-      return item;
-    });
-    this.updateCurrentSlide(slide);
-  }
-
   updateElementProps(props) {
-    const element = this.currentElement;
-    element.props = merge(element.props, props);
-    this.updateCurrentElement(element);
+    if (!this.currentElement) {
+      return;
+    }
+
+    const newProps = merge(this.currentElement.props, props);
+    const newState = this.currentState;
+    newState.slides[this.currentSlideIndex].children[this.currentElementIndex].props = newProps;
+    this._addToHistory(newState);
   }
 
   undo() {
