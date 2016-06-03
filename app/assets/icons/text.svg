@@ -2,9 +2,7 @@
   <defs>
     <style>
       .cls-1 {
-        fill: #32393d;
-        fill-rule: evenodd;
-        filter: url(#filter);
+        fill: #447bdc;
       }
     </style>
     <filter id="filter" x="562.969" y="75.344" width="14.219" height="14.187" filterUnits="userSpaceOnUse">
