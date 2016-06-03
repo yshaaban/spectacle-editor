@@ -1,4 +1,4 @@
-import { observable, computed, transaction } from "mobx";
+import { observable, computed, transaction, asReference } from "mobx";
 import Immutable from "seamless-immutable";
 import { generate } from "shortid";
 
@@ -13,7 +13,7 @@ const allColors = [
 export default class SlidesStore {
   // Default slides state
   // history will be an array of slides arrays
-  @observable history = Immutable.from([{
+  @observable history = asReference(Immutable.from([{
     currentSlideIndex: 0,
     currentElementIndex: null,
     slides: [{
@@ -43,7 +43,7 @@ export default class SlidesStore {
       children: [],
       color: allColors[4]
     }
-  ] }]);
+  ] }]));
 
   @observable historyIndex = 0;
 
