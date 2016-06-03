@@ -1,6 +1,7 @@
 import { observable, computed, transaction, asReference } from "mobx";
 import Immutable from "seamless-immutable";
 import { generate } from "shortid";
+import { merge } from "lodash";
 
 import elementMap from "../elements";
 
@@ -72,7 +73,9 @@ export default class SlidesStore {
 
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get currentElement() {
-    return this.currentElementIndex && this.currentSlide[this.currentElementIndex];
+    return (this.currentElementIndex === 0 || this.currentElementIndex) ?
+      this.currentSlide.children[this.currentElementIndex] :
+      null;
   }
 
   @computed get undoDisabled() {
@@ -101,8 +104,7 @@ export default class SlidesStore {
     const slideToAddTo = this.currentSlide;
     const newSlidesArray = this.slides;
     const element = elementMap[elementType];
-    // TODO: DEEP MERGE so styles and other objects don't get clobbered
-    const mergedProps = extraProps ? { ...element.props, ...extraProps } : element.props;
+    const mergedProps = merge(element.props, extraProps);
 
     slideToAddTo.children.push({
       ...element,
@@ -199,6 +201,17 @@ export default class SlidesStore {
       this.isDragging = isDraggingSlide;
       this.isDraggingSlide = isDraggingSlide;
     });
+  }
+
+  updateElementProps(props) {
+    if (!this.currentElement) {
+      return;
+    }
+
+    const newProps = merge(this.currentElement.props, props);
+    const newState = this.currentState;
+    newState.slides[this.currentSlideIndex].children[this.currentElementIndex].props = newProps;
+    this._addToHistory(newState);
   }
 
   undo() {
