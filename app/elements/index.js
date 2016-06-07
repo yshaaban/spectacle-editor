@@ -38,8 +38,8 @@ elements[ElementTypes.TEXT] = {
   type: ElementTypes.TEXT,
   ComponentClass: Heading,
   props: {
-    size: 4,
     style: {
+      fontSize: 12,
       color: "#3d3d3d"
     }
   },

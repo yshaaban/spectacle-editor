@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 
+import propertyMap from "./property-menu-map"
 import styles from "./index.css";
 
 @observer
@@ -31,35 +32,35 @@ class PropertyEditor extends Component {
 
     if (currentElement) {
       const props = currentElement.props;
-      const propertyKeys = Object.keys(props);
-      const style = props.style;
-      const styleKeys = Object.keys(style);
+      const styleKeys = Object.keys(props.style);
+      const properties = propertyMap[currentElement.type]
 
-      // TODO: which properties should actually be exposed to the user, and where is that defined
-      // TODO: where should the ui elements for each type be defined
       content = (<div>
         <h2>{currentElement.type}</h2>
         <ul>
-          {propertyKeys.map((key) => {
-            if (key === "style") return false;
-            return (<li key={`${props.id}-${key}`}>
-              <h4>{key}</h4>
-              <input
+          {styleKeys.map((propName) => {
+            var prop = properties[propName]
+            if (!prop) return;
+            let inputElement;
+
+            if (prop.type === "number") {
+              inputElement = (<input
                 type="number"
-                value={props[key]}
-                onChange={(e) => this.onPropertyChange(e, key)}
-              />
-            </li>);
-          })}
-          {styleKeys.map((key) => {
-            if (key === "style") return false;
-            return (<li key={`${props.id}-${key}`}>
-              <h4>{key}</h4>
-              <input
-                type="text"
-                value={style[key]}
-                onChange={(e) => this.onStyleChange(e, key)}
-              />
+                value={prop.default}
+                onChange={(e) => this.onStyleChange(e, propName)}
+              />);
+            } else if (prop.type === "color") {
+              // TODO: replace with color picker
+              inputElement = (<input
+                type="text" 
+                value={style[propName]}
+                onChange={(e) => this.onStyleChange(e, propName)}
+              />);
+            }
+
+            return (<li key={`${props.id}-${propName}`}>
+              <h4>{propName}</h4>
+              {inputElement}
             </li>);
           })}
         </ul>
