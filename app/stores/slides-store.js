@@ -241,7 +241,7 @@ export default class SlidesStore {
         this.history = this.history.slice(0, this.historyIndex + 1);
       }
 
-      // Wrapp the new slides array in an array so they aren't concatted as individual slide objects
+      // Wrap the new slides array in an array so they aren't concatted as individual slide objects
       this.history = this.history.concat([Immutable.from(snapshot)]);
       this.historyIndex += 1;
     });

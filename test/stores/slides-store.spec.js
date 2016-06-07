@@ -1,6 +1,7 @@
 import { expect } from "chai";
-import { sandbox } from "sinon";
+import { sandbox, spy } from "sinon";
 import { autorun } from "mobx";
+import Immutable from "seamless-immutable";
 
 import SlidesStore from "../../app/stores/slides-store";
 
@@ -115,6 +116,48 @@ describe("SlidesStore", () => {
     expect(slideStore.slides.length).to.equal(initialLength);
     slideStore.redo();
     expect(slideStore.slides.length).to.equal(initialLength + 1);
+  });
+
+  it("should only notify listeners once for history changes", () => {
+    const testStore = new SlidesStore();
+
+    // Set initial state
+    testStore.history = Immutable.from([["a"]]);
+    testStore.historyIndex = 0;
+
+    const historaySpy = spy();
+    const historayIndexSpy = spy();
+
+    // Autorun invokes the callback immediatly and adds listeners
+    // for all observables in the callback scope.
+    const disposer = autorun(() => {
+      historaySpy(testStore.history);
+      historayIndexSpy(testStore.historyIndex);
+    });
+
+    // Verify that autorun invoked the spy once on initialization
+    expect(historaySpy.callCount).to.equal(1);
+    expect(historayIndexSpy.callCount).to.equal(1);
+
+    // Verify that autorun was called with the initial values
+    // args[0][0] gets the first call then the first entry in arguments array.
+    expect(historaySpy.args[0][0]).to.eql(Immutable.from([["a"]]));
+    expect(historayIndexSpy.args[0][0]).to.eql(0);
+
+    // Call our function that should trigger autorun
+    testStore._addToHistory(["b"]);
+
+    // Verify that transaction only reran autorun once.
+    expect(historaySpy.callCount).to.equal(2);
+    expect(historayIndexSpy.callCount).to.equal(2);
+
+    // Verify the values passed to autorun were the expected values
+    // args[1][0] gets the second call then the first entry in arguments array.
+    expect(historaySpy.args[1][0]).to.eql(Immutable.from([["a"], ["b"]]));
+    expect(historayIndexSpy.args[1][0]).to.eql(1);
+
+    // Remove autorun. This belongs in an after/afterEach statement.
+    disposer();
   });
 
   it("should keep accurate history state with aggressive undo/redo", () => {

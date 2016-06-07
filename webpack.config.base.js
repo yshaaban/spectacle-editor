@@ -10,7 +10,7 @@ export default {
       test: /\.json$/,
       loader: "json-loader"
     }, {
-      test: /\.(woff|woff2|eot|ttf)$/,
+      test: /\.(woff|woff2|eot|ttf|png|jpg|gif)$/,
       loader: "url-loader?limit=100000"
     }]
   },

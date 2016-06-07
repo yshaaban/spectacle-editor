@@ -1,5 +1,6 @@
 import React from "react";
 
+import plotlyPlaceholder from "../assets/images/plotly-placeholder.png";
 import { ElementTypes } from "../constants";
 import { Image, Heading } from "../spectacle-components";
 
@@ -65,7 +66,7 @@ elements[ElementTypes.PLOTLY] = {
   type: ElementTypes.PLOTLY,
   ComponentClass: (props) => (<iframe {...props} />),
   props: {
-    src: "https://plot.ly/~brandnewpeterson/487.embed",
+    src: "https://plot.ly/~rgerstenberger/0.embed",
     width: 450,
     height: 400,
     frameBorder: 0,
@@ -73,6 +74,19 @@ elements[ElementTypes.PLOTLY] = {
   },
   children: []
 };
+
+elements[ElementTypes.PLOTY_PLACEHOLDER_IMAGE] = {
+  // Values calculated at scale: 1
+  width: 450,
+  height: 400,
+  type: ElementTypes.PLOTY_PLACEHOLDER_IMAGE,
+  ComponentClass: Image,
+  props: {
+    src: plotlyPlaceholder
+  },
+  children: []
+};
+
 
 elements[ElementTypes.CODE] = {
   type: ElementTypes.CODE,
