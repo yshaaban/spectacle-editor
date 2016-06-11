@@ -1,0 +1,8 @@
+.row {
+  padding-bottom: 30px;
+}
+
+.flexrow {
+  display: flex;
+  padding-bottom: 30px;
+}
