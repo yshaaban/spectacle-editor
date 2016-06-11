@@ -13,6 +13,18 @@
   color: var(--secondary-font-color);
 }
 
+
+.flexrow {
+  display: flex;
+  padding-bottom: 30px;
+}
+
+
+.heading {
+  text-align: center;
+  border-bottom: 1px solid #bbb;
+}
+
 .menu {
   top: 0;
   bottom: 0;
@@ -39,3 +51,12 @@
   left: -1px;
   z-index: 3;
 }
+
+.row {
+  padding-bottom: 30px;
+}
+
+.wrapper {
+  padding: 0 30px 10px;
+}
+

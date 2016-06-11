@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import styles from "./text.css";
-import commonStyles from "./common.css";
+import styles from "../index.css";
 
 export default class TextMenu extends Component {
   render() {
     return (
-      <div className={commonStyles.container}>
-        <h3 className={commonStyles.heading}>Text</h3>
+      <div className={styles.wrapper}>
+        <h3 className={styles.heading}>Text</h3>
         <div className={styles.row}>
           <div>
             Styles
