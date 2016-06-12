@@ -1,41 +1,44 @@
 @import '../../variables.css';
 
 .editor {
-  order: 5;
-  width: 220px;
-  color: var(--secondary-font-color);
-  position: relative;
-  overflow: hidden;
   border-left: 1px solid var(--primary-border-color);
+  color: var(--secondary-font-color);
+  order: 5;
+  overflow: hidden;
+  position: relative;
+  width: 220px;
 }
 
 .editor h2 {
   color: var(--secondary-font-color);
 }
 
-
 .flexrow {
   display: flex;
-  padding-bottom: 30px;
+  padding-bottom: 32px;
 }
-
 
 .heading {
+  font-size: 20px;
   text-align: center;
-  border-bottom: 1px solid #bbb;
+  color: #000;
+  margin-bottom: 0;
 }
 
+.hr {
+  margin: 0 0 20px;
+}
 .menu {
-  top: 0;
-  bottom: 0;
-  position: absolute;
-  height: 100%;
-  width: 220px;
-  left: -1px;
-  transition: left 0.4s;
-  z-index: 1;
+  background: var(--primary-background-color);
   border-left: 1px solid var(--primary-border-color);
-
+  bottom: 0;
+  height: 100%;
+  left: -1px;
+  position: absolute;
+  top: 0;
+  transition: left 0.4s;
+  width: 220px;
+  z-index: 1;
 }
 
 .menu.slidesInactive {
@@ -57,6 +60,6 @@
 }
 
 .wrapper {
-  padding: 0 30px 10px;
+  padding: 0 20px 10px;
 }
 

@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import styles from "../index.css";
+import Alignment from "../editor-icons/alignment";
 
 export default class TextMenu extends Component {
   render() {
     return (
       <div className={styles.wrapper}>
         <h3 className={styles.heading}>Text</h3>
+        <hr />
         <div className={styles.row}>
           <div>
             Styles
@@ -32,10 +34,9 @@ export default class TextMenu extends Component {
           <div>
             Alignment
           </div>
-          <input type="checkbox" />
-          <input type="checkbox" />
-          <input type="checkbox" />
+          <Alignment />
         </div>
+        <hr className={styles.hr} />
         <div className={styles.row}>
           <div>
             Formatting

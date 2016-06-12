@@ -1,0 +1,28 @@
+@import '../../../variables.css';
+
+.alignmentWrapper {
+  height: 30px;
+  overflow: hidden;
+  width: 133px;
+  margin-top: 8px;
+  border: solid 1px #ccc;
+  display: flex;
+  border-radius: 20px;
+}
+
+.alignmentWrapper > span {
+  padding-top: 7px;
+  height: 100%;
+  width: 33%;
+  text-align: center;
+}
+
+.alignmentWrapper > span + span {
+  border-left: 1px solid var(--primary-border-color);
+}
+
+.alignmentWrapper svg {
+  width: 16px;
+  height: 14px;
+  color: #000;
+}
