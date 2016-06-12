@@ -10,6 +10,6 @@ export default class Alignment extends Component {
         <span dangerouslySetInnerHTML={{ __html: ALIGNCENTER }}></span>
         <span dangerouslySetInnerHTML={{ __html: ALIGNRIGHT }}></span>
       </div>
-      );
+    );
   }
 }

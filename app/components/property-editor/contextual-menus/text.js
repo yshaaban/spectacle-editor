@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import styles from "../index.css";
 import Alignment from "../editor-icons/alignment";
+import Formatting from "../editor-icons/formatting";
+import List from "../editor-icons/list";
 
 export default class TextMenu extends Component {
   render() {
@@ -41,17 +43,13 @@ export default class TextMenu extends Component {
           <div>
             Formatting
           </div>
-          <input type="checkbox" />
-          <input type="checkbox" />
-          <input type="checkbox" />
-          <input type="checkbox" />
+          <Formatting />
         </div>
         <div className={styles.row}>
           <div>
             List
           </div>
-          <input type="radio" />
-          <input type="radio" />
+          <List />
         </div>
         <div className={styles.row}>
           <div>

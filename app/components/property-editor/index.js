@@ -36,21 +36,21 @@ class PropertyEditor extends Component {
     });
   }
 
-  onPropertyChange = (e, key) => {
-    let value = e.target.value;
+  // onPropertyChange = (e, key) => {
+  //   let value = e.target.value;
 
-    if (key === "size") {
-      value = parseInt(value, 10);
-    }
+  //   if (key === "size") {
+  //     value = parseInt(value, 10);
+  //   }
 
-    this.context.store.updateElementProps({ size: value });
-  }
+  //   this.context.store.updateElementProps({ size: value });
+  // }
 
-  onStyleChange = (e, key) => {
-    const style = {};
-    style[key] = e.target.value;
-    this.context.store.updateElementProps({ style });
-  }
+  // onStyleChange = (e, key) => {
+  //   const style = {};
+  //   style[key] = e.target.value;
+  //   this.context.store.updateElementProps({ style });
+  // }
 
   render() {
     const moveMenu = this.state.hasMenu ? styles.slidesInactive : "";
