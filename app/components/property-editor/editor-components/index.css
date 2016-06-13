@@ -10,6 +10,10 @@
   width: 133px;
 }
 
+.alignmentWrapper .selectedAlignment {
+  background: var(--secondary-border-color);
+}
+
 .alignmentWrapper > span {
   height: 100%;
   padding-top: 7px;

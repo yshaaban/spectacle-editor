@@ -42,6 +42,7 @@ elements[ElementTypes.TEXT] = {
     size: 4,
     style: {
       fontSize: "12px",
+      textAlign: "center",
       color: "#3d3d3d"
     }
   },
