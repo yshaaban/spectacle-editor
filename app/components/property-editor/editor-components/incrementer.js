@@ -11,6 +11,7 @@ export default class Incrementer extends Component {
   static contextTypes = {
     store: React.PropTypes.object
   };
+
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -49,6 +50,7 @@ export default class Incrementer extends Component {
     const numLength = value.match(/[0-9]*/)[0].length;
     ev.target.setSelectionRange(0, numLength);
   }
+
   render() {
     const { currentElement } = this.context.store;
     const property = get(currentElement.props.style, this.props.propertyName);
