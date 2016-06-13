@@ -6,7 +6,7 @@ import styles from "./index.css";
 import SlideMenu from "./contextual-menus/slides";
 import TextMenu from "./contextual-menus/text";
 import ImageMenu from "./contextual-menus/image";
-import { ElementTypes } from "../../constants";
+import { ElementTypes, BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../../constants";
 
 @observer
 class PropertyEditor extends Component {
@@ -36,28 +36,12 @@ class PropertyEditor extends Component {
     });
   }
 
-  // onPropertyChange = (e, key) => {
-  //   let value = e.target.value;
-
-  //   if (key === "size") {
-  //     value = parseInt(value, 10);
-  //   }
-
-  //   this.context.store.updateElementProps({ size: value });
-  // }
-
-  // onStyleChange = (e, key) => {
-  //   const style = {};
-  //   style[key] = e.target.value;
-  //   this.context.store.updateElementProps({ style });
-  // }
-
   render() {
     const moveMenu = this.state.hasMenu ? styles.slidesInactive : "";
     const { contextualMenu } = this.state;
 
     return (
-      <div className={styles.editor}>
+      <div className={`${styles.editor} ${BLACKLIST_CURRENT_ELEMENT_DESELECT}`}>
         <div className={`${styles.menu} ${moveMenu}`}>
           <SlideMenu />
         </div>

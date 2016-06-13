@@ -1,0 +1,98 @@
+@import '../../../variables.css';
+
+.alignmentWrapper {
+  border: 1px solid var(--primary-border-color);
+  border-radius: 20px;
+  display: flex;
+  height: 30px;
+  margin-top: 8px;
+  overflow: hidden;
+  width: 133px;
+}
+
+.alignmentWrapper > span {
+  height: 100%;
+  padding-top: 7px;
+  text-align: center;
+  width: 33%;
+}
+
+.alignmentWrapper > span + span,
+.formattingWrapper > span + span {
+  border-left: 1px solid var(--primary-border-color);
+}
+
+.alignmentWrapper svg {
+  color: #000;
+  height: 14px;
+  width: 16px;
+}
+
+.formattingWrapper {
+  border: 1px solid var(--primary-border-color);
+  border-radius: 5px;
+  display: flex;
+  height: 30px;
+  margin-top: 7px;
+  overflow: hidden;
+  width: 160px;
+}
+
+.formattingWrapper > span {
+  height: 100%;
+  padding-top: 5px;
+  text-align: center;
+  width: 25%;
+}
+
+.formattingWrapper svg {
+  color: #000;
+  height: 14px;
+  width: 15px;
+}
+
+.incrementerWrapper {
+  display: flex;
+  height: 30px;
+  overflow: hidden;
+  padding: 0;
+  width: 82px;
+}
+
+.incrementerWrapper > input {
+  border: 1px solid var(--primary-border-color);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  box-sizing: border-box;
+  height: 30px;
+  width: 58px;
+}
+
+.incrementerWrapper > span {
+  border: 1px solid var(--primary-border-color);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  box-sizing: border-box;
+  height: 30px;
+  width: 24px;
+
+}
+
+.incrementerWrapper span > div {
+  position: relative;
+  height: 50%;
+  width: 100%;
+}
+
+.incrementUp > svg {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+}
+
+.incrementDown > svg {
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  transform: rotate(180deg);
+}

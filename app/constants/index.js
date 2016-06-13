@@ -24,3 +24,5 @@ export const IconTypes = {
 export const SpringSettings = {
   DRAG: { stiffness: 1000, damping: 50 }
 };
+
+export const BLACKLIST_CURRENT_ELEMENT_DESELECT = "ignoreElementDeselect";

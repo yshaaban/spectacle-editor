@@ -10,6 +10,7 @@ import SlideList from "../components/slide-list";
 import Canvas from "../components/canvas";
 import defaultTheme from "../themes/default";
 import styles from "./home.css";
+import { BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../constants";
 
 const store = new SlidesStore();
 
@@ -28,6 +29,27 @@ class Home extends Component {
       styles: defaultTheme()
     };
   }
+
+  componentDidMount() {
+    document.addEventListener("mousedown", (ev) => {
+      const findClassRecursively = (el) => {
+        const classes = el.classList ? Array.prototype.slice.call(el.classList) : [];
+        const isClass = classes.indexOf(BLACKLIST_CURRENT_ELEMENT_DESELECT) > -1;
+        if (isClass) {
+          return true;
+        }
+        if (!el.parentNode) {
+          return false;
+        }
+        return findClassRecursively(el.parentNode);
+      };
+
+      if (!findClassRecursively(ev.target)) {
+        store.setCurrentElementIndex(null);
+      }
+    });
+  }
+
 
   render() {
     const wrapperStyles = {};

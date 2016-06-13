@@ -28,6 +28,7 @@
 .hr {
   margin: 0 0 20px;
 }
+
 .menu {
   background: var(--primary-background-color);
   border-left: 1px solid var(--primary-border-color);
