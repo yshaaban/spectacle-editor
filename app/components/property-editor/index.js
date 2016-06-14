@@ -30,6 +30,7 @@ class PropertyEditor extends Component {
           hasMenu: true,
           contextualMenu: this.context.store.currentElement.type
         });
+
         return;
       }
 
