@@ -1,0 +1,33 @@
+@import '../../../variables.css';
+
+.alignmentWrapper {
+  border: 1px solid var(--primary-border-color);
+  border-radius: 20px;
+  display: flex;
+  height: 30px;
+  margin-top: 8px;
+  overflow: hidden;
+  width: 133px;
+}
+
+.alignmentWrapper .selectedAlignment {
+  background: var(--secondary-border-color);
+}
+
+.alignmentWrapper > .alignmentBox {
+  height: 100%;
+  padding-top: 7px;
+  text-align: center;
+  width: 33%;
+}
+
+.alignmentWrapper > .alignmentBox + .alignmentBox,
+.formattingWrapper > .alignmentBox + .alignmentBox {
+  border-left: 1px solid var(--primary-border-color);
+}
+
+.alignmentBox > svg {
+  color: #000;
+  height: 14px;
+  width: 16px;
+}

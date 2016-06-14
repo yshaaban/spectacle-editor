@@ -41,6 +41,8 @@ elements[ElementTypes.TEXT] = {
   props: {
     size: 4,
     style: {
+      fontSize: "12px",
+      textAlign: "center",
       color: "#3d3d3d"
     }
   },
