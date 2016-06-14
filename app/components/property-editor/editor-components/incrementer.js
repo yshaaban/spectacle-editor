@@ -5,7 +5,8 @@ import { get } from "lodash";
 
 export default class Incrementer extends Component {
   static propTypes = {
-    propertyName: React.PropTypes.string
+    propertyName: React.PropTypes.string,
+    currentElement: React.PropTypes.object
   };
 
   static contextTypes = {
@@ -51,8 +52,8 @@ export default class Incrementer extends Component {
   }
 
   render() {
-    const { currentElement } = this.context.store;
-    const property = get(currentElement.props.style, this.props.propertyName);
+    const { currentElement, propertyName } = this.props;
+    const property = currentElement ? get(currentElement.props.style, propertyName) : "0px";
 
     return (
       <div className={styles.incrementerWrapper}>
