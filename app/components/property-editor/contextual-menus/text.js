@@ -1,10 +1,32 @@
 import React, { Component } from "react";
 import styles from "../index.css";
+import { autorun } from "mobx";
 import { Alignment, Formatting, List, Incrementer } from "../editor-components/index.js";
 import { ElementTypes } from "../../../constants";
+
 export default class TextMenu extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { currentElement: null };
+  }
   static contextTypes = {
     store: React.PropTypes.object
+  }
+
+  componentWillReceiveProps() {
+    autorun(() => {
+      const { currentElement } = this.context.store;
+      window.clearTimeout(this.stateTimeout);
+      
+      if (!currentElement) {
+        this.stateTimeout = window.setTimeout(() => {
+          this.setState({ currentElement: null });
+        }, 400);
+
+        return;
+      }
+      this.setState({ currentElement });
+    });
   }
 
   render() {
@@ -31,7 +53,10 @@ export default class TextMenu extends Component {
             <div className={styles.flexrow}>
               <div>
                 <div>Size</div>
-                <Incrementer propertyName={"fontSize"} />
+                <Incrementer
+                  currentElement={this.state.currentElement}
+                  propertyName={"fontSize"}
+                />
               </div>
               <div>
                 <div>Color</div>
