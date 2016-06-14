@@ -45,7 +45,6 @@ class SlideList extends Component {
 
   changeIsOverState = (newIsOverPosition, dragElementType, isOverSlide) => {
     if (newIsOverPosition === null) {
-      console.log("HERERER");
       this.setState({
         isOverSlide,
         dragElementType,
@@ -88,6 +87,7 @@ class SlideList extends Component {
         // Set either x or y
         position[isVertical ? 0 : 1] = line + (
           isVertical ?
+          // Extra pixel added for slide border
           this.context.store.left + 1 :
           this.context.store.top + 1
         );
@@ -108,8 +108,6 @@ class SlideList extends Component {
       this.refs.slide.hideGridLine(true);
       this.refs.slide.hideGridLine(false);
     }
-
-    console.log(snapOffset);
 
     this.setState({
       isOverPosition: zipWith(position, snapOffset, (a, b) => a - b),
@@ -161,6 +159,7 @@ class SlideList extends Component {
     let [x, y] = this.state.isOverPosition;
     const { left, top } = this.context.store;
 
+    // Extra pixel added for slide border
     x -= left + 1;
     y -= top + 1;
 

@@ -67,24 +67,18 @@ class Slide extends Component {
             hideGridLine={this.hideGridLine}
           />
         ))}
-        {(verticalGridLine === 0 || verticalGridLine) && <div style={{
-          position: "absolute",
-          borderRight: "1px solid rgba(0, 191, 239, 0.5)",
-          top: 0,
-          left: verticalGridLine,
-          bottom: 0,
-          width: 0,
-          pointerEvents: "none"
-        }} />}
-        {(horizontalGridLine === 0 || horizontalGridLine) && <div style={{
-          position: "absolute",
-          borderBottom: "1px solid rgba(0, 191, 239, 0.5)",
-          top: horizontalGridLine,
-          left: 0,
-          right: 0,
-          height: 0,
-          pointerEvents: "none"
-        }} />}
+        {(verticalGridLine === 0 || verticalGridLine) &&
+          <div
+            className={`${styles.gridLine} ${styles.vertical}`}
+            style={{ left: verticalGridLine }}
+          />
+        }
+        {(horizontalGridLine === 0 || horizontalGridLine) &&
+          <div
+            className={`${styles.gridLine} ${styles.horizontal}`}
+            style={{ top: horizontalGridLine }}
+          />
+        }
       </div>
     );
   }

@@ -18,7 +18,9 @@ class CanvasElement extends Component {
     }).isRequired,
     selected: PropTypes.bool,
     mousePosition: PropTypes.array,
-    scale: PropTypes.number
+    scale: PropTypes.number,
+    showGridLine: PropTypes.func.isRequired,
+    hideGridLine: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -215,7 +217,6 @@ class CanvasElement extends Component {
       delta: [x, y]
     } = this.state;
 
-    const { width, height } = getElementDimensions({ type, props });
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
     const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
 
