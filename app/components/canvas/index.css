@@ -14,5 +14,6 @@
   justify-content: center;
   overflow: scroll;
   position: relative;
+  border-right: 1px solid var(--primary-border-color);
   border-left: 1px solid var(--primary-border-color);
 }
