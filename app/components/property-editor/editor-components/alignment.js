@@ -7,7 +7,7 @@ export default class Alignment extends Component {
     store: React.PropTypes.object
   }
 
-  handleAlignmentChange = (updatedProp) => () => {
+  createHandleAlignmentChange = (updatedProp) => () => {
     const { style } = this.context.store.currentElement.props;
     const updatedStyles = { ...style, textAlign: updatedProp };
 
@@ -21,19 +21,19 @@ export default class Alignment extends Component {
     return (
       <div className={styles.alignmentWrapper}>
         <span
-          onClick={this.handleAlignmentChange("left")}
+          onClick={this.createHandleAlignmentChange("left")}
           className={`${styles.alignmentBox}
            ${currentAlignment === "left" ? styles.selectedAlignment : ""}`}
           dangerouslySetInnerHTML={{ __html: ALIGNLEFT }}
         ></span>
         <span
-          onClick={this.handleAlignmentChange("center")}
+          onClick={this.createHandleAlignmentChange("center")}
           className={`${styles.alignmentBox}
            ${currentAlignment === "center" ? styles.selectedAlignment : ""}`}
           dangerouslySetInnerHTML={{ __html: ALIGNCENTER }}
         ></span>
         <span
-          onClick={this.handleAlignmentChange("right")}
+          onClick={this.createHandleAlignmentChange("right")}
           className={`${styles.alignmentBox}
            ${currentAlignment === "right" ? styles.selectedAlignment : ""}`}
           dangerouslySetInnerHTML={{ __html: ALIGNRIGHT }}

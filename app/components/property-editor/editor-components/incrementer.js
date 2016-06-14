@@ -17,6 +17,7 @@ export default class Incrementer extends Component {
     const { style } = currentElement.props;
     const updatedProperty = updatedValue ? `${updatedValue}px` : "";
     const updatedStyleProp = {};
+
     updatedStyleProp[this.props.propertyName] = updatedProperty;
 
     const updatedStyles = { ...style, ...updatedStyleProp };

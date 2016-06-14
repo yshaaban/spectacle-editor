@@ -16,6 +16,7 @@ class PropertyEditor extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       hasMenu: false,
       contextualMenu: null
