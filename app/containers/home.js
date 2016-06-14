@@ -35,12 +35,15 @@ class Home extends Component {
       const findClassRecursively = (el) => {
         const classes = el.classList ? Array.prototype.slice.call(el.classList) : [];
         const isClass = classes.indexOf(BLACKLIST_CURRENT_ELEMENT_DESELECT) > -1;
+
         if (isClass) {
           return true;
         }
+
         if (!el.parentNode) {
           return false;
         }
+
         return findClassRecursively(el.parentNode);
       };
 

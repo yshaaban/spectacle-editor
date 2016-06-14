@@ -1,0 +1,47 @@
+@import '../../../variables.css';
+
+.incrementerWrapper {
+  display: flex;
+  height: 30px;
+  overflow: hidden;
+  padding: 0;
+  width: 82px;
+}
+
+.incrementerWrapper > input {
+  border: 1px solid var(--primary-border-color);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  box-sizing: border-box;
+  height: 30px;
+  width: 58px;
+}
+
+.incrementerWrapper > .caretContainer {
+  border: 1px solid var(--primary-border-color);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  box-sizing: border-box;
+  height: 30px;
+  width: 24px;
+
+}
+
+.incrementerWrapper .caretContainer > .caretBox {
+  position: relative;
+  height: 50%;
+  width: 100%;
+}
+
+.incrementUp > svg {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+}
+
+.incrementDown > svg {
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  transform: rotate(180deg);
+}
