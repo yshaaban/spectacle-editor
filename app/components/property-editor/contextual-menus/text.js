@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styles from "../index.css";
 import { Alignment, Formatting, List, Incrementer } from "../editor-components/index.js";
-
+import { ElementTypes } from "../../../constants";
 export default class TextMenu extends Component {
   static contextTypes = {
     store: React.PropTypes.object
@@ -9,9 +9,14 @@ export default class TextMenu extends Component {
 
   render() {
     const { store } = this.context;
+
     return (
       <div className={styles.wrapper}>
-        {store && store.currentElement && (
+        {
+          store &&
+          store.currentElement &&
+          store.currentElement.type === ElementTypes.TEXT &&
+          (
           <div>
             <h3 className={styles.heading}>Text</h3>
             <hr />
