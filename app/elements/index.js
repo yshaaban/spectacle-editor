@@ -31,9 +31,6 @@ const elements = {};
 */
 
 elements[ElementTypes.TEXT] = {
-  // Values calculated at scale: 1
-  width: 281,
-  height: 61,
   // Keep type for serialization and code switches
   // TODO: Figure out defaults for text element
   type: ElementTypes.TEXT,
@@ -41,28 +38,26 @@ elements[ElementTypes.TEXT] = {
   props: {
     size: 4,
     style: {
-      color: "#3d3d3d"
+      color: "#3d3d3d",
+      width: 281,
+      height: 61
     }
   },
   children: "totally text"
 };
 
 elements[ElementTypes.IMAGE] = {
-  // Values calculated at scale: 1
-  width: 400,
-  height: 200,
   type: ElementTypes.IMAGE,
   ComponentClass: Image,
   props: {
-    src: "http://placehold.it/400x200&text=sliding_yeah"
+    src: "http://placehold.it/400x200&text=sliding_yeah",
+    width: 400,
+    height: 200
   },
   children: []
 };
 
 elements[ElementTypes.PLOTLY] = {
-  // Values calculated at scale: 1
-  width: 450,
-  height: 400,
   type: ElementTypes.PLOTLY,
   ComponentClass: (props) => (<iframe {...props} />),
   props: {
@@ -77,12 +72,12 @@ elements[ElementTypes.PLOTLY] = {
 
 elements[ElementTypes.PLOTY_PLACEHOLDER_IMAGE] = {
   // Values calculated at scale: 1
-  width: 450,
-  height: 400,
   type: ElementTypes.PLOTY_PLACEHOLDER_IMAGE,
   ComponentClass: Image,
   props: {
-    src: plotlyPlaceholder
+    src: plotlyPlaceholder,
+    width: 450,
+    height: 400
   },
   children: []
 };
@@ -92,7 +87,9 @@ elements[ElementTypes.CODE] = {
   type: ElementTypes.CODE,
   ComponentClass: Image,
   props: {
-    src: "http://placehold.it/400x200&text=sliding_yeah"
+    src: "http://placehold.it/400x200&text=sliding_yeah",
+    width: 400,
+    height: 200
   },
   children: []
 };

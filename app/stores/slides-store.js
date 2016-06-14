@@ -4,6 +4,7 @@ import { generate } from "shortid";
 import { merge } from "lodash";
 
 import elementMap from "../elements";
+import { getGridLinesObj, getGridLineHashes } from "../utils";
 
 // TODO: REMOVE. Useful for testing
 const allColors = [
@@ -48,6 +49,13 @@ export default class SlidesStore {
 
   @observable historyIndex = 0;
 
+  // Slide info
+  @observable width = 0;
+  @observable height = 0;
+  @observable left = 0;
+  @observable top = 0;
+  @observable scale = 1;
+
   // Needed for handling cursor state and pointer events
   @observable isDragging = false;
   @observable isDraggingSlide = false;
@@ -90,6 +98,20 @@ export default class SlidesStore {
     return this.history[this.historyIndex].asMutable({ deep: true });
   }
 
+  @computed get gridLines() {
+    return getGridLineHashes(
+      getGridLinesObj(
+        // Pass in elements to snap to
+        this.currentSlide.children,
+        // Start with slide edges and slide center lines
+        [0, Math.floor(this.height / 2), this.height],
+        [0, Math.floor(this.width / 2), this.width]
+      ),
+      // Ignore lines for the current element index
+      this.currentElementIndex
+    );
+  }
+
   constructor(slides) {
     if (slides) {
       this.history = Immutable.from([{
@@ -98,6 +120,16 @@ export default class SlidesStore {
         slides
       }]);
     }
+  }
+
+  setCanvasSize({ width, height, left, top, scale }) {
+    transaction(() => {
+      this.width = width;
+      this.height = height;
+      this.left = left;
+      this.top = top;
+      this.scale = scale;
+    });
   }
 
   dropElement(elementType, extraProps) {
