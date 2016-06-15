@@ -29,6 +29,21 @@ export const SNAP_DISTANCE = 15;
 export const BLACKLIST_CURRENT_ELEMENT_DESELECT = "ignoreElementDeselect";
 
 export const FontMap = {
+  droidSans: {
+    name: "Droid Sans",
+    styles: [
+      {
+        name: "Normal",
+        fontWeight: 400,
+        fontStyle: "normal"
+      },
+      {
+        name: "Bold",
+        fontWeight: 700,
+        fontStyle: "normal"
+      }
+    ]
+  },
   openSans: {
     name: "Open Sans",
     styles: [
