@@ -25,4 +25,5 @@ export const SpringSettings = {
   DRAG: { stiffness: 1000, damping: 50 }
 };
 
+export const SNAP_DISTANCE = 15;
 export const BLACKLIST_CURRENT_ELEMENT_DESELECT = "ignoreElementDeselect";

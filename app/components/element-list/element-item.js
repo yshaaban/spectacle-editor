@@ -56,7 +56,7 @@ class ElementItem extends Component {
     let isUpdating = false;
     let newOverCanvasPosition = null;
 
-    if (id === "canvas") {
+    if (id === "canvas" || id === "slide") {
       newOverCanvasPosition = [offsetX, offsetY];
 
     // Switching from canvas element back to icon, do not animate icon
@@ -64,7 +64,11 @@ class ElementItem extends Component {
       isUpdating = true;
     }
 
-    this.props.onIsOverCanvasChange(newOverCanvasPosition, this.props.elementType);
+    this.props.onIsOverCanvasChange(
+      newOverCanvasPosition,
+      this.props.elementType,
+      id === "slide"
+    );
 
     this.setState({
       delta: newDelta,
@@ -138,9 +142,6 @@ class ElementItem extends Component {
       isPressed: false
     };
 
-    this.props.onIsOverCanvasChange(null, null);
-    this.context.store.updateElementDraggingState(false);
-
     if (this.state.isOverCanvasPosition) {
       // Don't show return animation if dropping the element on the canvas
       state.isUpdating = true;
@@ -150,6 +151,9 @@ class ElementItem extends Component {
         this.state.canvasOffset[1]
       ]);
     }
+
+    this.props.onIsOverCanvasChange(null, null);
+    this.context.store.updateElementDraggingState(false);
 
     this.setState(state, () => {
       setTimeout(() => {

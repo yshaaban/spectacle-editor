@@ -15,9 +15,35 @@ class Slide extends Component {
     store: React.PropTypes.object
   };
 
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+      verticalGridLine: null,
+      horizontalGridLine: null
+    };
+  }
+
+  showGridLine = (location, isVertical) => {
+    if (isVertical) {
+      this.setState({ verticalGridLine: location });
+    } else {
+      this.setState({ horizontalGridLine: location });
+    }
+  }
+
+  hideGridLine = (isVertical) => {
+    if (isVertical) {
+      this.setState({ verticalGridLine: null });
+    } else {
+      this.setState({ horizontalGridLine: null });
+    }
+  }
+
   render() {
     const { isOver } = this.props;
     const { store: { currentSlide, isDragging } } = this.context;
+    const { verticalGridLine, horizontalGridLine } = this.state;
 
     let slideClass = styles.slide;
 
@@ -37,8 +63,22 @@ class Slide extends Component {
             component={childObj}
             elementIndex={i}
             isDragging={isDragging}
+            showGridLine={this.showGridLine}
+            hideGridLine={this.hideGridLine}
           />
         ))}
+        {(verticalGridLine === 0 || verticalGridLine) &&
+          <div
+            className={`${styles.gridLine} ${styles.vertical}`}
+            style={{ left: verticalGridLine }}
+          />
+        }
+        {(horizontalGridLine === 0 || horizontalGridLine) &&
+          <div
+            className={`${styles.gridLine} ${styles.horizontal}`}
+            style={{ top: horizontalGridLine }}
+          />
+        }
       </div>
     );
   }
