@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import styles from "./select.css";
 
 export default class Option extends Component {
   static propTypes = {
@@ -17,7 +18,7 @@ export default class Option extends Component {
   static defaultProps = {
     value: "",
     automationId: undefined,
-    className: "radon-select-option",
+    className: `${styles.option}`,
     activeClassName: "active",
     hoverClassName: "hover",
     onClick() {}

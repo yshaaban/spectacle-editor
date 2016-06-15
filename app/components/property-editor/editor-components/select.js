@@ -4,7 +4,6 @@ import { BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../../../constants";
 import styles from "./select.css";
 import { CHEVRON } from "../../../assets/icons";
 
-
 const keyboard = {
   space: 32,
   enter: 13,
@@ -67,6 +66,7 @@ export default class Select extends Component {
 
   constructor(props) {
     super(props);
+
     this.displayName = "RadonSelect";
 
     const initialIndex = props.defaultValue !== undefined
@@ -85,7 +85,8 @@ export default class Select extends Component {
   }
 
   onChange = () => {
-    this.props.onChange(this.state.selectedOptionVal);
+    const { selectedOptionVal, childProps } = this.state;
+    this.props.onChange(selectedOptionVal, childProps);
   }
 
   onFocus = () => {
@@ -129,6 +130,7 @@ export default class Select extends Component {
 
   onClickOption = (index, ev) => {
     const child = this.refs[`option${index}`];
+    const { value } = child.props;
 
     if (ev) {
       ev.preventDefault();
@@ -136,7 +138,8 @@ export default class Select extends Component {
 
     this.setState({
       selectedOptionIndex: index,
-      selectedOptionVal: child.props.value,
+      selectedOptionVal: value,
+      childProps: child.props,
       open: false
     }, () => {
       this.onChange();

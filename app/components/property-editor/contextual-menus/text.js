@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import styles from "../index.css";
 import { autorun } from "mobx";
+import { map, omit } from "lodash";
 import {
   Select,
   Option,
@@ -9,7 +10,7 @@ import {
   List,
   Incrementer
 } from "../editor-components/index.js";
-import { ElementTypes } from "../../../constants";
+import { ElementTypes, FontMap } from "../../../constants";
 
 export default class TextMenu extends Component {
   static contextTypes = {
@@ -39,8 +40,21 @@ export default class TextMenu extends Component {
     });
   }
 
+  updateCurrentElementStyles = (value, properties) => {
+    if (properties) {
+      const { style } = properties;
+      const { currentElement } = this.context.store;
+      const oldStyles = currentElement.props.style;
+
+      this.context.store.updateElementProps({
+        style: { ...oldStyles, ...style }
+      });
+    }
+  }
+
   render() {
     const { currentElement } = this.state;
+    const currentFont = currentElement && currentElement.props.style.fontFamily;
 
     return (
       <div className={styles.wrapper}>
@@ -56,14 +70,26 @@ export default class TextMenu extends Component {
                 Paragraph Styles
               </div>
               <div>
-              <Select selectName="month" placeholderText="MM"
-                style={{ height: 20 }}
-              >
-                <Option value="01">01</Option>
-                <Option value="02">02</Option>
-                <Option value="03">03</Option>
-                <Option value="04">04</Option>
-              </Select>
+                <Select
+                  style={{ height: 20 }}
+                  onChange={this.updateCurrentElementStyles}
+                  selectName="FontType"
+                >
+                  {map(FontMap, (fontObj, fontFamily) => (
+                    <Option
+                      key={fontFamily}
+                      value={fontObj.name}
+                      style={{
+                        fontFamily,
+                        fontWeight: 400,
+                        fontStyle: "normal"
+                      }}
+                    >
+                      {fontObj.name}
+                    </Option>
+                    )
+                  )}
+                </Select>
               </div>
             </div>
             <div className={styles.row}>
@@ -71,14 +97,26 @@ export default class TextMenu extends Component {
                 Font
               </div>
               <div>
-              <Select selectName="month" placeholderText="MM"
-                style={{ height: 20 }}
-              >
-                <Option value="01">01</Option>
-                <Option value="02">02</Option>
-                <Option value="03">03</Option>
-                <Option value="04">04</Option>
-              </Select>
+                <Select
+                  style={{ height: 20 }}
+                  onChange={this.updateCurrentElementStyles}
+                  selectName="FontType"
+                  placeholderText={"Normal"}
+                >
+                  {map(FontMap[currentFont].styles, (stylesObj, index) => {
+                    const cleanedStylesObj = omit(stylesObj, "name");
+
+                    return (
+                      <Option
+                        key={index}
+                        value={stylesObj.name}
+                        style={cleanedStylesObj}
+                      >
+                        {stylesObj.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
               </div>
             </div>
             <div className={styles.flexrow}>
