@@ -1,9 +1,65 @@
+@import '../../variables.css';
+
 .editor {
-  order: 5;
-  width: 220px;
+  border-left: 1px solid var(--primary-border-color);
   color: var(--secondary-font-color);
+  order: 5;
+  overflow: hidden;
+  position: relative;
+  width: 220px;
 }
 
 .editor h2 {
   color: var(--secondary-font-color);
+}
+
+.flexrow {
+  display: flex;
+  padding-bottom: 32px;
+}
+
+.heading {
+  font-size: 20px;
+  text-align: center;
+  color: #000;
+  margin-bottom: 0;
+}
+
+.hr {
+  margin: 0 0 20px;
+}
+
+.menu {
+  background: var(--primary-background-color);
+  border-left: 1px solid var(--primary-border-color);
+  bottom: 0;
+  height: 100%;
+  left: -1px;
+  position: absolute;
+  top: 0;
+  transition: left 0.4s;
+  width: 220px;
+  z-index: 1;
+}
+
+.menu.slidesInactive {
+  left: -221px;
+}
+
+.menu.contextMenu {
+  left: 221px;
+  z-index: 2;
+}
+
+.menu.contextMenuActive {
+  left: -1px;
+  z-index: 3;
+}
+
+.row {
+  padding-bottom: 30px;
+}
+
+.wrapper {
+  padding: 0 20px 10px;
 }

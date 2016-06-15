@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { observer } from "mobx-react";
 import { Motion, spring } from "react-motion";
 
-import { ElementTypes, SpringSettings } from "../../constants";
+import { ElementTypes, SpringSettings, BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../../constants";
 import { getElementDimensions, getPointsToSnap, snap } from "../../utils";
 import styles from "./canvas-element.css";
 
@@ -263,7 +263,9 @@ class CanvasElement extends Component {
         >
           {computedStyles => (
             <div
-              className={styles.canvasElement + extraClasses}
+              className={
+                `${styles.canvasElement} ${extraClasses} ${BLACKLIST_CURRENT_ELEMENT_DESELECT}`
+              }
               style={{ ...wrapperStyle, ...computedStyles }}
               onMouseDown={this.handleMouseDown}
               onTouchStart={this.handleTouchStart}

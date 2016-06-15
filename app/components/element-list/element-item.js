@@ -1,7 +1,11 @@
 import React, { Component, PropTypes } from "react";
 import { Motion, spring } from "react-motion";
 
-import { SpringSettings, IconTypes } from "../../constants";
+import {
+  SpringSettings,
+  IconTypes,
+  BLACKLIST_CURRENT_ELEMENT_DESELECT
+} from "../../constants";
 import Icon from "../icon";
 import styles from "./element-item.css";
 
@@ -196,7 +200,7 @@ class ElementItem extends Component {
       <div
         onMouseDown={this.handleMouseDown}
         onTouchStart={this.handleTouchStart}
-        className={styles.wrapper}
+        className={`${styles.wrapper} ${BLACKLIST_CURRENT_ELEMENT_DESELECT}`}
         style={{
           left: elementLeft,
           top: elementTop,

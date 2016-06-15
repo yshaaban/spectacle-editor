@@ -26,3 +26,4 @@ export const SpringSettings = {
 };
 
 export const SNAP_DISTANCE = 15;
+export const BLACKLIST_CURRENT_ELEMENT_DESELECT = "ignoreElementDeselect";

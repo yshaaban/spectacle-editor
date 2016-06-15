@@ -39,8 +39,10 @@ elements[ElementTypes.TEXT] = {
     size: 4,
     style: {
       color: "#3d3d3d",
-      width: 281,
-      height: 61
+      width: 120,
+      height: 24,
+      fontSize: "24px", // TODO: change to numerical value
+      textAlign: "center"
     }
   },
   children: "totally text"
