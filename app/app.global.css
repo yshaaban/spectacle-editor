@@ -1,4 +1,25 @@
 @font-face {
+  font-family: "droidSans";
+  src: url("./assets/fonts/droid_sans/droidsans.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "droidSans";
+  src: url("./assets/fonts/droid_sans/droidsans-bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "droidSansMono";
+  src: url("./assets/fonts/droid_sans_mono/droidsansmono.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
   font-family: "openSans";
   src: url("./assets/fonts/opensans/opensans-bold.ttf") format("truetype");
   font-weight: 700;

@@ -44,6 +44,16 @@ export const FontMap = {
       }
     ]
   },
+  droidSansMono: {
+    name: "Droid Sans Mono",
+    styles: [
+      {
+        name: "Normal",
+        fontWeight: 400,
+        fontStyle: "normal"
+      }
+    ]
+  },
   openSans: {
     name: "Open Sans",
     styles: [

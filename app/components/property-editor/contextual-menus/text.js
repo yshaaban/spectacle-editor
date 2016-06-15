@@ -105,7 +105,6 @@ export default class TextMenu extends Component {
                 >
                   {map(FontMap[currentFont].styles, (stylesObj, index) => {
                     const cleanedStylesObj = omit(stylesObj, "name");
-
                     return (
                       <Option
                         key={index}
