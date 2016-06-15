@@ -36,6 +36,10 @@
   width: 175px;
 }
 
+.selectWrapper {
+  height: 20px;
+}
+
 .option {
   cursor: pointer;
   outline-width: 0;

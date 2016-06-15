@@ -43,7 +43,7 @@ export default class Incrementer extends Component {
 
   handleCursorPosition(ev) {
     const { value } = ev.target;
-    const numLength = value.match(/[0-9]*/)[0].length;
+    const numLength = value.length;
 
     ev.target.setSelectionRange(0, numLength);
   }
@@ -51,9 +51,7 @@ export default class Incrementer extends Component {
   render() {
     const { currentElement, propertyName } = this.props;
     const property = currentElement ?
-      `${get(currentElement.props.style, propertyName)}px`
-      :
-      "0px";
+      get(currentElement.props.style, propertyName) : 0;
 
     return (
       <div className={styles.incrementerWrapper}>

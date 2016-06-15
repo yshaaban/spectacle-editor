@@ -19,6 +19,7 @@ export default class TextMenu extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = { currentElement: null };
   }
 
@@ -71,7 +72,6 @@ export default class TextMenu extends Component {
               </div>
               <div>
                 <Select
-                  style={{ height: 20 }}
                   onChange={this.updateCurrentElementStyles}
                   selectName="FontType"
                 >
@@ -98,7 +98,6 @@ export default class TextMenu extends Component {
               </div>
               <div>
                 <Select
-                  style={{ height: 20 }}
                   onChange={this.updateCurrentElementStyles}
                   selectName="FontType"
                   placeholderText={"Normal"}

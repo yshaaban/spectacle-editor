@@ -30,7 +30,7 @@ export default class Select extends Component {
     showCurrentOptionWhenOpen: false,
     onChange() {},
     onBlur() {},
-    className: "radon-select",
+    className: `${styles.selectWrapper}`,
     openClassName: "open",
     focusClassName: `${styles.focus}`,
     listClassName: `${styles.list}`,
@@ -86,6 +86,7 @@ export default class Select extends Component {
 
   onChange = () => {
     const { selectedOptionVal, childProps } = this.state;
+
     this.props.onChange(selectedOptionVal, childProps);
   }
 
@@ -193,6 +194,7 @@ export default class Select extends Component {
         return i;
       }
     }
+
     return -1;
   }
 
