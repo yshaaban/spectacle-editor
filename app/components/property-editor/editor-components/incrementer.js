@@ -7,14 +7,14 @@ export default class Incrementer extends Component {
   static propTypes = {
     propertyName: React.PropTypes.string,
     currentElement: React.PropTypes.object
-  };
+  }
 
   static contextTypes = {
     store: React.PropTypes.object
-  };
+  }
 
   updateStore(updatedValue) {
-    const { currentElement } = this.context.store;
+    const { currentElement } = this.props;
     const { style } = currentElement.props;
     const updatedProperty = updatedValue ? `${updatedValue}px` : "";
     const updatedStyleProp = {};
@@ -27,8 +27,7 @@ export default class Incrementer extends Component {
   }
 
   handleIncrement = (num) => {
-    const { propertyName } = this.props;
-    const { currentElement } = this.context.store;
+    const { propertyName, currentElement } = this.props;
     const property = currentElement.props.style[propertyName];
     const parsedProperty = property.match(/[0-9]*/)[0];
 

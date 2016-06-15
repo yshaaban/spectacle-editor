@@ -1,88 +1,129 @@
 import React, { Component } from "react";
 import styles from "../index.css";
 import { autorun } from "mobx";
-import { Alignment, Formatting, List, Incrementer } from "../editor-components/index.js";
+import {
+  Select,
+  Option,
+  Alignment,
+  Formatting,
+  List,
+  Incrementer
+} from "../editor-components/index.js";
 import { ElementTypes } from "../../../constants";
 
 export default class TextMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { currentElement: null };
-  }
   static contextTypes = {
     store: React.PropTypes.object
   }
 
-  componentWillReceiveProps() {
+  constructor(props) {
+    super(props);
+    this.state = { currentElement: null };
+  }
+
+  componentDidMount() {
     autorun(() => {
       const { currentElement } = this.context.store;
+
       window.clearTimeout(this.stateTimeout);
-      
+
       if (!currentElement) {
         this.stateTimeout = window.setTimeout(() => {
-          this.setState({ currentElement: null });
+          this.setState({ currentElement });
         }, 400);
 
         return;
       }
+
       this.setState({ currentElement });
     });
   }
 
   render() {
-    const { store } = this.context;
+    const { currentElement } = this.state;
 
     return (
       <div className={styles.wrapper}>
         {
-          store &&
-          store.currentElement &&
-          store.currentElement.type === ElementTypes.TEXT &&
+          currentElement &&
+          currentElement.type === ElementTypes.TEXT &&
           (
           <div>
             <h3 className={styles.heading}>Text</h3>
             <hr />
             <div className={styles.row}>
-              <div>
-                Styles
+              <div className={styles.subHeading}>
+                Paragraph Styles
               </div>
-              <select>
-                <option className={styles.dropdown}>Heading 1</option>
-              </select>
+              <div>
+              <Select selectName="month" placeholderText="MM"
+                style={{ height: 20 }}
+              >
+                <Option value="01">01</Option>
+                <Option value="02">02</Option>
+                <Option value="03">03</Option>
+                <Option value="04">04</Option>
+              </Select>
+              </div>
+            </div>
+            <div className={styles.row}>
+              <div className={styles.subHeading}>
+                Font
+              </div>
+              <div>
+              <Select selectName="month" placeholderText="MM"
+                style={{ height: 20 }}
+              >
+                <Option value="01">01</Option>
+                <Option value="02">02</Option>
+                <Option value="03">03</Option>
+                <Option value="04">04</Option>
+              </Select>
+              </div>
             </div>
             <div className={styles.flexrow}>
               <div>
-                <div>Size</div>
+                <div className={styles.subHeading}>
+                  Size
+                </div>
                 <Incrementer
                   currentElement={this.state.currentElement}
                   propertyName={"fontSize"}
                 />
               </div>
               <div>
-                <div>Color</div>
+                <div className={styles.subHeading}>
+                  Color
+                </div>
               </div>
             </div>
             <div className={styles.row}>
-              <div>
+              <div className={styles.subHeading}>
                 Alignment
               </div>
-              <Alignment />
+              <Alignment
+                currentElement={this.state.currentElement}
+              />
             </div>
             <hr className={styles.hr} />
             <div className={styles.row}>
-              <div>
+              <div className={styles.subHeading}>
                 Formatting
               </div>
-              <Formatting />
+              <Formatting
+                currentElement={this.state.currentElement}
+              />
             </div>
             <div className={styles.row}>
-              <div>
+              <div className={styles.subHeading}>
                 List
               </div>
-              <List />
+              <List
+                currentElement={this.state.currentElement}
+              />
             </div>
             <div className={styles.row}>
-              <div>
+              <div className={styles.subHeading}>
                 Link
               </div>
               <input type="text" />
