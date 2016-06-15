@@ -37,7 +37,9 @@ export default class TextMenu extends Component {
         return;
       }
 
-      this.setState({ currentElement });
+      if (currentElement.type === ElementTypes.TEXT) {
+        this.setState({ currentElement });
+      }
     });
   }
 
@@ -61,7 +63,6 @@ export default class TextMenu extends Component {
       <div className={styles.wrapper}>
         {
           currentElement &&
-          currentElement.type === ElementTypes.TEXT &&
           (
           <div>
             <h3 className={styles.heading}>Text</h3>
