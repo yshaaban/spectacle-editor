@@ -43,6 +43,8 @@ elements[ElementTypes.TEXT] = {
     style: {
       fontFamily: "openSans",
       fontSize: 45,
+      fontWeight: 400,
+      fontStyle: "normal",
       textAlign: "center",
       color: "#3d3d3d"
     }

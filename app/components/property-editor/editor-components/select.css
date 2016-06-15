@@ -1,6 +1,7 @@
 @import '../../../variables.css';
 
 .chevronBox {
+  cursor: pointer;
   position: absolute;
   right: 10px;
 }
@@ -33,4 +34,9 @@
   padding-right: 5px;
   position: relative;
   width: 175px;
+}
+
+.option {
+  cursor: pointer;
+  outline-width: 0;
 }
