@@ -39,10 +39,11 @@ elements[ElementTypes.TEXT] = {
     size: 4,
     style: {
       color: "#3d3d3d",
-      width: 120,
+      fontFamily: "openSans",
+      fontSize: 45,
       height: 24,
-      fontSize: "24px", // TODO: change to numerical value
-      textAlign: "center"
+      textAlign: "center",
+      width: 120
     }
   },
   children: "totally text"

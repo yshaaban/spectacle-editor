@@ -13,13 +13,12 @@ export default class Incrementer extends Component {
     store: React.PropTypes.object
   }
 
-  updateStore(updatedValue) {
+  updateStore(updatedValue = 0) {
     const { currentElement } = this.props;
     const { style } = currentElement.props;
-    const updatedProperty = updatedValue ? `${updatedValue}px` : "";
     const updatedStyleProp = {};
 
-    updatedStyleProp[this.props.propertyName] = updatedProperty;
+    updatedStyleProp[this.props.propertyName] = updatedValue;
 
     const updatedStyles = { ...style, ...updatedStyleProp };
 
@@ -29,10 +28,9 @@ export default class Incrementer extends Component {
   handleIncrement = (num) => {
     const { propertyName, currentElement } = this.props;
     const property = currentElement.props.style[propertyName];
-    const parsedProperty = property.match(/[0-9]*/)[0];
 
     return () => {
-      this.updateStore(parseInt(parsedProperty, 10) + num);
+      this.updateStore(property + num);
     };
   }
 
@@ -43,7 +41,7 @@ export default class Incrementer extends Component {
     this.updateStore(result);
   }
 
-  handleCursorPosition = (ev) => {
+  handleCursorPosition(ev) {
     const { value } = ev.target;
     const numLength = value.match(/[0-9]*/)[0].length;
 
@@ -52,7 +50,10 @@ export default class Incrementer extends Component {
 
   render() {
     const { currentElement, propertyName } = this.props;
-    const property = currentElement ? get(currentElement.props.style, propertyName) : "0px";
+    const property = currentElement ?
+      `${get(currentElement.props.style, propertyName)}px`
+      :
+      "0px";
 
     return (
       <div className={styles.incrementerWrapper}>
