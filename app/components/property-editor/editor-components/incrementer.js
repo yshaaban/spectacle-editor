@@ -5,20 +5,20 @@ import { get } from "lodash";
 
 export default class Incrementer extends Component {
   static propTypes = {
-    propertyName: React.PropTypes.string
-  };
+    propertyName: React.PropTypes.string,
+    currentElement: React.PropTypes.object
+  }
 
   static contextTypes = {
     store: React.PropTypes.object
-  };
+  }
 
-  updateStore(updatedValue) {
-    const { currentElement } = this.context.store;
+  updateStore(updatedValue = 0) {
+    const { currentElement } = this.props;
     const { style } = currentElement.props;
-    const updatedProperty = updatedValue ? `${updatedValue}px` : "";
     const updatedStyleProp = {};
 
-    updatedStyleProp[this.props.propertyName] = updatedProperty;
+    updatedStyleProp[this.props.propertyName] = updatedValue;
 
     const updatedStyles = { ...style, ...updatedStyleProp };
 
@@ -26,13 +26,11 @@ export default class Incrementer extends Component {
   }
 
   handleIncrement = (num) => {
-    const { propertyName } = this.props;
-    const { currentElement } = this.context.store;
+    const { propertyName, currentElement } = this.props;
     const property = currentElement.props.style[propertyName];
-    const parsedProperty = property.match(/[0-9]*/)[0];
 
     return () => {
-      this.updateStore(parseInt(parsedProperty, 10) + num);
+      this.updateStore(property + num);
     };
   }
 
@@ -43,16 +41,17 @@ export default class Incrementer extends Component {
     this.updateStore(result);
   }
 
-  handleCursorPosition = (ev) => {
+  handleCursorPosition(ev) {
     const { value } = ev.target;
-    const numLength = value.match(/[0-9]*/)[0].length;
+    const numLength = value.length;
 
     ev.target.setSelectionRange(0, numLength);
   }
 
   render() {
-    const { currentElement } = this.context.store;
-    const property = get(currentElement.props.style, this.props.propertyName);
+    const { currentElement, propertyName } = this.props;
+    const property = currentElement ?
+      get(currentElement.props.style, propertyName) : 0;
 
     return (
       <div className={styles.incrementerWrapper}>
