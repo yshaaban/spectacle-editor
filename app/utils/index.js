@@ -117,6 +117,7 @@ export const getNearestGridLine = (gridLinesHash, ...potentialLines) => {
   for (let i = 1; i < potentialLines.length; i++) {
     const currentLine = gridLinesHash[Math.floor(potentialLines[i])];
     const currentDistance = Math.abs(currentLine - Math.floor(potentialLines[i]));
+
     if (currentDistance < distance) {
       line = currentLine;
       distance = currentDistance;
