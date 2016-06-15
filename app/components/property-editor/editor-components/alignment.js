@@ -7,15 +7,20 @@ export default class Alignment extends Component {
     store: React.PropTypes.object
   }
 
+  static propTypes = {
+    style: React.PropTypes.object,
+    currentElement: React.PropTypes.object
+  }
+
   createHandleAlignmentChange = (updatedProp) => () => {
-    const { style } = this.context.store.currentElement.props;
+    const { style } = this.props.currentElement.props;
     const updatedStyles = { ...style, textAlign: updatedProp };
 
     this.context.store.updateElementProps({ style: updatedStyles });
   }
 
   render() {
-    const { currentElement } = this.context.store;
+    const { currentElement } = this.props;
     const currentAlignment = currentElement.props.style.textAlign;
 
     return (
