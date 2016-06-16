@@ -84,6 +84,10 @@ export default class Select extends Component {
     };
   }
 
+  componentWillReceiveProps() {
+    this.setState({ selectedOptionIndex: false });
+  }
+
   onChange = () => {
     const { selectedOptionVal, childProps } = this.state;
 
