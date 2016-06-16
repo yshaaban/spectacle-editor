@@ -10,7 +10,8 @@ import {
   List,
   Incrementer
 } from "../editor-components/index.js";
-import { ElementTypes, FontMap } from "../../../constants";
+import { ElementTypes } from "../../../constants";
+import { FontMap } from "../../../font-settings";
 
 export default class TextMenu extends Component {
   static contextTypes = {
