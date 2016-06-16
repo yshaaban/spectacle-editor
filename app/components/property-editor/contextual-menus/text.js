@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styles from "../index.css";
 import { autorun } from "mobx";
-import { map, omit } from "lodash";
+import { map, omit, find } from "lodash";
 import {
   Select,
   Option,
@@ -43,21 +43,49 @@ export default class TextMenu extends Component {
     });
   }
 
-  updateCurrentElementStyles = (value, properties) => {
-    if (properties) {
-      const { style } = properties;
-      const { currentElement } = this.context.store;
-      const oldStyles = currentElement.props.style;
+  handleFontFamily = (value, properties) => {
+    const { currentElement } = this.context.store;
 
-      this.context.store.updateElementProps({
-        style: { ...oldStyles, ...style }
+    if (properties && properties.style.fontFamily !== currentElement.props.style.fontFamily) {
+      this.updateCurrentElementStyles(currentElement, {
+        ...properties.style,
+        fontWeight: 400,
+        fontStyle: "normal"
       });
     }
   }
 
+  handleFontStyles = (value, properties) => {
+    if (properties) {
+      const { currentElement } = this.context.store;
+      const { currentWeight, currentStyle } = currentElement.props.style;
+      const { fontWeight, fontStyle } = properties.style;
+
+      if (fontWeight !== currentWeight || fontStyle !== currentStyle) {
+        this.updateCurrentElementStyles(currentElement, omit(properties.style, "fontFamily"));
+      }
+    }
+  }
+
+  updateCurrentElementStyles = (currentElement, style) => {
+    const oldStyles = currentElement.props.style;
+
+    this.context.store.updateElementProps({
+      style: { ...oldStyles, ...style }
+    });
+  }
+
   render() {
     const { currentElement } = this.state;
-    const currentFont = currentElement && currentElement.props.style.fontFamily;
+    const styleProps = currentElement && currentElement.props.style;
+    let currentStyles;
+
+    if (currentElement) {
+      currentStyles = find(FontMap[styleProps.fontFamily].styles, {
+        fontWeight: styleProps.fontWeight,
+        fontStyle: styleProps.fontStyle
+      });
+    }
 
     return (
       <div className={styles.wrapper}>
@@ -73,20 +101,17 @@ export default class TextMenu extends Component {
               </div>
               <div>
                 <Select
-                  onChange={this.updateCurrentElementStyles}
+                  onChange={this.handleFontFamily}
                   selectName="FontType"
+                  placeholderText={FontMap[styleProps.fontFamily].name}
                 >
                   {map(FontMap, (fontObj, fontFamily) => (
                     <Option
                       key={fontFamily}
                       value={fontObj.name}
-                      style={{
-                        fontFamily,
-                        fontWeight: 400,
-                        fontStyle: "normal"
-                      }}
+                      style={{ fontFamily }}
                     >
-                      {fontObj.name}
+                        {fontObj.name}
                     </Option>
                     )
                   )}
@@ -99,17 +124,19 @@ export default class TextMenu extends Component {
               </div>
               <div>
                 <Select
-                  onChange={this.updateCurrentElementStyles}
-                  selectName="FontType"
-                  placeholderText={"Normal"}
+                  onChange={this.handleFontStyles}
+                  selectName="FontStyle"
+                  placeholderText={currentStyles && currentStyles.name}
                 >
-                  {map(FontMap[currentFont].styles, (stylesObj, index) => {
+                  {map(FontMap[styleProps.fontFamily].styles, (stylesObj, index) => {
                     const cleanedStylesObj = omit(stylesObj, "name");
+                    cleanedStylesObj.fontFamily = styleProps.fontFamily;
+
                     return (
                       <Option
                         key={index}
                         value={stylesObj.name}
-                        style={cleanedStylesObj}
+                        style={ cleanedStylesObj }
                       >
                         {stylesObj.name}
                       </Option>

@@ -91,7 +91,9 @@ export default class Select extends Component {
   onChange = () => {
     const { selectedOptionVal, childProps } = this.state;
 
-    this.props.onChange(selectedOptionVal, childProps);
+    if (!this.state.open) {
+      this.props.onChange(selectedOptionVal, childProps);
+    }
   }
 
   onFocus = () => {

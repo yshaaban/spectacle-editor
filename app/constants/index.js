@@ -123,17 +123,40 @@ const fontTypes = {
 };
 
 export const FontMap = {
+  arial: {
+    name: "Arial",
+    styles: [
+      fontTypes.regular,
+      fontTypes.italic,
+      fontTypes.bold,
+      fontTypes.boldItalic
+    ]
+  },
+  "Courier New": {
+    name: "Courier New",
+    styles: [
+      fontTypes.regular,
+      fontTypes.italic,
+      fontTypes.bold,
+      fontTypes.boldItalic
+    ]
+  },
   droidSans: {
     name: "Droid Sans",
     styles: [
       fontTypes.regular,
-      fontTypes.bold
+      fontTypes.italic,
+      fontTypes.bold,
+      fontTypes.boldItalic
     ]
   },
   droidSansMono: {
     name: "Droid Sans Mono",
     styles: [
-      fontTypes.regular
+      fontTypes.regular,
+      fontTypes.italic,
+      fontTypes.bold,
+      fontTypes.boldItalic
     ]
   },
   droidSerif: {
@@ -227,6 +250,15 @@ export const FontMap = {
       fontTypes.boldItalic,
       fontTypes.black,
       fontTypes.blackItalic
+    ]
+  },
+  "Times New Roman": {
+    name: "Times New Roman",
+    styles: [
+      fontTypes.regular,
+      fontTypes.italic,
+      fontTypes.bold,
+      fontTypes.boldItalic
     ]
   }
 };
