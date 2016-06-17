@@ -43,6 +43,7 @@
   background: #fff;
   border: 1px solid var(--primary-border-color);
   border-radius: 20px;
+  cursor: pointer;
   outline-width: 0;
   padding: 3px 15px;
   position: relative;
