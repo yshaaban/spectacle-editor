@@ -84,8 +84,12 @@ export default class Select extends Component {
     };
   }
 
-  componentWillReceiveProps() {
-    this.setState({ selectedOptionIndex: false });
+  componentWillReceiveProps(props) {
+    const selectedOptionIndex = props.defaultValue !== undefined
+      ? this.getValueIndex(props.defaultValue, props)
+      : -1;
+
+    this.setState({ selectedOptionIndex });
   }
 
   onChange = () => {
@@ -194,9 +198,9 @@ export default class Select extends Component {
 
   getValue = () => this.state.selectedOptionVal
 
-  getValueIndex = (val) => {
-    for (let i = 0; i < this.props.children.length; ++i) {
-      if (this.props.children[i].props.value === val) {
+  getValueIndex = (val, props = this.props) => {
+    for (let i = 0; i < props.children.length; ++i) {
+      if (props.children[i].props.value === val) {
         return i;
       }
     }

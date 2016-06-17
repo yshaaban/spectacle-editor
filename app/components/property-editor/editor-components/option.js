@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import styles from "./select.css";
+import { CHECK } from "../../../assets/icons";
+
 
 export default class Option extends Component {
   static propTypes = {
@@ -20,7 +22,7 @@ export default class Option extends Component {
     automationId: undefined,
     className: `${styles.option}`,
     activeClassName: "active",
-    hoverClassName: "hover",
+    hoverClassName: `${styles.hover}`,
     onClick() {}
   }
 
@@ -71,6 +73,13 @@ export default class Option extends Component {
         onKeyDown={this.props.onKeyDown}
         style={this.props.style}
       >
+        {this.props.isActive &&
+          <span
+            className={styles.check}
+            dangerouslySetInnerHTML={{ __html: CHECK }}
+          >
+          </span>
+        }
         {this.props.children}
       </div>
     );

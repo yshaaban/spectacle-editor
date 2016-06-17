@@ -47,7 +47,11 @@ export default class TextMenu extends Component {
   handleFontFamily = (value, properties) => {
     const { currentElement } = this.context.store;
 
-    if (properties && properties.style.fontFamily !== currentElement.props.style.fontFamily) {
+    if (!currentElement && !properties) {
+      return;
+    }
+
+    if (properties.style.fontFamily !== currentElement.props.style.fontFamily) {
       this.updateCurrentElementStyles(currentElement, {
         ...properties.style,
         fontWeight: 400,
@@ -57,8 +61,9 @@ export default class TextMenu extends Component {
   }
 
   handleFontStyles = (value, properties) => {
-    if (properties) {
-      const { currentElement } = this.context.store;
+    const { currentElement } = this.context.store;
+
+    if (properties && currentElement) {
       const { currentWeight, currentStyle } = currentElement.props.style;
       const { fontWeight, fontStyle } = properties.style;
 
@@ -105,6 +110,7 @@ export default class TextMenu extends Component {
                   onChange={this.handleFontFamily}
                   selectName="FontType"
                   placeholderText={FontMap[styleProps.fontFamily].name}
+                  defaultValue={FontMap[styleProps.fontFamily].name}
                 >
                   {map(FontMap, (fontObj, fontFamily) => (
                     <Option
@@ -127,7 +133,7 @@ export default class TextMenu extends Component {
                 <Select
                   onChange={this.handleFontStyles}
                   selectName="FontStyle"
-                  placeholderText={currentStyles && currentStyles.name}
+                  defaultValue={currentStyles && currentStyles.name}
                 >
                   {map(FontMap[styleProps.fontFamily].styles, (stylesObj, index) => {
                     const cleanedStylesObj = omit(stylesObj, "name");
