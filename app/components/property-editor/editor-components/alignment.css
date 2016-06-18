@@ -4,10 +4,9 @@
   border: 1px solid var(--primary-border-color);
   border-radius: 20px;
   display: flex;
-  height: 30px;
-  margin-top: 8px;
+  height: 25px;
   overflow: hidden;
-  width: 133px;
+  width: 180px;
 }
 
 .alignmentWrapper .selectedAlignment {
@@ -16,18 +15,22 @@
 
 .alignmentWrapper > .alignmentBox {
   height: 100%;
-  padding-top: 7px;
+  padding-top: 5px;
   text-align: center;
   width: 33%;
 }
 
-.alignmentWrapper > .alignmentBox + .alignmentBox,
-.formattingWrapper > .alignmentBox + .alignmentBox {
+.alignmentWrapper > .alignmentBox + .alignmentBox {
   border-left: 1px solid var(--primary-border-color);
+}
+
+.alignmentBox:last-child > svg{
+  position: relative;
+  left: -4px;
 }
 
 .alignmentBox > svg {
   color: #000;
-  height: 14px;
+  height: 16px;
   width: 16px;
 }

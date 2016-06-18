@@ -1,5 +1,65 @@
 @import '../../variables.css';
 
+.colorWrapper {
+  background: #6f00c1;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  height: 30px;
+  width: 150px;
+}
+
+.dropper {
+  position: relative;
+  height: 20px;
+  width: 20px;
+}
+
+.dropper > svg {
+  height: 20px;
+  fill: #3563d3;
+  left: 10px;
+  position: absolute;
+  top: 10px;
+  width: 15px;
+}
+
+.updateHeading {
+  border: 1px solid var(--primary-border-color);
+  border-radius: 20px;
+  box-sizing: border-box;
+  font-size: 12px;
+  height: 30px;
+  line-height: 1.8;
+  padding-top: 5px;
+  text-align: center;
+  width: 180px;
+
+}
+.breakHr {
+  border-top: 1px solid var(--primary-border-color);
+  box-sizing: border-box;
+  height: 28px;
+  margin-top: 35px;
+  padding: 0;
+  position: relative;
+  width: 180px;
+}
+
+.breakTitle {
+  background: var(--primary-background-color);
+  color: #69738a;
+  font-size: 10px;
+  margin: 0 auto;
+  line-height: 1.9;
+  top: -8px;
+  letter-spacing: 1.5px;
+  position: relative;
+  text-align: center;
+  width: 100px;
+}
+
+
 .editor {
   border-left: 1px solid var(--primary-border-color);
   color: var(--secondary-font-color);
@@ -15,18 +75,29 @@
 
 .flexrow {
   display: flex;
-  padding-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .heading {
   color: #000;
   font-size: 20px;
+  line-height: 1.5;
+  margin-top: 18px;
   margin-bottom: 0;
   text-align: center;
 }
 
 .hr {
-  margin: 0 0 20px;
+  border: 1px solid var(--primary-border-color);
+  box-sizing: border-box;
+  left: -10px;
+  margin: 5px 0 8px;
+  position: relative;
+  width: 200px;
+}
+
+.hrList {
+  margin-bottom: 25px;
 }
 
 .menu {
@@ -57,14 +128,30 @@
 }
 
 .row {
-  padding-bottom: 15px;
+  margin-bottom: 25px;
+}
+
+.rowAlt {
+  margin-bottom: 33px;
+}
+
+.select {
+  height: 30px;
+  width: 180px;
+}
+
+.selectNarrow {
+width: 100px;
 }
 
 .subHeading {
   font-size: 12px;
+  line-height: 1.8;
+  letter-spacing: 0.3px;
   margin-bottom: 5px;
 }
 
 .wrapper {
-  padding: 0 20px 10px;
+  width: 180px;
+  margin: 0 auto;
 }

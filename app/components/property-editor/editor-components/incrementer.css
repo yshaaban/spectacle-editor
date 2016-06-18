@@ -2,10 +2,11 @@
 
 .incrementerWrapper {
   display: flex;
+  box-sizing: border-box;
   height: 30px;
   overflow: hidden;
   padding: 0;
-  width: 82px;
+  width: 70px;
 }
 
 .incrementerWrapper > input {
@@ -14,7 +15,8 @@
   border-bottom-left-radius: 5px;
   box-sizing: border-box;
   height: 30px;
-  width: 58px;
+  text-align: center;
+  width: 42px;
 }
 
 .incrementerWrapper > .caretContainer {
@@ -23,7 +25,7 @@
   border-bottom-right-radius: 5px;
   box-sizing: border-box;
   height: 30px;
-  width: 24px;
+  width: 28px;
 }
 
 .incrementerWrapper .caretContainer > .caretBox {
@@ -35,12 +37,12 @@
 .incrementUp > svg {
   position: absolute;
   top: 4px;
-  left: 6px;
+  left: 4px;
 }
 
 .incrementDown > svg {
   position: absolute;
-  left: 6px;
+  left: 4px;
   top: 3px;
   transform: rotate(180deg);
 }

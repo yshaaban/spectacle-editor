@@ -10,6 +10,7 @@ import {
   List,
   Incrementer
 } from "../editor-components/index.js";
+import { EYEDROPPER } from "../../../assets/icons";
 import { ElementTypes } from "../../../constants";
 import { FontMap } from "../../../font-settings";
 
@@ -100,10 +101,38 @@ export default class TextMenu extends Component {
           (
           <div>
             <h3 className={styles.heading}>Text</h3>
-            <hr />
+            <hr className={styles.hr} />
             <div className={styles.row}>
               <div className={styles.subHeading}>
                 Paragraph Styles
+              </div>
+              <div>
+                <Select
+                  selectName="FontType"
+                  placeholderText="Heading 1"
+                  defaultValue="Heading 1"
+                  currentOptionClassName={styles.select}
+                >
+                  {map(["Heading 1", "Heading 2"], (heading, i) => (
+                    <Option
+                      key={i}
+                      value={heading}
+                    >
+                        {heading}
+                    </Option>
+                    )
+                  )}
+                </Select>
+              </div>
+            </div>
+            <div>
+              <div className={styles.breakHr}>
+                <div className={styles.breakTitle}>HEADING 1</div>
+              </div>
+            </div>
+            <div className={styles.row}>
+              <div className={styles.subHeading}>
+                Font
               </div>
               <div>
                 <Select
@@ -111,6 +140,7 @@ export default class TextMenu extends Component {
                   selectName="FontType"
                   placeholderText={FontMap[styleProps.fontFamily].name}
                   defaultValue={FontMap[styleProps.fontFamily].name}
+                  currentOptionClassName={styles.select}
                 >
                   {map(FontMap, (fontObj, fontFamily) => (
                     <Option
@@ -125,50 +155,47 @@ export default class TextMenu extends Component {
                 </Select>
               </div>
             </div>
-            <div className={styles.row}>
-              <div className={styles.subHeading}>
-                Font
-              </div>
-              <div>
-                <Select
-                  onChange={this.handleFontStyles}
-                  selectName="FontStyle"
-                  defaultValue={currentStyles && currentStyles.name}
-                >
-                  {map(FontMap[styleProps.fontFamily].styles, (stylesObj, index) => {
-                    const cleanedStylesObj = omit(stylesObj, "name");
-                    cleanedStylesObj.fontFamily = styleProps.fontFamily;
+            <div className={styles.flexrow}>
+              <Select
+                onChange={this.handleFontStyles}
+                selectName="FontStyle"
+                defaultValue={currentStyles && currentStyles.name}
+                currentOptionClassName={styles.selectNarrow}
+              >
+                {map(FontMap[styleProps.fontFamily].styles, (stylesObj, index) => {
+                  const cleanedStylesObj = omit(stylesObj, "name");
+                  cleanedStylesObj.fontFamily = styleProps.fontFamily;
 
-                    return (
-                      <Option
-                        key={index}
-                        value={stylesObj.name}
-                        style={ cleanedStylesObj }
-                      >
-                        {stylesObj.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </div>
+                  return (
+                    <Option
+                      key={index}
+                      value={stylesObj.name}
+                      style={ cleanedStylesObj }
+                    >
+                      {stylesObj.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+              <Incrementer
+                currentElement={this.state.currentElement}
+                propertyName={"fontSize"}
+              />
+            </div>
+            <div className={styles.subHeading}>
+              Color
             </div>
             <div className={styles.flexrow}>
-              <div>
-                <div className={styles.subHeading}>
-                  Size
-                </div>
-                <Incrementer
-                  currentElement={this.state.currentElement}
-                  propertyName={"fontSize"}
-                />
+              <div className={styles.colorWrapper}>
+                &nbsp;
               </div>
-              <div>
-                <div className={styles.subHeading}>
-                  Color
-                </div>
+              <div
+                className={styles.dropper}
+                dangerouslySetInnerHTML={{ __html: EYEDROPPER }}
+              >
               </div>
             </div>
-            <div className={styles.row}>
+            <div className={styles.rowAlt}>
               <div className={styles.subHeading}>
                 Alignment
               </div>
@@ -176,15 +203,12 @@ export default class TextMenu extends Component {
                 currentElement={this.state.currentElement}
               />
             </div>
-            <hr className={styles.hr} />
-            <div className={styles.row}>
-              <div className={styles.subHeading}>
-                Formatting
+            <div className={styles.rowAlt}>
+              <div className={styles.updateHeading}>
+                Update Heading 1 Style
               </div>
-              <Formatting
-                currentElement={this.state.currentElement}
-              />
             </div>
+            <hr className={`${styles.hr} ${styles.hrList}`} />
             <div className={styles.row}>
               <div className={styles.subHeading}>
                 List

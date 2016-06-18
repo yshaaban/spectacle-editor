@@ -75,10 +75,8 @@ export default class Option extends Component {
         style={this.props.style}
       >
         {this.props.isActive &&
-          <span
-            className={styles.check}
-            dangerouslySetInnerHTML={{ __html: CHECK }}
-          >
+          <span className={`${styles.checkWrapper}`}>
+            <i className={"icon ion-ios-checkmark-empty"}></i>
           </span>
         }
         {this.props.children}

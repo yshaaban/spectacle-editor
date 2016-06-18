@@ -30,11 +30,11 @@ export default class Select extends Component {
     showCurrentOptionWhenOpen: false,
     onChange() {},
     onBlur() {},
-    className: `${styles.selectWrapper}`,
+    className: "radon-select",
     openClassName: "open",
     focusClassName: `${styles.focus}`,
     listClassName: `${styles.list}`,
-    currentOptionClassName: `${styles.selectBox}`,
+    currentOptionClassName: "radon-select-current",
     hiddenSelectClassName: "radon-select-hidden-select",
     disabledClassName: "radon-select-disabled",
     currentOptionStyle: {},
@@ -208,8 +208,18 @@ export default class Select extends Component {
     return -1;
   }
 
+  getCurrentOptionClasses = () => {
+    const currentSelectionClasses = [this.props.currentOptionClassName];
+
+    currentSelectionClasses.push(styles.selectBox);
+
+    return currentSelectionClasses.join(" ");
+  }
+
   getWrapperClasses = () => {
     const wrapperClassNames = [this.props.className];
+
+    wrapperClassNames.push(styles.selectWrapper);
 
     if (this.state.open) {
       wrapperClassNames.push(this.props.openClassName);
@@ -367,7 +377,7 @@ export default class Select extends Component {
         {this.props.showCurrentOptionWhenOpen || !this.state.open ?
           <div
             ref="currentOption"
-            className={this.props.currentOptionClassName}
+            className={this.getCurrentOptionClasses()}
             tabIndex={0}
             data-automation-id={this.props.automationId}
             role="button"
@@ -384,7 +394,7 @@ export default class Select extends Component {
               this.props.children[0].props.children
             }
             <span
-              className={styles.chevronBox}
+              className={styles.chevronWrapper}
               dangerouslySetInnerHTML={{ __html: CHEVRON }}
             ></span>
           </div>
