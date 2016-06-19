@@ -1,7 +1,7 @@
 @import '../../../variables.css';
 
 .alignmentWrapper {
-  border: 1px solid var(--primary-border-color);
+  border: 1px solid var(--secondary-border-color);
   border-radius: 20px;
   display: flex;
   height: 25px;
@@ -10,7 +10,7 @@
 }
 
 .alignmentWrapper .selectedAlignment {
-  background: var(--secondary-border-color);
+  background: var(--primary-border-color);
 }
 
 .alignmentWrapper > .alignmentBox {
@@ -21,10 +21,10 @@
 }
 
 .alignmentWrapper > .alignmentBox + .alignmentBox {
-  border-left: 1px solid var(--primary-border-color);
+  border-left: 1px solid var(--secondary-border-color);
 }
 
-.alignmentBox:last-child > svg{
+.alignmentBox:last-child > svg {
   position: relative;
   left: -4px;
 }

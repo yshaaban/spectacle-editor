@@ -44,5 +44,5 @@
   position: absolute;
   left: 4px;
   top: 3px;
-  transform: rotate(180deg);
+  transform: rotateX(180deg);
 }

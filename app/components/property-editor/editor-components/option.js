@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 // TODO: Move to own css file
 import styles from "./select.css";
-import { CHECK } from "../../../assets/icons";
-
 
 export default class Option extends Component {
   static propTypes = {

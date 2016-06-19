@@ -1,15 +1,19 @@
 import Alignment from "./alignment";
-import Formatting from "./formatting";
+import ColorPicker from "./colorpicker";
 import Incrementer from "./incrementer";
+import LinkTo from "./linkto";
 import List from "./list";
 import Select from "./select";
 import Option from "./option";
+import UpdateHeading from "./updateheading";
 
 export default {
   Alignment,
-  Formatting,
+  ColorPicker,
   Incrementer,
+  LinkTo,
   List,
   Option,
-  Select
+  Select,
+  UpdateHeading
 };

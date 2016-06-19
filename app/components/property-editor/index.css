@@ -1,41 +1,5 @@
 @import '../../variables.css';
 
-.colorWrapper {
-  background: #6f00c1;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  height: 30px;
-  width: 150px;
-}
-
-.dropper {
-  position: relative;
-  height: 20px;
-  width: 20px;
-}
-
-.dropper > svg {
-  height: 20px;
-  fill: #3563d3;
-  left: 10px;
-  position: absolute;
-  top: 10px;
-  width: 15px;
-}
-
-.updateHeading {
-  border: 1px solid var(--primary-border-color);
-  border-radius: 20px;
-  box-sizing: border-box;
-  font-size: 12px;
-  height: 30px;
-  line-height: 1.8;
-  padding-top: 5px;
-  text-align: center;
-  width: 180px;
-
-}
 .breakHr {
   border-top: 1px solid var(--primary-border-color);
   box-sizing: border-box;
@@ -58,7 +22,6 @@
   text-align: center;
   width: 100px;
 }
-
 
 .editor {
   border-left: 1px solid var(--primary-border-color);
@@ -141,7 +104,7 @@
 }
 
 .selectNarrow {
-width: 100px;
+  width: 100px;
 }
 
 .subHeading {

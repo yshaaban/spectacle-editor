@@ -3,14 +3,15 @@ import styles from "../index.css";
 import { autorun } from "mobx";
 import { map, omit, find } from "lodash";
 import {
-  Select,
-  Option,
   Alignment,
-  Formatting,
+  ColorPicker,
+  Incrementer,
   List,
-  Incrementer
+  LinkTo,
+  Option,
+  Select,
+  UpdateHeading
 } from "../editor-components/index.js";
-import { EYEDROPPER } from "../../../assets/icons";
 import { ElementTypes } from "../../../constants";
 import { FontMap } from "../../../font-settings";
 
@@ -185,15 +186,8 @@ export default class TextMenu extends Component {
             <div className={styles.subHeading}>
               Color
             </div>
-            <div className={styles.flexrow}>
-              <div className={styles.colorWrapper}>
-                &nbsp;
-              </div>
-              <div
-                className={styles.dropper}
-                dangerouslySetInnerHTML={{ __html: EYEDROPPER }}
-              >
-              </div>
+            <div className={styles.row}>
+              <ColorPicker />
             </div>
             <div className={styles.rowAlt}>
               <div className={styles.subHeading}>
@@ -204,9 +198,7 @@ export default class TextMenu extends Component {
               />
             </div>
             <div className={styles.rowAlt}>
-              <div className={styles.updateHeading}>
-                Update Heading 1 Style
-              </div>
+              <UpdateHeading />
             </div>
             <hr className={`${styles.hr} ${styles.hrList}`} />
             <div className={styles.row}>
@@ -221,7 +213,7 @@ export default class TextMenu extends Component {
               <div className={styles.subHeading}>
                 Link
               </div>
-              <input type="text" />
+              <LinkTo />
             </div>
           </div>
         )}
