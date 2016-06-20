@@ -1,46 +1,48 @@
 @import '../../../variables.css';
 
 .incrementerWrapper {
+  box-sizing: border-box;
   display: flex;
   height: 30px;
   overflow: hidden;
-  padding: 0;
-  width: 82px;
+  width: 70px;
 }
 
 .incrementerWrapper > input {
-  border: 1px solid var(--primary-border-color);
+  border: 1px solid var(--secondary-border-color);
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   box-sizing: border-box;
   height: 30px;
-  width: 58px;
+  text-align: center;
+  width: 42px;
 }
 
 .incrementerWrapper > .caretContainer {
-  border: 1px solid var(--primary-border-color);
-  border-top-right-radius: 5px;
+  border: 1px solid var(--secondary-border-color);
   border-bottom-right-radius: 5px;
+  border-left: none;
+  border-top-right-radius: 5px;
   box-sizing: border-box;
   height: 30px;
-  width: 24px;
+  width: 28px;
 }
 
 .incrementerWrapper .caretContainer > .caretBox {
-  position: relative;
   height: 50%;
+  position: relative;
   width: 100%;
 }
 
 .incrementUp > svg {
+  left: 4px;
   position: absolute;
   top: 4px;
-  left: 6px;
 }
 
 .incrementDown > svg {
+  left: 4px;
   position: absolute;
-  left: 6px;
   top: 3px;
-  transform: rotate(180deg);
+  transform: rotateX(180deg);
 }

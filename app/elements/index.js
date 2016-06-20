@@ -41,11 +41,11 @@ elements[ElementTypes.TEXT] = {
       color: "#3d3d3d",
       fontFamily: "openSans",
       fontSize: 45,
-      height: 24,
+      height: 45,
       fontWeight: 400,
       fontStyle: "normal",
       textAlign: "center",
-      width: 120
+      width: 240
     }
   },
   children: "totally text"

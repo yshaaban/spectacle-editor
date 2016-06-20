@@ -1,16 +1,19 @@
 import React, { Component } from "react";
 import styles from "../index.css";
 import { autorun } from "mobx";
-import { map, omit } from "lodash";
+import { map, omit, find } from "lodash";
 import {
-  Select,
-  Option,
   Alignment,
-  Formatting,
+  ColorPicker,
+  Incrementer,
   List,
-  Incrementer
+  LinkTo,
+  Option,
+  Select,
+  UpdateHeading
 } from "../editor-components/index.js";
-import { ElementTypes, FontMap } from "../../../constants";
+import { ElementTypes } from "../../../constants";
+import { FontMap } from "../../../font-settings";
 
 export default class TextMenu extends Component {
   static contextTypes = {
@@ -43,21 +46,54 @@ export default class TextMenu extends Component {
     });
   }
 
-  updateCurrentElementStyles = (value, properties) => {
-    if (properties) {
-      const { style } = properties;
-      const { currentElement } = this.context.store;
-      const oldStyles = currentElement.props.style;
+  handleFontFamily = (value, properties) => {
+    const { currentElement } = this.context.store;
 
-      this.context.store.updateElementProps({
-        style: { ...oldStyles, ...style }
+    if (!currentElement || !properties) {
+      return;
+    }
+
+    if (properties.style.fontFamily !== currentElement.props.style.fontFamily) {
+      this.updateCurrentElementStyles(currentElement, {
+        ...properties.style,
+        fontWeight: 400,
+        fontStyle: "normal"
       });
     }
   }
 
+  handleFontStyles = (value, properties) => {
+    const { currentElement } = this.context.store;
+
+    if (properties && currentElement) {
+      const { currentWeight, currentStyle } = currentElement.props.style;
+      const { fontWeight, fontStyle } = properties.style;
+
+      if (fontWeight !== currentWeight || fontStyle !== currentStyle) {
+        this.updateCurrentElementStyles(currentElement, omit(properties.style, "fontFamily"));
+      }
+    }
+  }
+
+  updateCurrentElementStyles = (currentElement, style) => {
+    const oldStyles = currentElement.props.style;
+
+    this.context.store.updateElementProps({
+      style: { ...oldStyles, ...style }
+    });
+  }
+
   render() {
     const { currentElement } = this.state;
-    const currentFont = currentElement && currentElement.props.style.fontFamily;
+    const styleProps = currentElement && currentElement.props.style;
+    let currentStyles;
+
+    if (currentElement) {
+      currentStyles = find(FontMap[styleProps.fontFamily].styles, {
+        fontWeight: styleProps.fontWeight,
+        fontStyle: styleProps.fontStyle
+      });
+    }
 
     return (
       <div className={styles.wrapper}>
@@ -66,31 +102,33 @@ export default class TextMenu extends Component {
           (
           <div>
             <h3 className={styles.heading}>Text</h3>
-            <hr />
+            <hr className={styles.hr} />
             <div className={styles.row}>
               <div className={styles.subHeading}>
                 Paragraph Styles
               </div>
               <div>
                 <Select
-                  onChange={this.updateCurrentElementStyles}
                   selectName="FontType"
+                  placeholderText="Heading 1"
+                  defaultValue="Heading 1"
+                  currentOptionClassName={styles.select}
                 >
-                  {map(FontMap, (fontObj, fontFamily) => (
+                  {map(["Heading 1", "Heading 2"], (heading, i) => (
                     <Option
-                      key={fontFamily}
-                      value={fontObj.name}
-                      style={{
-                        fontFamily,
-                        fontWeight: 400,
-                        fontStyle: "normal"
-                      }}
+                      key={i}
+                      value={heading}
                     >
-                      {fontObj.name}
+                        {heading}
                     </Option>
                     )
                   )}
                 </Select>
+              </div>
+            </div>
+            <div>
+              <div className={styles.breakHr}>
+                <div className={styles.breakTitle}>HEADING 1</div>
               </div>
             </div>
             <div className={styles.row}>
@@ -99,43 +137,59 @@ export default class TextMenu extends Component {
               </div>
               <div>
                 <Select
-                  onChange={this.updateCurrentElementStyles}
+                  onChange={this.handleFontFamily}
                   selectName="FontType"
-                  placeholderText={"Normal"}
+                  placeholderText={FontMap[styleProps.fontFamily].name}
+                  defaultValue={FontMap[styleProps.fontFamily].name}
+                  currentOptionClassName={styles.select}
                 >
-                  {map(FontMap[currentFont].styles, (stylesObj, index) => {
-                    const cleanedStylesObj = omit(stylesObj, "name");
-
-                    return (
-                      <Option
-                        key={index}
-                        value={stylesObj.name}
-                        style={cleanedStylesObj}
-                      >
-                        {stylesObj.name}
-                      </Option>
-                    );
-                  })}
+                  {map(FontMap, (fontObj, fontFamily) => (
+                    <Option
+                      key={fontFamily}
+                      value={fontObj.name}
+                      style={{ fontFamily }}
+                    >
+                        {fontObj.name}
+                    </Option>
+                    )
+                  )}
                 </Select>
               </div>
             </div>
             <div className={styles.flexrow}>
-              <div>
-                <div className={styles.subHeading}>
-                  Size
-                </div>
-                <Incrementer
-                  currentElement={this.state.currentElement}
-                  propertyName={"fontSize"}
-                />
-              </div>
-              <div>
-                <div className={styles.subHeading}>
-                  Color
-                </div>
-              </div>
+              <Select
+                onChange={this.handleFontStyles}
+                selectName="FontStyle"
+                defaultValue={currentStyles && currentStyles.name}
+                currentOptionClassName={styles.selectNarrow}
+              >
+                {map(FontMap[styleProps.fontFamily].styles, (stylesObj, index) => {
+                  const cleanedStylesObj = omit(stylesObj, "name");
+                  cleanedStylesObj.fontFamily = styleProps.fontFamily;
+
+                  return (
+                    <Option
+                      key={index}
+                      value={stylesObj.name}
+                      style={ cleanedStylesObj }
+                    >
+                      {stylesObj.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+              <Incrementer
+                currentElement={this.state.currentElement}
+                propertyName={"fontSize"}
+              />
+            </div>
+            <div className={styles.subHeading}>
+              Color
             </div>
             <div className={styles.row}>
+              <ColorPicker />
+            </div>
+            <div className={styles.rowAlt}>
               <div className={styles.subHeading}>
                 Alignment
               </div>
@@ -143,15 +197,10 @@ export default class TextMenu extends Component {
                 currentElement={this.state.currentElement}
               />
             </div>
-            <hr className={styles.hr} />
-            <div className={styles.row}>
-              <div className={styles.subHeading}>
-                Formatting
-              </div>
-              <Formatting
-                currentElement={this.state.currentElement}
-              />
+            <div className={styles.rowAlt}>
+              <UpdateHeading />
             </div>
+            <hr className={`${styles.hr} ${styles.hrList}`} />
             <div className={styles.row}>
               <div className={styles.subHeading}>
                 List
@@ -164,7 +213,7 @@ export default class TextMenu extends Component {
               <div className={styles.subHeading}>
                 Link
               </div>
-              <input type="text" />
+              <LinkTo />
             </div>
           </div>
         )}
