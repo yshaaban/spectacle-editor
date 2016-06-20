@@ -104,10 +104,12 @@
 }
 
 .selectNarrow {
+  height: 30px;
   width: 100px;
 }
 
 .subHeading {
+  color: #000;
   font-size: 12px;
   line-height: 1.8;
   letter-spacing: 0.3px;
@@ -115,6 +117,7 @@
 }
 
 .wrapper {
-  width: 180px;
+  font-family: openSans;
   margin: 0 auto;
+  width: 180px;
 }

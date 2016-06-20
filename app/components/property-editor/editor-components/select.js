@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../../../constants";
 import styles from "./select.css";
-import { CHEVRON } from "../../../assets/icons";
 
 const keyboard = {
   space: 32,
@@ -395,8 +394,9 @@ export default class Select extends Component {
             }
             <span
               className={styles.chevronWrapper}
-              dangerouslySetInnerHTML={{ __html: CHEVRON }}
-            ></span>
+            >
+              <i className={"icon ion-ios-arrow-down"}></i>
+            </span>
           </div>
           :
           ""

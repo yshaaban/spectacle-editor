@@ -1,22 +1,25 @@
 @import '../../../variables.css';
 
 .chevronWrapper {
+  color: #999;
   cursor: pointer;
   position: absolute;
-  right: 10px;
+  right: 12px;
+  top: 2px;
+  font-size: 17px;
 }
 
 .checkWrapper {
   position: absolute;
+  color: var(--secondary-border-color);
+  font-size: 35px;
   left: 5px;
+  top: -19px;
 }
 
-.checkWrapper > .icon {
-  fill: var(--secondary-border-color);
-}
-
-.chevronBox svg {
-  fill: var(--primary-border-color);
+.ion-ios-arrow-down::before {
+  color: blue;
+  height: 20px;
 }
 
 .focus {
@@ -29,27 +32,37 @@
 
 .list {
   background: #fff;
-  border: 2px solid var(--primary-border-color);
+  border: 1px solid var(--secondary-border-color);
+  border-radius: 4px;
   box-shadow: var(--select-list-shadow);
-  border-radius: 5px;
+  box-sizing: border-box;
+  color: #000;
   font-size: 14px;
+  letter-spacing: 0.2px;
+  line-height: 1.8;
   padding: 10px 0;
   position: absolute;
-  width: 185px;
+  width: 180px;
   z-index: 5;
 }
 
 .selectBox {
   background: #fff;
   box-sizing: border-box;
-  border: 1px solid var(--primary-border-color);
+  border: 1px solid var(--secondary-border-color);
   border-radius: 20px;
+  color: #000;
   cursor: pointer;
-  outline-width: 0;
-  margin: 0;
-  padding: 7px 0 8px 18px;
-  position: relative;
   font-size: 12px;
+  letter-spacing: 0.2px;
+  line-height: 1.8;
+  outline-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  padding: 3px 21px 0 13px;
+  position: relative;
+  white-space: nowrap;
 }
 
 .selectWrapper {
