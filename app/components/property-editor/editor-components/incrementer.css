@@ -1,11 +1,10 @@
 @import '../../../variables.css';
 
 .incrementerWrapper {
-  display: flex;
   box-sizing: border-box;
+  display: flex;
   height: 30px;
   overflow: hidden;
-  padding: 0;
   width: 70px;
 }
 
@@ -21,29 +20,29 @@
 
 .incrementerWrapper > .caretContainer {
   border: 1px solid var(--secondary-border-color);
+  border-bottom-right-radius: 5px;
   border-left: none;
   border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
   box-sizing: border-box;
   height: 30px;
   width: 28px;
 }
 
 .incrementerWrapper .caretContainer > .caretBox {
-  position: relative;
   height: 50%;
+  position: relative;
   width: 100%;
 }
 
 .incrementUp > svg {
+  left: 4px;
   position: absolute;
   top: 4px;
-  left: 4px;
 }
 
 .incrementDown > svg {
-  position: absolute;
   left: 4px;
+  position: absolute;
   top: 3px;
   transform: rotateX(180deg);
 }

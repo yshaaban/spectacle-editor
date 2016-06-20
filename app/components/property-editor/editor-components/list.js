@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import styles from "./list.css";
 
-          // dangerouslySetInnerHTML={{ __html: ALIGNLEFT }}
 export default class List extends Component {
   render() {
     return (

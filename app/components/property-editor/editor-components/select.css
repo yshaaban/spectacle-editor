@@ -9,25 +9,13 @@
   font-size: 17px;
 }
 
-.checkWrapper {
-  position: absolute;
-  color: var(--secondary-border-color);
-  font-size: 35px;
-  left: 5px;
-  top: -19px;
+.focus {
+  outline-width: 0;
 }
 
 .ion-ios-arrow-down::before {
   color: blue;
   height: 20px;
-}
-
-.focus {
-  outline-width: 0;
-}
-
-.hover {
-  background: var(--select-hover-color);
 }
 
 .list {
@@ -48,9 +36,9 @@
 
 .selectBox {
   background: #fff;
-  box-sizing: border-box;
   border: 1px solid var(--secondary-border-color);
   border-radius: 20px;
+  box-sizing: border-box;
   color: #000;
   cursor: pointer;
   font-size: 12px;
@@ -68,11 +56,3 @@
 .selectWrapper {
   height: 20px;
 }
-
-.option {
-  padding-left: 25px;
-  cursor: pointer;
-  outline-width: 0;
-  position: relative;
-}
-

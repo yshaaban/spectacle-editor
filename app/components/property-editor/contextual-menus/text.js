@@ -49,7 +49,7 @@ export default class TextMenu extends Component {
   handleFontFamily = (value, properties) => {
     const { currentElement } = this.context.store;
 
-    if (!currentElement && !properties) {
+    if (!currentElement || !properties) {
       return;
     }
 

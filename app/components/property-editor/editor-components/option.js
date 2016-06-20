@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-// TODO: Move to own css file
-import styles from "./select.css";
+import styles from "./option.css";
 
 export default class Option extends Component {
   static propTypes = {

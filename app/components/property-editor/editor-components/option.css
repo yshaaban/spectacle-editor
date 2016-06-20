@@ -1,0 +1,18 @@
+.checkWrapper {
+  color: var(--secondary-border-color);
+  font-size: 35px;
+  left: 5px;
+  position: absolute;
+  top: -19px;
+}
+
+.hover {
+  background: var(--select-hover-color);
+}
+
+.option {
+  cursor: pointer;
+  outline-width: 0;
+  padding-left: 25px;
+  position: relative;
+}

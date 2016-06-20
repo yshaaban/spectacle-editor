@@ -12,14 +12,14 @@
 }
 
 .dropper {
-  position: relative;
   height: 20px;
   width: 20px;
+  position: relative;
 }
 
 .dropper > svg {
-  height: 20px;
   fill: #3563d3;
+  height: 20px;
   left: 10px;
   position: absolute;
   top: 10px;

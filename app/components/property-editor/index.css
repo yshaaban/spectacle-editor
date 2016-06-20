@@ -15,11 +15,11 @@
   color: #69738a;
   font-size: 10px;
   margin: 0 auto;
-  line-height: 1.9;
-  top: -8px;
   letter-spacing: 1.5px;
+  line-height: 1.9;
   position: relative;
   text-align: center;
+  top: -8px;
   width: 100px;
 }
 
@@ -111,8 +111,8 @@
 .subHeading {
   color: #000;
   font-size: 12px;
-  line-height: 1.8;
   letter-spacing: 0.3px;
+  line-height: 1.8;
   margin-bottom: 5px;
 }
 
