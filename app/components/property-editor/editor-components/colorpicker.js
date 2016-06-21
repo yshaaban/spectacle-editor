@@ -15,13 +15,7 @@ export default class ColorPicker extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pickerIsOpen: false, currentColor: props.currentElement.props.style.color };
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      currentColor: props.currentElement.props.style.color
-    });
+    this.state = { pickerIsOpen: false };
   }
 
   updateColor(hex) {
@@ -72,12 +66,14 @@ export default class ColorPicker extends Component {
   }
 
   render() {
+    const { currentElement } = this.props;
+
     return (
       <div className={styles.colorWrapper}>
         <div
           onClick={this.handlePickerOpen}
           className={styles.colorPickerTemplateBox}
-          style={{ background: this.state.currentColor }}
+          style={{ background: currentElement.props.style.color }}
         >
         </div>
         <div
@@ -94,7 +90,7 @@ export default class ColorPicker extends Component {
             }
         >
           <SketchPicker
-            color={this.state.currentColor}
+            color={currentElement.props.style.color}
             onChangeComplete={this.handleChangeComplete}
           />
         </div>
