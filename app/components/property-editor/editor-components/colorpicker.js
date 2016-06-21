@@ -76,7 +76,7 @@ export default class ColorPicker extends Component {
       <div className={styles.colorWrapper}>
         <div
           onClick={this.handlePickerOpen}
-          className={styles.colorPicker}
+          className={styles.colorPickerTemplateBox}
           style={{ background: this.state.currentColor }}
         >
         </div>
