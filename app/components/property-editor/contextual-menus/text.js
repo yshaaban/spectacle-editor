@@ -187,7 +187,7 @@ export default class TextMenu extends Component {
               Color
             </div>
             <div className={styles.row}>
-              <ColorPicker />
+              <ColorPicker currentElement={this.state.currentElement} />
             </div>
             <div className={styles.rowAlt}>
               <div className={styles.subHeading}>

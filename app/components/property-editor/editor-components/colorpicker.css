@@ -1,5 +1,4 @@
 .colorPicker {
-  background: #6f00c1;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   border-bottom-left-radius: 20px;
@@ -8,6 +7,7 @@
 }
 
 .colorWrapper {
+  position: relative;
   display: flex;
 }
 
@@ -24,4 +24,15 @@
   position: absolute;
   top: 10px;
   width: 15px;
+}
+
+.pickerWrapper {
+  position: absolute;
+  left: -20px;
+  top: 31px;
+  z-index: 5
+}
+
+.hidden {
+  display: none;
 }
