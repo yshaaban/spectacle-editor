@@ -37,6 +37,12 @@ class CanvasElement extends Component {
     };
   }
 
+  shouldComponentUpdate() {
+    // This is needed because of the way the component is passed down
+    // React isn't re-rendering this when the contextual menu updates the store
+    return true;
+  }
+
   handleTouchStart = (ev) => {
     ev.preventDefault();
     this.handleMouseDown(ev.touches[0]);

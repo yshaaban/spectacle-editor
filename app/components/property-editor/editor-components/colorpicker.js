@@ -15,7 +15,7 @@ export default class ColorPicker extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pickerIsOpen: false, currentColor: "#000" };
+    this.state = { pickerIsOpen: false, currentColor: props.currentElement.props.style.color };
   }
 
   componentWillReceiveProps(props) {
@@ -31,6 +31,7 @@ export default class ColorPicker extends Component {
         ...this.props.currentElement.props.style,
         ...updatedColor
       };
+
       this.context.store.updateElementProps({ style: updatedStyles });
     }
   }
@@ -80,6 +81,7 @@ export default class ColorPicker extends Component {
         >
         </div>
         <div
+          onClick={this.handlePickerOpen}
           className={styles.dropper}
           dangerouslySetInnerHTML={{ __html: EYEDROPPER }}
         >
