@@ -60,6 +60,7 @@ export default class SlidesStore {
   @observable isDragging = false;
   @observable isDraggingSlide = false;
   @observable isDraggingElement = false;
+  @observable isDraggingNewElement = false;
 
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get slides() {
@@ -108,11 +109,14 @@ export default class SlidesStore {
         [0, Math.floor(this.width / 2), this.width]
       ),
       // Ignore lines for the current element index
-      this.currentElementIndex
+      // Or if we're dragging a new element, don't ignore any current elements
+      this.isDraggingNewElement ? 100000 : this.currentElementIndex
     );
   }
 
-  constructor(slides) {
+  constructor(fileStore, slides) {
+    this.fileStore = fileStore;
+
     if (slides) {
       this.history = Immutable.from([{
         currentSlideIndex: 0,
@@ -221,10 +225,11 @@ export default class SlidesStore {
     });
   }
 
-  updateElementDraggingState(isDraggingElement) {
+  updateElementDraggingState(isDraggingElement, isDraggingNewElement = false) {
     transaction(() => {
       this.isDragging = isDraggingElement;
       this.isDraggingElement = isDraggingElement;
+      this.isDraggingNewElement = isDraggingNewElement;
     });
   }
 
@@ -253,6 +258,10 @@ export default class SlidesStore {
     }
 
     this.historyIndex -= 1;
+
+    if (this.historyIndex === 0 && this.fileStore.isDirty) {
+      this.fileStore.setIsDirty(false);
+    }
   }
 
   redo() {
@@ -262,6 +271,10 @@ export default class SlidesStore {
     }
 
     this.historyIndex += 1;
+
+    if (!this.fileStore.isDirty) {
+      this.fileStore.setIsDirty(true);
+    }
   }
 
   // TODO: Cap history length to some number to prevent absurd memory leaks
@@ -276,6 +289,33 @@ export default class SlidesStore {
       // Wrap the new slides array in an array so they aren't concatted as individual slide objects
       this.history = this.history.concat([Immutable.from(snapshot)]);
       this.historyIndex += 1;
+
+      if (!this.fileStore.isDirty) {
+        this.fileStore.setIsDirty(true);
+      }
+    });
+  }
+
+  serialize() {
+    return this.slides;
+  }
+
+  deserialize(newSlides) {
+    const hydratedSlides = newSlides.map((slide) => ({
+      ...slide,
+      children: slide.children.map((childObj) => ({
+        ...childObj,
+        ComponentClass: elementMap[childObj.type].ComponentClass
+      }))
+    }));
+
+    transaction(() => {
+      this.historyIndex = 0;
+      this.history = Immutable.from([{
+        currentSlideIndex: 0,
+        currentElementIndex: null,
+        slides: hydratedSlides
+      }]);
     });
   }
 }

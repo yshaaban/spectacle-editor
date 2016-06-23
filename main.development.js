@@ -72,6 +72,21 @@ app.on("ready", () => {
         }
       }]
     }, {
+      label: "File",
+      submenu: [{
+        label: "Save",
+        accelerator: "Command+S",
+        click() {
+          mainWindow.webContents.send("file", "save");
+        }
+      }, {
+        label: "Open",
+        accelerator: "Command+O",
+        click() {
+          mainWindow.webContents.send("file", "open");
+        }
+      }]
+    }, {
       label: "Edit",
       submenu: [{
         label: "Undo",

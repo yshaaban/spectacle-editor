@@ -4,6 +4,7 @@ import { autorun } from "mobx";
 import Immutable from "seamless-immutable";
 
 import SlidesStore from "../../app/stores/slides-store";
+import FileStore from "../../app/stores/file-store";
 
 let slideStore;
 let boxOfSand;
@@ -22,7 +23,7 @@ const disposers = [];
 describe("SlidesStore", () => {
   beforeEach(() => {
     boxOfSand = sandbox.create();
-    slideStore = new SlidesStore();
+    slideStore = new SlidesStore(new FileStore());
 
     historySpy = boxOfSand.spy();
     historyIndexSpy = boxOfSand.spy();
@@ -119,7 +120,7 @@ describe("SlidesStore", () => {
   });
 
   it("should only notify listeners once for history changes", () => {
-    const testStore = new SlidesStore();
+    const testStore = new SlidesStore(new FileStore());
 
     // Set initial state
     testStore.history = Immutable.from([["a"]]);
