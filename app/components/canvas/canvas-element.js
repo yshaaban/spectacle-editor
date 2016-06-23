@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from "react";
 import { observer } from "mobx-react";
 import { Motion, spring } from "react-motion";
+import { omit } from "lodash";
 
 import { ElementTypes, SpringSettings, BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../../constants";
 import { getElementDimensions, getPointsToSnap, snap } from "../../utils";
 import styles from "./canvas-element.css";
+import ResizeNode from "./resize-node";
 
 @observer
 class CanvasElement extends Component {
@@ -43,6 +45,64 @@ class CanvasElement extends Component {
     return true;
   }
 
+  handleTouchResize = (ev) => {
+    ev.preventDefault();
+    this.handleMouseResize(ev.touches[0]);
+  }
+
+  handleMouseUpResize = (ev) => {
+    ev.preventDefault();
+    window.removeEventListener("mousemove", this.handleMouseMoveResize);
+
+    this.setState({ isResizing: false });
+    // update store
+  }
+
+  handleMouseDownResize = (ev) => {
+    ev.stopPropagation();
+    ev.preventDefault();
+
+    const { target, pageX } = ev;
+    const classString = Array.prototype.join.call(target.classList, "");
+    const isLeftSideDrag = classString.indexOf("handleLeft") > -1;
+    const boundingBox = this.currentElementComponent.getBoundingClientRect();
+    const width = this.state.width ? this.state.width : boundingBox.width;
+    const currentElementOffset = isLeftSideDrag ? pageX : pageX + width;
+
+    const updatedState = {
+      currentElementOffset,
+      isLeftSideDrag,
+      isResizing: true,
+      resizeLastX: pageX
+    };
+
+    if (this.state.width === undefined) {
+      updatedState.width = boundingBox.width;
+    }
+
+    if (this.state.height === undefined) {
+      updatedState.height = boundingBox.height;
+    }
+
+    this.setState({ ...updatedState });
+
+    window.addEventListener("mousemove", this.handleMouseMoveResize);
+    window.addEventListener("touchmove", this.handleTouchMoveResize);
+    window.addEventListener("mouseup", this.handleMouseUpResize);
+    window.addEventListener("touchend", this.handleTouchEndResize);
+  }
+
+  handleMouseMoveResize = (ev) => {
+    ev.preventDefault();
+    const { pageX } = ev;
+    const { isLeftSideDrag, resizeLastX, width } = this.state;
+    const change = pageX - resizeLastX;
+
+    if (!isLeftSideDrag) {
+      this.setState({ width: (change + width), resizeLastX: pageX });
+    }
+  }
+
   handleTouchStart = (ev) => {
     ev.preventDefault();
     this.handleMouseDown(ev.touches[0]);
@@ -53,7 +113,9 @@ class CanvasElement extends Component {
     this.handleMouseMove(ev.touches[0]);
   }
 
-  handleMouseMove = ({ pageX, pageY, offsetX, offsetY, target: { id } }) => {
+  handleMouseMove = ({ pageX, pageY, offsetX, offsetY, target }) => {
+    const { id } = target;
+
     const {
       mouseStart: [x, y],
       mouseOffset: [mouseOffsetX, mouseOffsetY],
@@ -126,7 +188,13 @@ class CanvasElement extends Component {
       this.props.component.props.style.top
     ];
 
-    const { width, height } = getElementDimensions(this.props.component);
+    let { width, height } = getElementDimensions(this.props.component);
+    height = (height === undefined) ?
+      this.currentElementComponent.getBoundingClientRect().height :
+      height;
+    width = (width === undefined) ?
+      this.currentElementComponent.getBoundingClientRect().width :
+      width;
 
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("touchend", this.handleMouseUp);
@@ -219,6 +287,8 @@ class CanvasElement extends Component {
     } = this.props;
 
     const {
+      width,
+      isResizing,
       isPressed,
       delta: [x, y]
     } = this.state;
@@ -258,30 +328,91 @@ class CanvasElement extends Component {
 
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
+    if (this.props.component.props.style.width !== undefined) {
+      elementStyle = omit(elementStyle, "whiteSpace");
+      elementStyle.wordBreak = "break-all";
+    }
+
+    const hiddenElementStyle = omit(elementStyle, "height", "width");
+
     if (isPressed) {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
       motionStyles.top = spring((props.style && props.style.top || 0) + y, SpringSettings.DRAG);
+    }
+
+
+    motionStyles.width = spring((width && width || 220), { stiffness: 210, damping: 20 });
+
+    if (isResizing) {
+      const propWidth = (props.style && props.style.width) || 0;
+      motionStyles.width = spring(Math.round(propWidth + width), { stiffness: 210, damping: 20 });
     }
 
     return (
         <Motion
           style={motionStyles}
         >
-          {computedStyles => (
-            <div
-              className={
-                `${styles.canvasElement} ${extraClasses} ${BLACKLIST_CURRENT_ELEMENT_DESELECT}`
+          {computedStyles => {
+            const computedDragStyles = omit(computedStyles, "width");
+            const computedResizeStyles = omit(computedStyles, "top", "left");
+
+            return (
+            <div>
+              <div
+                ref={component => {this.currentElementComponent = component;}}
+                className={styles.hiddenElement}
+              >
+                {type !== ElementTypes.IMAGE ?
+                  <ComponentClass
+                    {...props}
+                    style={hiddenElementStyle}
+                  >
+                    {children}
+                  </ComponentClass> :
+                  <ComponentClass
+                    {...props}
+                    style={hiddenElementStyle}
+                  />
+                }
+              </div>
+              <div
+                className={
+                  `${styles.canvasElement} ${extraClasses} ${BLACKLIST_CURRENT_ELEMENT_DESELECT}`
+                }
+                style={{ ...wrapperStyle, ...computedDragStyles }}
+                onMouseDown={this.handleMouseDown}
+                onTouchStart={this.handleTouchStart}
+              >
+              {currentlySelected &&
+                <ResizeNode
+                  alignLeft
+                  handleMouseDownResize={this.handleMouseDownResize}
+                  onTouch={this.handleTouchResize}
+                  component={this.props.component}
+                />
               }
-              style={{ ...wrapperStyle, ...computedStyles }}
-              onMouseDown={this.handleMouseDown}
-              onTouchStart={this.handleTouchStart}
-            >
-              {type !== ElementTypes.IMAGE ?
-                <ComponentClass {...props} style={elementStyle}>{children}</ComponentClass> :
-                <ComponentClass {...props} style={elementStyle} />
+                {type !== ElementTypes.IMAGE ?
+                  <ComponentClass
+                    {...props}
+                    style={{ ...elementStyle, ...computedResizeStyles }}
+                  >
+                    {children}
+                  </ComponentClass> :
+                  <ComponentClass
+                    {...props}
+                    style={{ ...elementStyle, ...computedResizeStyles }}
+                  />
+                }
+              {currentlySelected &&
+                <ResizeNode
+                  handleMouseDownResize={this.handleMouseDownResize}
+                  onTouch={this.handleTouchResize}
+                  component={this.props.component}
+                />
               }
+              </div>
             </div>
-          )}
+          );}}
         </Motion>
     );
   }
