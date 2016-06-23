@@ -87,8 +87,6 @@ export const fileActions = {
         }
 
         verifyFileContent(fileContents, (schemaError) => {
-          console.log(schemaError);
-
           if (schemaError) {
             notificationSystem.addNotification({
               message: "Error opening presentation",
