@@ -1,0 +1,25 @@
+@import '../../../variables.css';
+
+.updateHeading {
+  border: 1px solid var(--primary-border-color);
+  border-radius: 20px;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-size: 12px;
+  height: 30px;
+  letter-spacing: 0.2px;
+  line-height: 1.8;
+  padding-top: 5px;
+  text-align: center;
+  width: 180px;
+}
+
+.active {
+  background: #3563d3;
+  color: #fff;
+}
+
+.disabled {
+  background: inherit;
+  color: inherit;
+}

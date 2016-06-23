@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import styles from "./select.css";
+import styles from "./option.css";
 
 export default class Option extends Component {
   static propTypes = {
@@ -20,7 +20,7 @@ export default class Option extends Component {
     automationId: undefined,
     className: `${styles.option}`,
     activeClassName: "active",
-    hoverClassName: "hover",
+    hoverClassName: `${styles.hover}`,
     onClick() {}
   }
 
@@ -71,6 +71,11 @@ export default class Option extends Component {
         onKeyDown={this.props.onKeyDown}
         style={this.props.style}
       >
+        {this.props.isActive &&
+          <span className={`${styles.checkWrapper}`}>
+            <i className={"icon ion-ios-checkmark-empty"}></i>
+          </span>
+        }
         {this.props.children}
       </div>
     );

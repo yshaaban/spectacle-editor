@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../../../constants";
 import styles from "./select.css";
-import { CHEVRON } from "../../../assets/icons";
 
 const keyboard = {
   space: 32,
@@ -30,11 +29,11 @@ export default class Select extends Component {
     showCurrentOptionWhenOpen: false,
     onChange() {},
     onBlur() {},
-    className: `${styles.selectWrapper}`,
+    className: "radon-select",
     openClassName: "open",
     focusClassName: `${styles.focus}`,
     listClassName: `${styles.list}`,
-    currentOptionClassName: `${styles.selectBox}`,
+    currentOptionClassName: "radon-select-current",
     hiddenSelectClassName: "radon-select-hidden-select",
     disabledClassName: "radon-select-disabled",
     currentOptionStyle: {},
@@ -84,10 +83,20 @@ export default class Select extends Component {
     };
   }
 
+  componentWillReceiveProps(props) {
+    const selectedOptionIndex = props.defaultValue !== undefined
+      ? this.getValueIndex(props.defaultValue, props)
+      : -1;
+
+    this.setState({ selectedOptionIndex });
+  }
+
   onChange = () => {
     const { selectedOptionVal, childProps } = this.state;
 
-    this.props.onChange(selectedOptionVal, childProps);
+    if (!this.state.open) {
+      this.props.onChange(selectedOptionVal, childProps);
+    }
   }
 
   onFocus = () => {
@@ -188,9 +197,9 @@ export default class Select extends Component {
 
   getValue = () => this.state.selectedOptionVal
 
-  getValueIndex = (val) => {
-    for (let i = 0; i < this.props.children.length; ++i) {
-      if (this.props.children[i].props.value === val) {
+  getValueIndex = (val, props = this.props) => {
+    for (let i = 0; i < props.children.length; ++i) {
+      if (props.children[i].props.value === val) {
         return i;
       }
     }
@@ -198,8 +207,18 @@ export default class Select extends Component {
     return -1;
   }
 
+  getCurrentOptionClasses = () => {
+    const currentSelectionClasses = [this.props.currentOptionClassName];
+
+    currentSelectionClasses.push(styles.selectBox);
+
+    return currentSelectionClasses.join(" ");
+  }
+
   getWrapperClasses = () => {
     const wrapperClassNames = [this.props.className];
+
+    wrapperClassNames.push(styles.selectWrapper);
 
     if (this.state.open) {
       wrapperClassNames.push(this.props.openClassName);
@@ -357,7 +376,7 @@ export default class Select extends Component {
         {this.props.showCurrentOptionWhenOpen || !this.state.open ?
           <div
             ref="currentOption"
-            className={this.props.currentOptionClassName}
+            className={this.getCurrentOptionClasses()}
             tabIndex={0}
             data-automation-id={this.props.automationId}
             role="button"
@@ -374,9 +393,10 @@ export default class Select extends Component {
               this.props.children[0].props.children
             }
             <span
-              className={styles.chevronBox}
-              dangerouslySetInnerHTML={{ __html: CHEVRON }}
-            ></span>
+              className={styles.chevronWrapper}
+            >
+              <i className={"icon ion-ios-arrow-down"}></i>
+            </span>
           </div>
           :
           ""

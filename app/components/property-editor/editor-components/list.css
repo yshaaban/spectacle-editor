@@ -1,0 +1,39 @@
+@import '../../../variables.css';
+
+.listWrapper {
+  border: 1px solid var(--secondary-border-color);
+  border-radius: 20px;
+  box-sizing: border-box;
+  display: flex;
+  height: 30px;
+  overflow: hidden;
+  width: 94px;
+}
+
+.listWrapper .selectedList {
+  background: var(--secondary-border-color);
+}
+
+.listWrapper > .listBox {
+  height: 100%;
+  padding-top: 7px;
+  text-align: center;
+  width: 50%;
+}
+
+.listBox:last-child {
+  border-left: 1px solid var(--secondary-border-color);
+}
+
+.listBox::before {
+  color: #000;
+  position: relative;
+}
+
+.listBox:first-child::before {
+  left: 4px;
+}
+
+.listBox:last-child::before {
+  right: 4px;
+}
