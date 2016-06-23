@@ -19,11 +19,9 @@ import { BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../constants";
 const fileStore = new FileStore();
 const slideStore = new SlidesStore(fileStore);
 
-
 ipcRenderer.on("file", (event, message) => {
   fileActions[message](slideStore, fileStore);
 });
-
 
 @observer
 class Home extends Component {
