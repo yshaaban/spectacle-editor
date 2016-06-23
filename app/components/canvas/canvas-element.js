@@ -37,6 +37,10 @@ class CanvasElement extends Component {
     };
   }
 
+  shouldComponentUpdate() {
+    return true;
+  }
+
   handleTouchStart = (ev) => {
     ev.preventDefault();
     this.handleMouseDown(ev.touches[0]);

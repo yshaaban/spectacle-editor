@@ -96,7 +96,7 @@ class ElementItem extends Component {
     this.mouseClickTimeout = setTimeout(() => {
       this.mouseClickTimeout = null;
 
-      this.context.store.updateElementDraggingState(true);
+      this.context.store.updateElementDraggingState(true, true);
 
       // Make the cursor dragging everywhere
       document.body.style.cursor = "-webkit-grabbing";

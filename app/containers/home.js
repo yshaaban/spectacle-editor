@@ -1,7 +1,10 @@
+import { ipcRenderer } from "electron";
 import React, { Component, PropTypes } from "react";
+import { autorun } from "mobx";
 import { observer } from "mobx-react";
 
 import SlidesStore from "../stores/slides-store";
+import FileStore from "../stores/file-store";
 import Provider from "../components/utils/provider";
 import HistoryMenu from "../components/history-menu";
 import PropertyEditor from "../components/property-editor";
@@ -9,10 +12,18 @@ import MenuBar from "../components/menu-bar";
 import SlideList from "../components/slide-list";
 import Canvas from "../components/canvas";
 import defaultTheme from "../themes/default";
+import { fileActions } from "../menu-actions";
 import styles from "./home.css";
 import { BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../constants";
 
-const store = new SlidesStore();
+const fileStore = new FileStore();
+const slideStore = new SlidesStore(fileStore);
+
+
+ipcRenderer.on("file", (event, message) => {
+  fileActions[message](slideStore, fileStore);
+});
+
 
 @observer
 class Home extends Component {
@@ -31,6 +42,17 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    autorun(() => {
+      if (fileStore.fileName) {
+        // Don't show path info or `.json` extension
+        document.title = fileStore.fileName.split("/").pop().slice(0, -5);
+      }
+
+      if (fileStore.isDirty) {
+        document.title += "* - Edited";
+      }
+    });
+
     document.addEventListener("mousedown", (ev) => {
       const findClassRecursively = (el) => {
         const classes = el.classList ? Array.prototype.slice.call(el.classList) : [];
@@ -48,7 +70,7 @@ class Home extends Component {
       };
 
       if (!findClassRecursively(ev.target)) {
-        store.setCurrentElementIndex(null);
+        slideStore.setCurrentElementIndex(null);
       }
     });
   }
@@ -56,13 +78,13 @@ class Home extends Component {
   render() {
     const wrapperStyles = {};
 
-    if (store.isDragging) {
+    if (slideStore.isDragging) {
       wrapperStyles.cursor = "-webkit-grabbing";
       wrapperStyles.pointerEvents = "none";
     }
 
     return (
-      <Provider store={store}>
+      <Provider store={slideStore}>
         <div className={styles.home} style={wrapperStyles}>
           <MenuBar />
           <HistoryMenu />

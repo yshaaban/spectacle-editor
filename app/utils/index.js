@@ -1,4 +1,4 @@
-import { sortBy, sortedUniq } from "lodash";
+import { sortBy, sortedUniq, invert } from "lodash";
 
 import { ElementTypes, SNAP_DISTANCE } from "../constants";
 
@@ -155,4 +155,48 @@ export const snap = (gridLines, potentialLines, snapFunction) => {
   }
 
   snapFunction(null);
+};
+
+export const verifyFileContent = (fileContent, cb) => {
+  if (!fileContent || !fileContent.content || !fileContent.content.slides) {
+    return cb(new Error("Empty file"));
+  }
+
+  if (!Array.isArray(fileContent.content.slides)) {
+    return cb(new Error("content.slides must be an array"));
+  }
+
+  const slideError = fileContent.content.slides.some((slide) => {
+    if (!slide.id || !slide.children || !slide.props) {
+      cb(new Error("Invalid Slide"));
+
+      return true;
+    }
+
+    if (!Array.isArray(slide.children)) {
+      cb(new Error("Slide children must be an array"));
+
+      return true;
+    }
+
+    return slide.children.some((child) => {
+      if (!child.type || !invert(ElementTypes)[child.type]) {
+        cb(new Error("Slide child must have a valid type"));
+
+        return true;
+      }
+
+      if (!child.id || !child.props) {
+        cb(new Error("Invalid slide child"));
+
+        return true;
+      }
+
+      return false;
+    });
+  });
+
+  if (!slideError) {
+    return cb();
+  }
 };
