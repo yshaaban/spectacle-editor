@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from "react";
+import ReactDOM from "react-dom";
 import { observer } from "mobx-react";
 import { Motion, spring } from "react-motion";
 import { omit } from "lodash";
@@ -39,6 +40,19 @@ class CanvasElement extends Component {
     };
   }
 
+  componentDidMount() {
+    const { width, height } = this.currentElementComponent.getBoundingClientRect();
+
+    // add 28px because getBoundingClientReact is firing before
+    // element is finished completely rendering it is consistently 28px
+    // more narrow than end result. Not sure how to get around this.
+
+    this.setState({ // eslint-disable-line react/no-did-mount-set-state
+      width: (width + 28),
+      height
+    });
+  }
+
   shouldComponentUpdate() {
     // This is needed because of the way the component is passed down
     // React isn't re-rendering this when the contextual menu updates the store
@@ -54,8 +68,17 @@ class CanvasElement extends Component {
     ev.preventDefault();
     window.removeEventListener("mousemove", this.handleMouseMoveResize);
 
-    this.setState({ isResizing: false });
-    // update store
+    this.setState({
+      isResizing: false
+    });
+
+    const { width, left } = this.state;
+    const propStyles = { ...this.props.component.props.style };
+
+    propStyles.width = width;
+    propStyles.left = left;
+
+    this.context.store.updateElementProps({ style: propStyles });
   }
 
   handleMouseDownResize = (ev) => {
@@ -65,26 +88,19 @@ class CanvasElement extends Component {
     const { target, pageX } = ev;
     const classString = Array.prototype.join.call(target.classList, "");
     const isLeftSideDrag = classString.indexOf("handleLeft") > -1;
-    const boundingBox = this.currentElementComponent.getBoundingClientRect();
-    const width = this.state.width ? this.state.width : boundingBox.width;
-    const currentElementOffset = isLeftSideDrag ? pageX : pageX + width;
+    const { width, height } = this.currentElementComponent.getBoundingClientRect();
+    const componentProps = this.props.component.props;
+    const componentLeft = componentProps.style && componentProps.style.left || 0;
+    const left = componentLeft || this.state.left;
 
-    const updatedState = {
-      currentElementOffset,
+    this.setState({
       isLeftSideDrag,
       isResizing: true,
+      width,
+      height,
+      left,
       resizeLastX: pageX
-    };
-
-    if (this.state.width === undefined) {
-      updatedState.width = boundingBox.width;
-    }
-
-    if (this.state.height === undefined) {
-      updatedState.height = boundingBox.height;
-    }
-
-    this.setState({ ...updatedState });
+    });
 
     window.addEventListener("mousemove", this.handleMouseMoveResize);
     window.addEventListener("touchmove", this.handleTouchMoveResize);
@@ -96,11 +112,17 @@ class CanvasElement extends Component {
     ev.preventDefault();
     const { pageX } = ev;
     const { isLeftSideDrag, resizeLastX, width } = this.state;
-    const change = pageX - resizeLastX;
+    let { left } = this.state;
+    let change;
 
-    if (!isLeftSideDrag) {
-      this.setState({ width: (change + width), resizeLastX: pageX });
+    if (isLeftSideDrag) {
+      change = resizeLastX - pageX;
+      left -= change;
+    } else {
+      change = pageX - resizeLastX;
     }
+
+    this.setState({ left, width: (change + width), resizeLastX: pageX });
   }
 
   handleTouchStart = (ev) => {
@@ -189,12 +211,14 @@ class CanvasElement extends Component {
     ];
 
     let { width, height } = getElementDimensions(this.props.component);
-    height = (height === undefined) ?
-      this.currentElementComponent.getBoundingClientRect().height :
-      height;
-    width = (width === undefined) ?
-      this.currentElementComponent.getBoundingClientRect().width :
-      width;
+
+    if (height === undefined) {
+      height = this.currentElementComponent.getBoundingClientRect().height;
+    }
+
+    if (width === undefined) {
+      width = this.currentElementComponent.getBoundingClientRect().width;
+    }
 
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("touchend", this.handleMouseUp);
@@ -290,7 +314,8 @@ class CanvasElement extends Component {
       width,
       isResizing,
       isPressed,
-      delta: [x, y]
+      delta: [x, y],
+      left
     } = this.state;
 
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
@@ -328,24 +353,24 @@ class CanvasElement extends Component {
 
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
-    if (this.props.component.props.style.width !== undefined) {
+    if (this.props.component.props.style.width !== undefined || isResizing) {
       elementStyle = omit(elementStyle, "whiteSpace");
       elementStyle.wordBreak = "break-all";
     }
-
-    const hiddenElementStyle = omit(elementStyle, "height", "width");
 
     if (isPressed) {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
       motionStyles.top = spring((props.style && props.style.top || 0) + y, SpringSettings.DRAG);
     }
 
+    motionStyles.width = spring((width && width || 0), { stiffness: 210, damping: 20 });
 
-    motionStyles.width = spring((width && width || 220), { stiffness: 210, damping: 20 });
-
+    // this is necessary to update with during a resizing.
     if (isResizing) {
-      const propWidth = (props.style && props.style.width) || 0;
-      motionStyles.width = spring(Math.round(propWidth + width), { stiffness: 210, damping: 20 });
+      const componentStylesLeft = props.style && props.style.left || 0;
+
+      motionStyles.left = spring(left || componentStylesLeft, { stiffness: 210, damping: 20 });
+      motionStyles.width = spring(width, { stiffness: 210, damping: 20 });
     }
 
     return (
@@ -354,31 +379,18 @@ class CanvasElement extends Component {
         >
           {computedStyles => {
             const computedDragStyles = omit(computedStyles, "width");
-            const computedResizeStyles = omit(computedStyles, "top", "left");
+            let computedResizeStyles = omit(computedStyles, "top", "left");
+
+            if (!isResizing) {
+              computedResizeStyles = {};
+            }
 
             return (
-            <div>
-              <div
-                ref={component => {this.currentElementComponent = component;}}
-                className={styles.hiddenElement}
-              >
-                {type !== ElementTypes.IMAGE ?
-                  <ComponentClass
-                    {...props}
-                    style={hiddenElementStyle}
-                  >
-                    {children}
-                  </ComponentClass> :
-                  <ComponentClass
-                    {...props}
-                    style={hiddenElementStyle}
-                  />
-                }
-              </div>
               <div
                 className={
                   `${styles.canvasElement} ${extraClasses} ${BLACKLIST_CURRENT_ELEMENT_DESELECT}`
                 }
+                ref={component => {this.currentElementComponent = component;}}
                 style={{ ...wrapperStyle, ...computedDragStyles }}
                 onMouseDown={this.handleMouseDown}
                 onTouchStart={this.handleTouchStart}
@@ -399,6 +411,9 @@ class CanvasElement extends Component {
                     {children}
                   </ComponentClass> :
                   <ComponentClass
+                    ref={component => {
+                      this.currentElementComponent = ReactDOM.findDOMNode(component);
+                    }}
                     {...props}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   />
@@ -411,7 +426,6 @@ class CanvasElement extends Component {
                 />
               }
               </div>
-            </div>
           );}}
         </Motion>
     );

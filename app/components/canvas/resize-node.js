@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from "react";
 import styles from "./resize-node.css";
-import { Motion, spring } from "react-motion";
 
 export default class ResizeNode extends Component {
   static propTypes = {
