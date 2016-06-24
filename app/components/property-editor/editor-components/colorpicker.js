@@ -77,9 +77,21 @@ export default class ColorPicker extends Component {
     this.updateColor(color.hex, color.hsl.a);
   }
 
+  getRGBAValues({ opacity = 1, color }) {
+    const removeHash = color.replace(/^#/, "");
+
+    return {
+      r: parseInt(removeHash.slice(0, 2), 16),
+      g: parseInt(removeHash.slice(2, 4), 16),
+      b: parseInt(removeHash.slice(4), 16),
+      a: opacity
+    };
+  }
+
   render() {
     const { currentElement } = this.props;
-
+    const rgba = this.getRGBAValues(currentElement.props.style);
+    console.log(rgba);
     return (
       <div className={styles.colorWrapper}>
         <div
@@ -102,7 +114,7 @@ export default class ColorPicker extends Component {
             }
         >
           <SketchPicker
-            color={currentElement.props.style.color}
+            color={rgba}
             onChangeComplete={this.handleChangeComplete}
           />
         </div>
