@@ -18,16 +18,28 @@ export default class ColorPicker extends Component {
     this.state = { pickerIsOpen: false };
   }
 
-  updateColor(hex) {
-    if (this.props.currentElement.props.style.color !== hex) {
-      const updatedColor = { color: hex };
-      const updatedStyles = {
-        ...this.props.currentElement.props.style,
-        ...updatedColor
-      };
+  updateColor(hex, opacity) {
+    const style = this.props.currentElement.props.style;
+    const updatedColor = {};
 
-      this.context.store.updateElementProps({ style: updatedStyles });
+    if (style.color !== hex) {
+      updatedColor.color = hex;
     }
+
+    if (style.opacity !== opacity) {
+      updatedColor.opacity = opacity;
+    }
+
+    if (!updatedColor.opacity && !updatedColor.color) {
+      return;
+    }
+
+    const updatedStyles = {
+      ...style,
+      ...updatedColor
+    };
+
+    this.context.store.updateElementProps({ style: updatedStyles });
   }
 
   handlePickerClose = (ev) => {
@@ -62,7 +74,7 @@ export default class ColorPicker extends Component {
   }
 
   handleChangeComplete = (color) => {
-    this.updateColor(color.hex);
+    this.updateColor(color.hex, color.hsl.a);
   }
 
   render() {
