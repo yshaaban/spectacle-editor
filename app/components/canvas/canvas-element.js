@@ -128,8 +128,6 @@ class CanvasElement extends Component {
     window.removeEventListener("touchmove", this.handleTouchMoveResize);
     window.removeEventListener("touchend", this.handleTouchEndResize);
 
-    document.body.style.cursor = "auto";
-
     this.setState({
       isResizing: false
     });
