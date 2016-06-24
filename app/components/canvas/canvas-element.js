@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from "react";
 import ReactDOM from "react-dom";
 import { observer } from "mobx-react";
 import { Motion, spring } from "react-motion";
-import { omit } from "lodash";
+import { omit, defer } from "lodash";
 
 import { ElementTypes, SpringSettings, BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../../constants";
 import { getElementDimensions, getPointsToSnap, snap } from "../../utils";
@@ -41,15 +41,13 @@ class CanvasElement extends Component {
   }
 
   componentDidMount() {
-    const { width, height } = this.currentElementComponent.getBoundingClientRect();
+    defer(() => {
+      const { width, height } = this.currentElementComponent.getBoundingClientRect();
 
-    // add 28px because getBoundingClientReact is firing before
-    // element is finished completely rendering. It is consistently 28px
-    // more narrow than end result. Not sure how to get around this.
-
-    this.setState({ // eslint-disable-line react/no-did-mount-set-state
-      width: (width + 28),
-      height
+      this.setState({ // eslint-disable-line react/no-did-mount-set-state
+        width,
+        height
+      });
     });
   }
 
