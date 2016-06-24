@@ -44,7 +44,7 @@ class CanvasElement extends Component {
     const { width, height } = this.currentElementComponent.getBoundingClientRect();
 
     // add 28px because getBoundingClientReact is firing before
-    // element is finished completely rendering it is consistently 28px
+    // element is finished completely rendering. It is consistently 28px
     // more narrow than end result. Not sure how to get around this.
 
     this.setState({ // eslint-disable-line react/no-did-mount-set-state
@@ -64,9 +64,17 @@ class CanvasElement extends Component {
     this.handleMouseResize(ev.touches[0]);
   }
 
+  handleTouchEndResize = (ev) => {
+    ev.preventDefault();
+    this.handleMouseUpResize(ev.touches[0]);
+  }
+
   handleMouseUpResize = (ev) => {
     ev.preventDefault();
     window.removeEventListener("mousemove", this.handleMouseMoveResize);
+    window.removeEventListener("mouseup", this.handleMouseUpResize);
+    window.removeEventListener("touchmove", this.handleTouchMoveResize);
+    window.removeEventListener("touchend", this.handleTouchEndResize);
 
     this.setState({
       isResizing: false
@@ -90,8 +98,8 @@ class CanvasElement extends Component {
     const isLeftSideDrag = classString.indexOf("handleLeft") > -1;
     const { width, height } = this.currentElementComponent.getBoundingClientRect();
     const componentProps = this.props.component.props;
-    const componentLeft = componentProps.style && componentProps.style.left || 0;
-    const left = componentLeft || this.state.left;
+    const componentLeft = componentProps.style && componentProps.style.left;
+    const left = componentLeft || 0;
 
     this.setState({
       isLeftSideDrag,
@@ -108,6 +116,11 @@ class CanvasElement extends Component {
     window.addEventListener("touchend", this.handleTouchEndResize);
   }
 
+  handleTouchMoveResize = (ev) => {
+    ev.preventDefault();
+    this.handleMouseMoveResize(ev.touches[0]);
+  }
+
   handleMouseMoveResize = (ev) => {
     ev.preventDefault();
     const { pageX } = ev;
@@ -121,8 +134,11 @@ class CanvasElement extends Component {
     } else {
       change = pageX - resizeLastX;
     }
+    const newWidth = change + width;
 
-    this.setState({ left, width: (change + width), resizeLastX: pageX });
+    if (newWidth >= 0) {
+      this.setState({ left, width: (change + width), resizeLastX: pageX });
+    }
   }
 
   handleTouchStart = (ev) => {
@@ -350,7 +366,6 @@ class CanvasElement extends Component {
         wrapperStyle.transform = `scale(${scale})`;
       }
     }
-
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
     if (this.props.component.props.style.width !== undefined || isResizing) {
@@ -365,7 +380,6 @@ class CanvasElement extends Component {
 
     motionStyles.width = spring((width && width || 0), { stiffness: 210, damping: 20 });
 
-    // this is necessary to update with during a resizing.
     if (isResizing) {
       const componentStylesLeft = props.style && props.style.left || 0;
 
