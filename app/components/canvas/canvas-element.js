@@ -134,6 +134,7 @@ class CanvasElement extends Component {
     } else {
       change = pageX - resizeLastX;
     }
+
     const newWidth = change + width;
 
     if (newWidth >= 0) {
