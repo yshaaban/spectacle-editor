@@ -18,28 +18,15 @@ export default class ColorPicker extends Component {
     this.state = { pickerIsOpen: false };
   }
 
-  updateColor(hex, opacity) {
-    const style = this.props.currentElement.props.style;
-    const updatedColor = {};
+  getRGBAValues({ opacity = 1, color }) {
+    const removedHash = color.replace(/^#/, "");
 
-    if (style.color !== hex) {
-      updatedColor.color = hex;
-    }
-
-    if (style.opacity !== opacity) {
-      updatedColor.opacity = opacity;
-    }
-
-    if (!updatedColor.opacity && !updatedColor.color) {
-      return;
-    }
-
-    const updatedStyles = {
-      ...style,
-      ...updatedColor
+    return {
+      r: parseInt(removedHash.slice(0, 2), 16),
+      g: parseInt(removedHash.slice(2, 4), 16),
+      b: parseInt(removedHash.slice(4), 16),
+      a: opacity
     };
-
-    this.context.store.updateElementProps({ style: updatedStyles });
   }
 
   handlePickerClose = (ev) => {
@@ -77,21 +64,34 @@ export default class ColorPicker extends Component {
     this.updateColor(color.hex, color.hsl.a);
   }
 
-  getRGBAValues({ opacity = 1, color }) {
-    const removeHash = color.replace(/^#/, "");
+  updateColor(hex, opacity) {
+    const style = this.props.currentElement.props.style;
+    const updatedColor = {};
 
-    return {
-      r: parseInt(removeHash.slice(0, 2), 16),
-      g: parseInt(removeHash.slice(2, 4), 16),
-      b: parseInt(removeHash.slice(4), 16),
-      a: opacity
+    if (style.color !== hex) {
+      updatedColor.color = hex;
+    }
+
+    if (style.opacity !== opacity) {
+      updatedColor.opacity = opacity;
+    }
+
+    if (!updatedColor.opacity && !updatedColor.color) {
+      return;
+    }
+
+    const updatedStyles = {
+      ...style,
+      ...updatedColor
     };
+
+    this.context.store.updateElementProps({ style: updatedStyles });
   }
 
   render() {
     const { currentElement } = this.props;
     const rgba = this.getRGBAValues(currentElement.props.style);
-    console.log(rgba);
+
     return (
       <div className={styles.colorWrapper}>
         <div
