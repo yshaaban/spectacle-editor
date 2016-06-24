@@ -248,7 +248,7 @@ class CanvasElement extends Component {
       this.clickStart = null;
       this.mouseClickTimeout = null;
 
-      this.context.store.updateElementDraggingState(true);
+      this.context.store.updateElementDraggingState(true, true);
 
       // Make the cursor dragging everywhere
       document.body.style.cursor = "-webkit-grabbing";
