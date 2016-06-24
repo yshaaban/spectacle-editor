@@ -3,6 +3,7 @@
 .canvasElement {
   position: relative;
   display: inline-block;
+  cursor: move;
 }
 
 /* Need this to capture all click events on elements */

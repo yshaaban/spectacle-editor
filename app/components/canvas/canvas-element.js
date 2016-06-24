@@ -59,34 +59,9 @@ class CanvasElement extends Component {
     return true;
   }
 
-  handleTouchResize = (ev) => {
+  handleTouchStartResize = (ev) => {
     ev.preventDefault();
-    this.handleMouseResize(ev.touches[0]);
-  }
-
-  handleTouchEndResize = (ev) => {
-    ev.preventDefault();
-    this.handleMouseUpResize(ev.touches[0]);
-  }
-
-  handleMouseUpResize = (ev) => {
-    ev.preventDefault();
-    window.removeEventListener("mousemove", this.handleMouseMoveResize);
-    window.removeEventListener("mouseup", this.handleMouseUpResize);
-    window.removeEventListener("touchmove", this.handleTouchMoveResize);
-    window.removeEventListener("touchend", this.handleTouchEndResize);
-
-    this.setState({
-      isResizing: false
-    });
-
-    const { width, left } = this.state;
-    const propStyles = { ...this.props.component.props.style };
-
-    propStyles.width = width;
-    propStyles.left = left;
-
-    this.context.store.updateElementProps({ style: propStyles });
+    this.handleMouseDownResize(ev.touches[0]);
   }
 
   handleMouseDownResize = (ev) => {
@@ -94,8 +69,7 @@ class CanvasElement extends Component {
     ev.preventDefault();
 
     const { target, pageX } = ev;
-    const classString = Array.prototype.join.call(target.classList, "");
-    const isLeftSideDrag = classString.indexOf("handleLeft") > -1;
+    const isLeftSideDrag = target === this.leftResizeNode;
     const { width, height } = this.currentElementComponent.getBoundingClientRect();
     const componentProps = this.props.component.props;
     const componentLeft = componentProps.style && componentProps.style.left;
@@ -142,6 +116,33 @@ class CanvasElement extends Component {
     }
   }
 
+  handleTouchEndResize = (ev) => {
+    ev.preventDefault();
+    this.handleMouseUpResize(ev.touches[0]);
+  }
+
+  handleMouseUpResize = (ev) => {
+    ev.preventDefault();
+    window.removeEventListener("mousemove", this.handleMouseMoveResize);
+    window.removeEventListener("mouseup", this.handleMouseUpResize);
+    window.removeEventListener("touchmove", this.handleTouchMoveResize);
+    window.removeEventListener("touchend", this.handleTouchEndResize);
+
+    document.body.style.cursor = "auto";
+
+    this.setState({
+      isResizing: false
+    });
+
+    const { width, left } = this.state;
+    const propStyles = { ...this.props.component.props.style };
+
+    propStyles.width = width;
+    propStyles.left = left;
+
+    this.context.store.updateElementProps({ style: propStyles });
+  }
+
   handleTouchStart = (ev) => {
     ev.preventDefault();
     this.handleMouseDown(ev.touches[0]);
@@ -152,9 +153,7 @@ class CanvasElement extends Component {
     this.handleMouseMove(ev.touches[0]);
   }
 
-  handleMouseMove = ({ pageX, pageY, offsetX, offsetY, target }) => {
-    const { id } = target;
-
+  handleMouseMove = ({ pageX, pageY, offsetX, offsetY, target: { id } }) => {
     const {
       mouseStart: [x, y],
       mouseOffset: [mouseOffsetX, mouseOffsetY],
@@ -359,6 +358,8 @@ class CanvasElement extends Component {
         SpringSettings.DRAG
       );
 
+      motionStyles.width = spring((width && width || 0), SpringSettings.RESIZE);
+
       if (mousePosition) {
         wrapperStyle.whiteSpace = "nowrap";
       }
@@ -379,13 +380,12 @@ class CanvasElement extends Component {
       motionStyles.top = spring((props.style && props.style.top || 0) + y, SpringSettings.DRAG);
     }
 
-    motionStyles.width = spring((width && width || 0), { stiffness: 210, damping: 20 });
 
     if (isResizing) {
       const componentStylesLeft = props.style && props.style.left || 0;
 
-      motionStyles.left = spring(left || componentStylesLeft, { stiffness: 210, damping: 20 });
-      motionStyles.width = spring(width, { stiffness: 210, damping: 20 });
+      motionStyles.left = spring(left || componentStylesLeft, SpringSettings.RESIZE);
+      motionStyles.width = spring(width, SpringSettings.RESIZE);
     }
 
     return (
@@ -412,9 +412,10 @@ class CanvasElement extends Component {
               >
               {currentlySelected &&
                 <ResizeNode
+                  ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
                   alignLeft
                   handleMouseDownResize={this.handleMouseDownResize}
-                  onTouch={this.handleTouchResize}
+                  onTouch={this.handleTouchStartResize}
                   component={this.props.component}
                 />
               }
@@ -426,9 +427,6 @@ class CanvasElement extends Component {
                     {children}
                   </ComponentClass> :
                   <ComponentClass
-                    ref={component => {
-                      this.currentElementComponent = ReactDOM.findDOMNode(component);
-                    }}
                     {...props}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   />
@@ -436,7 +434,7 @@ class CanvasElement extends Component {
               {currentlySelected &&
                 <ResizeNode
                   handleMouseDownResize={this.handleMouseDownResize}
-                  onTouch={this.handleTouchResize}
+                  onTouch={this.handleTouchStartResize}
                   component={this.props.component}
                 />
               }
