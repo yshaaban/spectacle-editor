@@ -18,16 +18,15 @@ export default class ColorPicker extends Component {
     this.state = { pickerIsOpen: false };
   }
 
-  updateColor(hex) {
-    if (this.props.currentElement.props.style.color !== hex) {
-      const updatedColor = { color: hex };
-      const updatedStyles = {
-        ...this.props.currentElement.props.style,
-        ...updatedColor
-      };
+  getRGBAValues({ opacity = 1, color }) {
+    const removedHash = color.replace(/^#/, "");
 
-      this.context.store.updateElementProps({ style: updatedStyles });
-    }
+    return {
+      r: parseInt(removedHash.slice(0, 2), 16),
+      g: parseInt(removedHash.slice(2, 4), 16),
+      b: parseInt(removedHash.slice(4), 16),
+      a: opacity
+    };
   }
 
   handlePickerClose = (ev) => {
@@ -62,11 +61,36 @@ export default class ColorPicker extends Component {
   }
 
   handleChangeComplete = (color) => {
-    this.updateColor(color.hex);
+    this.updateColor(color.hex, color.hsl.a);
+  }
+
+  updateColor(hex, opacity) {
+    const style = this.props.currentElement.props.style;
+    const updatedColor = {};
+
+    if (style.color !== hex) {
+      updatedColor.color = hex;
+    }
+
+    if (style.opacity !== opacity) {
+      updatedColor.opacity = opacity;
+    }
+
+    if (updatedColor.opacity === undefined && updatedColor.color === undefined) {
+      return;
+    }
+
+    const updatedStyles = {
+      ...style,
+      ...updatedColor
+    };
+
+    this.context.store.updateElementProps({ style: updatedStyles });
   }
 
   render() {
     const { currentElement } = this.props;
+    const rgba = this.getRGBAValues(currentElement.props.style);
 
     return (
       <div className={styles.colorWrapper}>
@@ -90,7 +114,7 @@ export default class ColorPicker extends Component {
             }
         >
           <SketchPicker
-            color={currentElement.props.style.color}
+            color={rgba}
             onChangeComplete={this.handleChangeComplete}
           />
         </div>
