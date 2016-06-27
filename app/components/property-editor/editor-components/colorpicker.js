@@ -76,7 +76,7 @@ export default class ColorPicker extends Component {
       updatedColor.opacity = opacity;
     }
 
-    if (!updatedColor.opacity && !updatedColor.color) {
+    if (updatedColor.opacity === undefined && updatedColor.color === undefined) {
       return;
     }
 
