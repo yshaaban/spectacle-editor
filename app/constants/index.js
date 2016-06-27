@@ -22,7 +22,8 @@ export const IconTypes = {
 };
 
 export const SpringSettings = {
-  DRAG: { stiffness: 1000, damping: 50 }
+  DRAG: { stiffness: 1000, damping: 50 },
+  RESIZE: { stiffness: 210, damping: 20 }
 };
 
 export const SNAP_DISTANCE = 15;
