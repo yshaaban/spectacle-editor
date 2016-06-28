@@ -12,7 +12,7 @@ import { getElementDimensions, getPointsToSnap, snap } from "../../../utils";
 import styles from "../canvas-element.css";
 import ResizeNode from "../resize-node";
 
-export default class TextElement extends Component {
+export default class ImageElement extends Component {
   static propTypes = {
     elementIndex: PropTypes.number,
     component: PropTypes.shape({
