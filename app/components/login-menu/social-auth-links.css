@@ -1,0 +1,31 @@
+.socialAuthLinks {
+  width: 100%;
+}
+
+.socialAuthLinks h3 {
+  border-top: 1px solid #e7e8e9;
+  width: 150px;
+  margin: 30px auto 10px;
+  padding-top: 10px;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.75;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: #32393d;
+}
+
+.socialAuthButtonGroup {
+  margin: auto;
+  width: 240px;
+}
+
+.socialAuthButton {
+  border: none;
+  background-color: transparent;
+  background-size: 100%;
+  width: 32px;
+  height: 23px;
+  overflow: hidden;
+  margin: 0 14px;
+}

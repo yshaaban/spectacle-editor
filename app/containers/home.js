@@ -11,6 +11,7 @@ import PropertyEditor from "../components/property-editor";
 import MenuBar from "../components/menu-bar";
 import SlideList from "../components/slide-list";
 import Canvas from "../components/canvas";
+import LoginMenu from "../components/login-menu";
 import defaultTheme from "../themes/default";
 import { fileActions } from "../menu-actions";
 import styles from "./home.css";
@@ -91,6 +92,7 @@ class Home extends Component {
             <PropertyEditor />
             <Canvas />
           </div>
+          <LoginMenu />
         </div>
       </Provider>
     );

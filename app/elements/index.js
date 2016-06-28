@@ -1,6 +1,6 @@
 import React from "react";
 
-// import plotlyPlaceholder from "../assets/images/plotly-placeholder.png";
+import plotlyPlaceholder from "../assets/images/plotly-placeholder.png";
 import { ElementTypes } from "../constants";
 import { Image, Heading } from "../spectacle-components";
 
@@ -80,7 +80,7 @@ elements[ElementTypes.PLOTY_PLACEHOLDER_IMAGE] = {
   type: ElementTypes.PLOTY_PLACEHOLDER_IMAGE,
   ComponentClass: Image,
   props: {
-    src: "plotlyPlaceholder",
+    src: plotlyPlaceholder,
     width: 450,
     height: 400
   },
