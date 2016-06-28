@@ -97,30 +97,55 @@ class CanvasElement extends Component {
 
   handleMouseMoveResize = (ev) => {
     ev.preventDefault();
-    const { pageX, offsetX } = ev;
+    const { pageX } = ev;
     const { isLeftSideDrag, resizeLastX, width } = this.state;
     let { left } = this.state;
     let change;
-    
+    let isSnapped;
+
     const snapCallback = (line, index) => {
       if (line === null) {
         this.props.hideGridLine(true);
-
+        isSnapped = false;
         return;
       }
 
-      this.props.showGridLine(line, true);
+      let pointToAlignWithLine;
+
+      if (index === 0) {
+        pointToAlignWithLine = left;
+      }
+
+      if (index === 1) {
+        pointToAlignWithLine = Math.floor(left + width / 2);
+      }
+
+      if (index === 2) {
+        pointToAlignWithLine = Math.floor(left + width);
+      }
+      const vector = Math.abs(pointToAlignWithLine - line);
+      if (vector <= 5) {
+        isSnapped = true;
+        this.props.showGridLine(line, true);
+      }
     };
 
     snap(
       this.gridLines.vertical,
       getPointsToSnap(
-        (isLeftSideDrag ? offsetX : offsetX + width),
+        left,
         width,
-        (isLeftSideDrag ? 0 : width)
+        Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)
       ),
       snapCallback
     );
+
+    if (isSnapped) {
+      // left = isLeftSideDrag ? (left - change) : left;
+
+      // this.setState({ left, width: (change + width) });
+      return;
+    }
 
     if (isLeftSideDrag) {
       change = resizeLastX - pageX;
@@ -148,6 +173,7 @@ class CanvasElement extends Component {
     window.removeEventListener("touchmove", this.handleTouchMoveResize);
     window.removeEventListener("touchend", this.handleTouchEndResize);
 
+    this.props.hideGridLine(true);
     this.setState({
       isResizing: false
     });
@@ -402,7 +428,10 @@ class CanvasElement extends Component {
     if (isResizing) {
       const componentStylesLeft = props.style && props.style.left || 0;
 
-      motionStyles.left = spring(left || componentStylesLeft, SpringSettings.RESIZE);
+      motionStyles.left = spring(
+        left === undefined ? componentStylesLeft : left,
+        SpringSettings.RESIZE
+      );
       motionStyles.width = spring(width, SpringSettings.RESIZE);
     }
 
