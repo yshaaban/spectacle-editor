@@ -73,6 +73,8 @@ class CanvasElement extends Component {
     const componentLeft = componentProps.style && componentProps.style.left;
     const left = componentLeft || 0;
 
+    this.gridLines = this.context.store.gridLines;
+
     this.setState({
       isLeftSideDrag,
       isResizing: true,
@@ -95,10 +97,30 @@ class CanvasElement extends Component {
 
   handleMouseMoveResize = (ev) => {
     ev.preventDefault();
-    const { pageX } = ev;
+    const { pageX, offsetX } = ev;
     const { isLeftSideDrag, resizeLastX, width } = this.state;
     let { left } = this.state;
     let change;
+    
+    const snapCallback = (line, index) => {
+      if (line === null) {
+        this.props.hideGridLine(true);
+
+        return;
+      }
+
+      this.props.showGridLine(line, true);
+    };
+
+    snap(
+      this.gridLines.vertical,
+      getPointsToSnap(
+        (isLeftSideDrag ? offsetX : offsetX + width),
+        width,
+        (isLeftSideDrag ? 0 : width)
+      ),
+      snapCallback
+    );
 
     if (isLeftSideDrag) {
       change = resizeLastX - pageX;
