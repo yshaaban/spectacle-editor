@@ -123,8 +123,8 @@ class CanvasElement extends Component {
       if (index === 2) {
         pointToAlignWithLine = Math.floor(left + width);
       }
-      const vector = Math.abs(pointToAlignWithLine - line);
-      if (vector <= 5) {
+      const difference = Math.abs(pointToAlignWithLine - line);
+      if (difference <= 5) {
         isSnapped = true;
         this.props.showGridLine(line, true);
       }
@@ -141,9 +141,6 @@ class CanvasElement extends Component {
     );
 
     if (isSnapped) {
-      // left = isLeftSideDrag ? (left - change) : left;
-
-      // this.setState({ left, width: (change + width) });
       return;
     }
 
