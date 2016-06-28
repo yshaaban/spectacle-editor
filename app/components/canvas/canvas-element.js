@@ -123,8 +123,9 @@ class CanvasElement extends Component {
       if (index === 2) {
         pointToAlignWithLine = Math.floor(left + width);
       }
+
       const difference = Math.abs(pointToAlignWithLine - line);
-      if (difference <= 5) {
+      if (difference <= 3) {
         isSnapped = true;
         this.props.showGridLine(line, true);
       }
@@ -141,6 +142,14 @@ class CanvasElement extends Component {
     );
 
     if (isSnapped) {
+      if (change) {
+        console.log(change);
+        this.setState({
+          left: 0,
+          width: change + width
+        });
+      }
+
       return;
     }
 
