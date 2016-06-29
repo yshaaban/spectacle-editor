@@ -4,7 +4,6 @@ import { Motion, spring } from "react-motion";
 import { omit, defer } from "lodash";
 
 import {
-  ElementTypes,
   SpringSettings,
   BLACKLIST_CURRENT_ELEMENT_DESELECT
 } from "../../../constants";
@@ -16,7 +15,6 @@ export default class TextElement extends Component {
   static propTypes = {
     elementIndex: PropTypes.number,
     component: PropTypes.shape({
-      type: PropTypes.oneOf(Object.keys(ElementTypes).map(key => ElementTypes[key])).isRequired,
       ComponentClass: React.PropTypes.any.isRequired,
       props: PropTypes.object,
       children: PropTypes.node
@@ -125,6 +123,7 @@ export default class TextElement extends Component {
       if (index === 2) {
         pointToAlignWithLine = Math.ceil(left + width);
       }
+
       const distance = Math.abs(pointToAlignWithLine - line);
 
       if (distance <= 3) {
@@ -415,6 +414,7 @@ export default class TextElement extends Component {
         wrapperStyle.transform = `scale(${scale})`;
       }
     }
+
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
     if (this.props.component.props.style.width !== undefined || isResizing) {

@@ -122,6 +122,7 @@ export default class ImageElement extends Component {
       if (index === 2) {
         pointToAlignWithLine = Math.ceil(left + width);
       }
+
       const distance = Math.abs(pointToAlignWithLine - line);
 
       if (distance <= 3) {
@@ -412,6 +413,7 @@ export default class ImageElement extends Component {
         wrapperStyle.transform = `scale(${scale})`;
       }
     }
+
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
     if (this.props.component.props.style.width !== undefined || isResizing) {
