@@ -251,13 +251,6 @@ export default class TextElement extends Component {
   handleMouseDown = (ev) => {
     ev.preventDefault();
 
-    if (this.clickStart) {
-      this.clicking = false;
-      this.handleDoubleClick(ev);
-
-      return;
-    }
-
     this.clickStart = new Date().getTime();
     this.context.store.setCurrentElementIndex(this.props.elementIndex);
 
@@ -312,21 +305,15 @@ export default class TextElement extends Component {
   }
 
   handleMouseUp = () => {
-    if (this.mouseClickTimeout || this.mouseClickTimeout === 0) {
+    const timeSinceMouseDown = new Date().getTime() - this.clickStart;
+
+    if (this.clickStart && timeSinceMouseDown <= 150) {
       clearTimeout(this.mouseClickTimeout);
       window.removeEventListener("mouseup", this.handleMouseUp);
       window.removeEventListener("touchend", this.handleMouseUp);
 
-      this.mouseClickTimeout = null;
-
-      // this.props.onDropElement(this.props.elementType);
-      const timeSinceMouseDown = new Date().getTime() - this.clickStart;
-
-      // Give the user the remainder of the 250ms to do a double click
-      setTimeout(() => {
-        this.clickStart = null;
-      }, 250 - timeSinceMouseDown);
-
+      this.clickStart = null;
+      this.handleClick();
       return;
     }
 
@@ -356,8 +343,12 @@ export default class TextElement extends Component {
     });
   }
 
-  handleDoubleClick = () => {
-    console.log("DISCOUNTDOUBLECLICK");
+  handleClick = () => {
+    this.editable.focus();
+    this.setState({
+      editing: true,
+      currentContent: this.props.component.children
+    });
   }
 
   render() {
@@ -370,6 +361,8 @@ export default class TextElement extends Component {
     } = this.props;
 
     const {
+      editing,
+      currentContent,
       width,
       isResizing,
       isPressed,
@@ -469,12 +462,20 @@ export default class TextElement extends Component {
                     component={this.props.component}
                   />
                 }
-                  <ComponentClass
-                    {...props}
-                    style={{ ...elementStyle, ...computedResizeStyles }}
-                  >
-                    {children}
-                  </ComponentClass>
+                <div
+                  contentEditable="true"
+                  ref={component => {this.editable = component;}}
+                  {...props}
+                  className={styles.editor}
+                  style={{ ...elementStyle, ...computedResizeStyles }}
+                >
+                </div>
+                <ComponentClass
+                  {...props}
+                  style={{ ...elementStyle, ...computedResizeStyles }}
+                >
+                  {currentContent || children}
+                </ComponentClass>
                 {currentlySelected &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}
