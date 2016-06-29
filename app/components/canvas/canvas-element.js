@@ -1,14 +1,8 @@
 import React, { Component, PropTypes } from "react";
-import ReactDOM from "react-dom";
 import { observer } from "mobx-react";
-import { Motion, spring } from "react-motion";
-import { omit, defer } from "lodash";
 
-import { ElementTypes, SpringSettings, BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../../constants";
-import { getElementDimensions, getPointsToSnap, snap } from "../../utils";
-import styles from "./canvas-element.css";
-import ResizeNode from "./resize-node";
-import { TextElement, ImageElement } from "./element-types"
+import { ElementTypes } from "../../constants";
+import { TextElement, ImageElement } from "./element-types";
 
 @observer
 class CanvasElement extends Component {
@@ -31,7 +25,7 @@ class CanvasElement extends Component {
 
     return React.cloneElement(
       this.getElementType(component.type),
-      { ...this.props }
+      { ...this.props, component }
     );
   }
 }

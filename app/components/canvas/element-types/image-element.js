@@ -20,12 +20,12 @@ export default class ImageElement extends Component {
       ComponentClass: React.PropTypes.any.isRequired,
       props: PropTypes.object,
       children: PropTypes.node
-    }).isRequired,
+    }),
     selected: PropTypes.bool,
     mousePosition: PropTypes.array,
     scale: PropTypes.number,
-    showGridLine: PropTypes.func.isRequired,
-    hideGridLine: PropTypes.func.isRequired
+    showGridLine: PropTypes.func,
+    hideGridLine: PropTypes.func
   };
 
   static contextTypes = {
@@ -457,34 +457,26 @@ export default class ImageElement extends Component {
                 onMouseDown={this.handleMouseDown}
                 onTouchStart={this.handleTouchStart}
               >
-              {currentlySelected &&
-                <ResizeNode
-                  ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
-                  alignLeft
-                  handleMouseDownResize={this.handleMouseDownResize}
-                  onTouch={this.handleTouchStartResize}
-                  component={this.props.component}
-                />
-              }
-                {type !== ElementTypes.IMAGE ?
-                  <ComponentClass
-                    {...props}
-                    style={{ ...elementStyle, ...computedResizeStyles }}
-                  >
-                    {children}
-                  </ComponentClass> :
+                {currentlySelected &&
+                  <ResizeNode
+                    ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
+                    alignLeft
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
                   <ComponentClass
                     {...props}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   />
+                {currentlySelected &&
+                  <ResizeNode
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
                 }
-              {currentlySelected &&
-                <ResizeNode
-                  handleMouseDownResize={this.handleMouseDownResize}
-                  onTouch={this.handleTouchStartResize}
-                  component={this.props.component}
-                />
-              }
               </div>
           );}}
         </Motion>

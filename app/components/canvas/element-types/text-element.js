@@ -20,12 +20,12 @@ export default class TextElement extends Component {
       ComponentClass: React.PropTypes.any.isRequired,
       props: PropTypes.object,
       children: PropTypes.node
-    }).isRequired,
+    }),
     selected: PropTypes.bool,
     mousePosition: PropTypes.array,
     scale: PropTypes.number,
-    showGridLine: PropTypes.func.isRequired,
-    hideGridLine: PropTypes.func.isRequired
+    showGridLine: PropTypes.func,
+    hideGridLine: PropTypes.func
   };
 
   static contextTypes = {
@@ -365,7 +365,7 @@ export default class TextElement extends Component {
     const {
       elementIndex,
       selected,
-      component: { type, ComponentClass, props, children },
+      component: { ComponentClass, props, children },
       mousePosition,
       scale
     } = this.props;
@@ -392,13 +392,16 @@ export default class TextElement extends Component {
     if (mousePosition || props.style && props.style.position === "absolute") {
       wrapperStyle.position = "absolute";
 
+      const mouseX = mousePosition && mousePosition[0] ? mousePosition[0] : null;
+
       motionStyles.left = spring(
-        mousePosition ? mousePosition[0] : props.style.left,
+        mouseX && mouseX || props.style.left || 0,
         SpringSettings.DRAG
       );
 
+      const mouseY = mousePosition && mousePosition[1] ? mousePosition[1] : null;
       motionStyles.top = spring(
-        mousePosition ? mousePosition[1] : props.style.top,
+        mouseY && mouseY || props.style.top || 0,
         SpringSettings.DRAG
       );
 
@@ -457,34 +460,28 @@ export default class TextElement extends Component {
                 onMouseDown={this.handleMouseDown}
                 onTouchStart={this.handleTouchStart}
               >
-              {currentlySelected &&
-                <ResizeNode
-                  ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
-                  alignLeft
-                  handleMouseDownResize={this.handleMouseDownResize}
-                  onTouch={this.handleTouchStartResize}
-                  component={this.props.component}
-                />
-              }
-                {type !== ElementTypes.IMAGE ?
+                {currentlySelected &&
+                  <ResizeNode
+                    ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
+                    alignLeft
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
                   <ComponentClass
                     {...props}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   >
                     {children}
                   </ComponentClass> :
-                  <ComponentClass
-                    {...props}
-                    style={{ ...elementStyle, ...computedResizeStyles }}
+                {currentlySelected &&
+                  <ResizeNode
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
                   />
                 }
-              {currentlySelected &&
-                <ResizeNode
-                  handleMouseDownResize={this.handleMouseDownResize}
-                  onTouch={this.handleTouchStartResize}
-                  component={this.props.component}
-                />
-              }
               </div>
           );}}
         </Motion>
