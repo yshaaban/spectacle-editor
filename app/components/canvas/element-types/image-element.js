@@ -4,7 +4,6 @@ import { Motion, spring } from "react-motion";
 import { omit, defer } from "lodash";
 
 import {
-  ElementTypes,
   SpringSettings,
   BLACKLIST_CURRENT_ELEMENT_DESELECT
 } from "../../../constants";
@@ -16,10 +15,8 @@ export default class ImageElement extends Component {
   static propTypes = {
     elementIndex: PropTypes.number,
     component: PropTypes.shape({
-      type: PropTypes.oneOf(Object.keys(ElementTypes).map(key => ElementTypes[key])).isRequired,
       ComponentClass: React.PropTypes.any.isRequired,
-      props: PropTypes.object,
-      children: PropTypes.node
+      props: PropTypes.object
     }),
     selected: PropTypes.bool,
     mousePosition: PropTypes.array,
@@ -365,7 +362,7 @@ export default class ImageElement extends Component {
     const {
       elementIndex,
       selected,
-      component: { ComponentClass, props, children },
+      component: { ComponentClass, props },
       mousePosition,
       scale
     } = this.props;
