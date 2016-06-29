@@ -365,7 +365,7 @@ export default class ImageElement extends Component {
     const {
       elementIndex,
       selected,
-      component: { type, ComponentClass, props, children },
+      component: { ComponentClass, props, children },
       mousePosition,
       scale
     } = this.props;
@@ -392,13 +392,16 @@ export default class ImageElement extends Component {
     if (mousePosition || props.style && props.style.position === "absolute") {
       wrapperStyle.position = "absolute";
 
+      const mouseX = mousePosition && mousePosition[0] ? mousePosition[0] : null;
+
       motionStyles.left = spring(
-        mousePosition ? mousePosition[0] : props.style.left,
+        mouseX && mouseX || props.style.left || 0,
         SpringSettings.DRAG
       );
 
+      const mouseY = mousePosition && mousePosition[1] ? mousePosition[1] : null;
       motionStyles.top = spring(
-        mousePosition ? mousePosition[1] : props.style.top,
+        mouseY && mouseY || props.style.top || 0,
         SpringSettings.DRAG
       );
 
