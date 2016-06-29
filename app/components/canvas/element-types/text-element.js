@@ -474,7 +474,7 @@ export default class TextElement extends Component {
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   >
                     {children}
-                  </ComponentClass> :
+                  </ComponentClass>
                 {currentlySelected &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}
