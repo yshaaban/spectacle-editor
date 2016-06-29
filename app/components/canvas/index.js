@@ -4,7 +4,7 @@ import { observer } from "mobx-react";
 import { zipWith } from "lodash";
 // Nesting the ElementList here so drag and drop state is controlled by this component
 import { ElementTypes } from "../../constants";
-import { getElementDimensions, getPointsToSnap, snap } from "../../utils";
+import { getPointsToSnap, snap } from "../../utils";
 import ElementList from "../element-list";
 import Elements from "../../elements";
 import CanvasElement from "./canvas-element";
@@ -55,12 +55,12 @@ class SlideList extends Component {
     }
 
     const element = Elements[dragElementType];
-    const { height, width } = getElementDimensions(element);
+    const { defaultHeight: height, defaultWidth: width } = element;
     const position = newIsOverPosition.concat();
     const snapOffset = [0, 0];
 
-    position[0] -= (width && width || 0) / 2;
-    position[1] -= (height && height || 0) / 2;
+    position[0] -= width / 2;
+    position[1] -= height / 2;
 
     if (!this.gridLines) {
       this.gridLines = this.context.store.gridLines;
