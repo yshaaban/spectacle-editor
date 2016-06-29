@@ -22,7 +22,7 @@ class CanvasElement extends Component {
 
   render() {
     const { component } = this.props;
-
+    console.log(this.props.mousePosition);
     return React.cloneElement(
       this.getElementType(component.type),
       { ...this.props, component }
