@@ -62,6 +62,9 @@ export default class SlidesStore {
   @observable isDraggingElement = false;
   @observable isDraggingNewElement = false;
 
+  // TODO: move user to own store
+  @observable user = null;
+
   // Returns a new mutable object. Functions as a cloneDeep.
   @computed get slides() {
     return this.history[this.historyIndex].slides.asMutable({ deep: true });
@@ -124,6 +127,11 @@ export default class SlidesStore {
         slides
       }]);
     }
+  }
+
+  // TODO: Move user to own store
+  setUser(userInfo) {
+    this.user = userInfo;
   }
 
   setCanvasSize({ width, height, left, top, scale }) {
@@ -266,7 +274,7 @@ export default class SlidesStore {
 
   redo() {
     // Double check we've got a future to redo to
-    if (this.historyIndex > this.history.length - 1) {
+    if (this.historyIndex >= this.history.length - 1) {
       return;
     }
 

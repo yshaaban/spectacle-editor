@@ -6,7 +6,9 @@ import styles from "./social-auth-links.css";
 
 class SocialAuthenticationLinks extends Component {
   handleSocialAuth(provider) {
-    SocialAuthModal.authenticate(provider);
+    SocialAuthModal.authenticate(provider, (userInfo) => {
+      this.props.onLoginSuccess(userInfo);
+    });
   }
 
   render() {
@@ -51,8 +53,4 @@ class SocialAuthenticationLinks extends Component {
   }
 }
 
-SocialAuthenticationLinks.propTypes = {
-  handleSocialAuthComplete: PropTypes.func.isRequired
-};
-
-module.exports = SocialAuthenticationLinks;
+export default SocialAuthenticationLinks;

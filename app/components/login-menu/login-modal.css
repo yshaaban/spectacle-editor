@@ -4,6 +4,14 @@
   left: 0;
   bottom: 0;
   right: 0;
+}
+
+.loginModalBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   background-color: rgba(7, 24, 48, 0.7);
   z-index: 999999998;
 }
@@ -68,6 +76,7 @@
   background-color: #fff;
   border: solid 1px #ccc;
   margin-bottom: 10px;
+  padding-left: 10px;
 }
 
 .loginForm button[type=submit] {

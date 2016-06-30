@@ -139,11 +139,17 @@ app.on("ready", () => {
       submenu: [{
         label: "Undo",
         accelerator: "Command+Z",
-        selector: "undo:"
+        selector: "undo:",
+        click() {
+          mainWindow.webContents.send("edit", "undo");
+        }
       }, {
         label: "Redo",
-        accelerator: "Shift+Command+Z",
-        selector: "redo:"
+        accelerator: "Command+Y",
+        selector: "redo:",
+        click() {
+          mainWindow.webContents.send("edit", "redo");
+        }
       }, {
         type: "separator"
       }, {

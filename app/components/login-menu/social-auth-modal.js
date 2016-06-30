@@ -22,8 +22,10 @@ class SocialAuth {
     this.Twitter = SocialAuthProviders.Twitter;
     this.GitHub = SocialAuthProviders.GitHub;
     this.Google = SocialAuthProviders.Google;
+  }
 
-    ipcRenderer.on("social-login", (event, cookies) => {
+  authenticate(provider, onSuccess) {
+    ipcRenderer.once("social-login", (event, cookies) => {
       console.log("COOKIES RECIEVED", cookies);
 
       const csrfToken = find(cookies, { name: "csrftoken" }).value;
@@ -35,18 +37,16 @@ class SocialAuth {
         method: "get",
         credentials: "include",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
           "Plotly-Client-Platform": "Python 0.2",
           "X-CSRFToken": csrfToken
         }
       })
       .then((res) => {console.log(res); return res.json();})
-      .then((resJson) => {console.log(resJson);});
+      .then(onSuccess);
     });
-  }
 
-  authenticate(provider) {
     this.openPopUp(provider.authUrl);
   }
 
