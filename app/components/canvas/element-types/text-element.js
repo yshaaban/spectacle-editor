@@ -318,6 +318,7 @@ export default class TextElement extends Component {
 
       this.clickStart = null;
       this.handleClick();
+
       return;
     }
 
@@ -501,7 +502,7 @@ export default class TextElement extends Component {
                   className={styles.editor}
                   style={{ ...elementStyle, ...computedResizeStyles }}
                 >
-                  {currentContent && currentContent.length ?
+                  {typeof currentContent === "string" ?
                     currentContent
                     :
                     children
