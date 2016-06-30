@@ -251,6 +251,13 @@ export default class SlidesStore {
     this._addToHistory(newState);
   }
 
+  updateChildren(nextChild, slideIndex, elementIndex) {
+    const newState = this.currentState;
+
+    newState.slides[slideIndex].children[elementIndex].children = nextChild;
+    this._addToHistory(newState);
+  }
+
   undo() {
     // double check we're not trying to undo without history
     if (this.historyIndex === 0) {

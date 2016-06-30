@@ -251,7 +251,10 @@ export default class TextElement extends Component {
   handleMouseDown = (ev) => {
     ev.preventDefault();
 
-    this.clickStart = new Date().getTime();
+    if (this.context.store.currentElementIndex === this.props.elementIndex) {
+      this.clickStart = new Date().getTime();
+    }
+
     this.context.store.setCurrentElementIndex(this.props.elementIndex);
 
     const { pageX, pageY, target } = ev;
@@ -307,8 +310,9 @@ export default class TextElement extends Component {
   handleMouseUp = () => {
     const timeSinceMouseDown = new Date().getTime() - this.clickStart;
 
+    clearTimeout(this.mouseClickTimeout);
+
     if (this.clickStart && timeSinceMouseDown <= 150) {
-      clearTimeout(this.mouseClickTimeout);
       window.removeEventListener("mouseup", this.handleMouseUp);
       window.removeEventListener("touchend", this.handleMouseUp);
 
@@ -344,24 +348,52 @@ export default class TextElement extends Component {
   }
 
   handleClick = () => {
+    this.editable.addEventListener("input", this.handleInput);
+    window.addEventListener("click", this.createUpdateElementChildren());
+
     this.editable.focus();
+  }
+
+  handleInput = (ev) => {
+    ev.preventDefault();
     this.setState({
-      editing: true,
-      currentContent: this.props.component.children
+      currentContent: ev.target.innerText
     });
+  }
+
+  createUpdateElementChildren = () => {
+    const { currentSlideIndex, currentElementIndex } = this.context.store;
+
+    const updateElementChildren = (ev) => {
+      if (ev.target !== this.currentElementComponent) {
+        window.removeEventListener("click", updateElementChildren);
+        this.editable.blur();
+
+        if (this.state.currentContent) {
+          this.context.store.updateChildren(
+            this.state.currentContent,
+            currentSlideIndex,
+            currentElementIndex
+          );
+
+          this.setState({ currentContent: null });
+        }
+      }
+    };
+
+    return updateElementChildren;
   }
 
   render() {
     const {
       elementIndex,
       selected,
-      component: { ComponentClass, props, children },
+      component: { props, children },
       mousePosition,
       scale
     } = this.props;
 
     const {
-      editing,
       currentContent,
       width,
       isResizing,
@@ -469,13 +501,12 @@ export default class TextElement extends Component {
                   className={styles.editor}
                   style={{ ...elementStyle, ...computedResizeStyles }}
                 >
+                  {currentContent && currentContent.length ?
+                    currentContent
+                    :
+                    children
+                  }
                 </div>
-                <ComponentClass
-                  {...props}
-                  style={{ ...elementStyle, ...computedResizeStyles }}
-                >
-                  {currentContent || children}
-                </ComponentClass>
                 {currentlySelected &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}
