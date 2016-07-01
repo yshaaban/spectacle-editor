@@ -8,7 +8,7 @@ import {
   BLACKLIST_CURRENT_ELEMENT_DESELECT
 } from "../../../constants";
 import { getElementDimensions, getPointsToSnap, snap } from "../../../utils";
-import styles from "../canvas-element.css";
+import styles from "./text-element.css";
 import ResizeNode from "../resize-node";
 
 export default class TextElement extends Component {
@@ -350,9 +350,32 @@ export default class TextElement extends Component {
 
   handleClick = () => {
     this.editable.addEventListener("input", this.handleInput);
+    this.editable.addEventListener("keypress", this.handleKeyPress);
+    this.editable.addEventListener("blur", this.createUpdateElementChildren());
     window.addEventListener("click", this.createUpdateElementChildren());
 
+    this.stopEvent = false;
     this.editable.focus();
+
+    const nextState = { editing: true };
+
+    if (!this.props.component.children) {
+      nextState.currentContent = "";
+    }
+
+    this.setState(nextState);
+  }
+
+  handleKeyPress = (ev) => {
+    if (ev.charCode === 13) {
+      ev.preventDefault();
+      // this.setState({ currentContent: this.state.currentContent + "\n hi" });
+
+      // const { width } = this.currentElementComponent.getBoundingClientRect();
+      // const propStyles = { ...this.props.component.props.style };
+      // propStyles.width = width;
+      // this.context.store.updateElementProps({ style: propStyles });
+    }
   }
 
   handleInput = (ev) => {
@@ -363,22 +386,38 @@ export default class TextElement extends Component {
   }
 
   createUpdateElementChildren = () => {
-    const { currentSlideIndex, currentElementIndex } = this.context.store;
+    const {
+      currentState,
+      currentSlideIndex,
+      currentElementIndex
+    } = this.context.store;
+
+    const currentElementChildren =
+      currentState.slides[currentSlideIndex].children[currentElementIndex].children;
 
     const updateElementChildren = (ev) => {
-      if (ev.target !== this.currentElementComponent) {
+      ev.preventDefault();
+
+      if (this.stopEvent) {
+        return;
+      }
+
+      if (ev.type === "blur" || ev.target !== this.currentElementComponent) {
+        this.stopEvent = true;
         window.removeEventListener("click", updateElementChildren);
+        this.editable.removeEventListener("blur", updateElementChildren);
+        this.editable.removeEventListener("input", this.handleInput);
         this.editable.blur();
 
-        if (this.state.currentContent) {
+        if (this.state.currentContent && this.state.currentContent !== currentElementChildren) {
           this.context.store.updateChildren(
             this.state.currentContent,
             currentSlideIndex,
             currentElementIndex
           );
-
-          this.setState({ currentContent: null });
         }
+
+        this.setState({ currentContent: null, editing: false });
       }
     };
 
@@ -389,17 +428,18 @@ export default class TextElement extends Component {
     const {
       elementIndex,
       selected,
-      component: { props, children },
+      component: { defaultText, props, children },
       mousePosition,
       scale
     } = this.props;
 
     const {
       currentContent,
-      width,
+      delta: [x, y],
+      editing,
       isResizing,
       isPressed,
-      delta: [x, y],
+      width,
       left
     } = this.state;
 
@@ -446,6 +486,8 @@ export default class TextElement extends Component {
     if (this.props.component.props.style.width !== undefined || isResizing) {
       elementStyle = omit(elementStyle, "whiteSpace");
       elementStyle.wordBreak = "break-all";
+    } else {
+      elementStyle.minWidth = 20;
     }
 
     if (isPressed) {
@@ -486,7 +528,7 @@ export default class TextElement extends Component {
                 onMouseDown={this.handleMouseDown}
                 onTouchStart={this.handleTouchStart}
               >
-                {currentlySelected &&
+                {currentlySelected && !editing &&
                   <ResizeNode
                     ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
                     alignLeft
@@ -505,10 +547,10 @@ export default class TextElement extends Component {
                   {typeof currentContent === "string" ?
                     currentContent
                     :
-                    children
+                    children && children || defaultText
                   }
                 </div>
-                {currentlySelected &&
+                {currentlySelected && !editing &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}

@@ -37,6 +37,7 @@ elements[ElementTypes.TEXT] = {
   ComponentClass: Heading,
   defaultWidth: 222,
   defaultHeight: 63,
+  defaultText: "totally \n text",
   props: {
     size: 4,
     style: {
@@ -48,7 +49,7 @@ elements[ElementTypes.TEXT] = {
       textAlign: "center"
     }
   },
-  children: "totally text"
+  children: null
 };
 
 elements[ElementTypes.IMAGE] = {
