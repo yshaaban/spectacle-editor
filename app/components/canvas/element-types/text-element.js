@@ -34,6 +34,7 @@ export default class TextElement extends Component {
     super(props, context);
 
     this.state = {
+      currentContent: null,
       isPressed: false,
       mouseStart: [0, 0],
       delta: [0, 0]
@@ -42,12 +43,7 @@ export default class TextElement extends Component {
 
   componentDidMount() {
     defer(() => {
-      const { width, height } = this.currentElementComponent.getBoundingClientRect();
-
-      this.setState({ // eslint-disable-line react/no-did-mount-set-state
-        width,
-        height
-      });
+      this.getElementBoundingClientRect();
     });
   }
 
@@ -55,6 +51,15 @@ export default class TextElement extends Component {
     // This is needed because of the way the component is passed down
     // React isn't re-rendering this when the contextual menu updates the store
     return true;
+  }
+
+  getElementBoundingClientRect() {
+    const { width, height } = this.currentElementComponent.getBoundingClientRect();
+
+    this.setState({ // eslint-disable-line react/no-did-mount-set-state
+      width,
+      height
+    });
   }
 
   handleTouchStartResize = (ev) => {
@@ -354,6 +359,13 @@ export default class TextElement extends Component {
     this.editable.addEventListener("blur", this.createUpdateElementChildren());
     window.addEventListener("click", this.createUpdateElementChildren());
 
+    const range = document.createRange();
+    const sel = window.getSelection();
+
+    range.selectNodeContents(this.editable);
+    sel.removeAllRanges();
+    sel.addRange(range);
+
     this.stopEvent = false;
     this.editable.focus();
 
@@ -369,17 +381,22 @@ export default class TextElement extends Component {
   handleKeyPress = (ev) => {
     if (ev.charCode === 13) {
       ev.preventDefault();
-      // this.setState({ currentContent: this.state.currentContent + "\n hi" });
+      this.setState({ currentContent: `${this.state.currentContent}\n\n` }, () => {
+        const range = document.createRange();
+        const sel = window.getSelection();
 
-      // const { width } = this.currentElementComponent.getBoundingClientRect();
-      // const propStyles = { ...this.props.component.props.style };
-      // propStyles.width = width;
-      // this.context.store.updateElementProps({ style: propStyles });
+        range.selectNodeContents(this.editable);
+
+        sel.removeAllRanges();
+        sel.addRange(range);
+        sel.collapseToEnd(range);
+      });
     }
   }
 
   handleInput = (ev) => {
     ev.preventDefault();
+
     this.setState({
       currentContent: ev.target.innerText
     });
@@ -416,8 +433,9 @@ export default class TextElement extends Component {
             currentElementIndex
           );
         }
+        const { width, height } = this.currentElementComponent.getBoundingClientRect();
 
-        this.setState({ currentContent: null, editing: false });
+        this.setState({ currentContent: null, editing: false, width, height });
       }
     };
 
@@ -481,13 +499,15 @@ export default class TextElement extends Component {
       }
     }
 
-    elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
+    elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0, whiteSpace: "pre" };
 
     if (this.props.component.props.style.width !== undefined || isResizing) {
       elementStyle = omit(elementStyle, "whiteSpace");
       elementStyle.wordBreak = "break-all";
-    } else {
-      elementStyle.minWidth = 20;
+    }
+
+    if (editing) {
+      elementStyle.minWidth = width || 20;
     }
 
     if (isPressed) {
@@ -505,6 +525,8 @@ export default class TextElement extends Component {
       );
       motionStyles.width = spring(width, SpringSettings.RESIZE);
     }
+
+    const content = typeof currentContent === "string" ? currentContent : children;
 
     return (
         <Motion
@@ -533,7 +555,7 @@ export default class TextElement extends Component {
                     ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
                     alignLeft
                     handleMouseDownResize={this.handleMouseDownResize}
-                    onTouch={this.handleTouchStartResize}
+                    handleTouchResize={this.handleTouchStartResize}
                     component={this.props.component}
                   />
                 }
@@ -544,16 +566,16 @@ export default class TextElement extends Component {
                   className={styles.editor}
                   style={{ ...elementStyle, ...computedResizeStyles }}
                 >
-                  {typeof currentContent === "string" ?
-                    currentContent
+                  {content !== null ?
+                    content
                     :
-                    children && children || defaultText
+                    defaultText
                   }
                 </div>
                 {currentlySelected && !editing &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}
-                    onTouch={this.handleTouchStartResize}
+                    handleTouchResize={this.handleTouchStartResize}
                     component={this.props.component}
                   />
                 }

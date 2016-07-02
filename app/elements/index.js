@@ -37,7 +37,7 @@ elements[ElementTypes.TEXT] = {
   ComponentClass: Heading,
   defaultWidth: 222,
   defaultHeight: 63,
-  defaultText: "totally \n text",
+  defaultText: "totally text",
   props: {
     size: 4,
     style: {
