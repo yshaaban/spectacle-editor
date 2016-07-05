@@ -45,6 +45,8 @@ elements[ElementTypes.TEXT] = {
       fontFamily: "openSans",
       fontSize: 45,
       fontWeight: 400,
+      minWidth: 20,
+      minHeight: 20,
       fontStyle: "normal",
       textAlign: "center"
     }

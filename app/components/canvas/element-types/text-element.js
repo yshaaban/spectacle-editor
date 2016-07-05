@@ -354,6 +354,7 @@ export default class TextElement extends Component {
   }
 
   handleClick = () => {
+    window.removeEventListener("keypress", this.handleClick);
     this.editable.addEventListener("input", this.handleInput);
     this.editable.addEventListener("keypress", this.handleKeyPress);
     this.editable.addEventListener("blur", this.createUpdateElementChildren());
@@ -380,8 +381,9 @@ export default class TextElement extends Component {
 
   handleKeyPress = (ev) => {
     if (ev.charCode === 13) {
+      const innerText = ev.target.innerText.replace(/\n$/, "");
       ev.preventDefault();
-      this.setState({ currentContent: `${this.state.currentContent}\n\n` }, () => {
+      this.setState({ currentContent: `${innerText}\n\n` }, () => {
         const range = document.createRange();
         const sel = window.getSelection();
 
@@ -426,9 +428,11 @@ export default class TextElement extends Component {
         this.editable.removeEventListener("input", this.handleInput);
         this.editable.blur();
 
-        if (this.state.currentContent && this.state.currentContent !== currentElementChildren) {
+        const { currentContent } = this.state;
+
+        if (typeof currentContent === "string" && currentContent !== currentElementChildren) {
           this.context.store.updateChildren(
-            this.state.currentContent,
+            currentContent,
             currentSlideIndex,
             currentElementIndex
           );
@@ -460,6 +464,12 @@ export default class TextElement extends Component {
       width,
       left
     } = this.state;
+
+    if (this.context.store.currentElementIndex === this.props.elementIndex && !editing) {
+      window.addEventListener("keypress", this.handleClick);
+    } else {
+      window.removeEventListener("keypress", this.handleClick);
+    }
 
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
     const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
@@ -504,10 +514,6 @@ export default class TextElement extends Component {
     if (this.props.component.props.style.width !== undefined || isResizing) {
       elementStyle = omit(elementStyle, "whiteSpace");
       elementStyle.wordBreak = "break-all";
-    }
-
-    if (editing) {
-      elementStyle.minWidth = 20;
     }
 
     if (isPressed) {
