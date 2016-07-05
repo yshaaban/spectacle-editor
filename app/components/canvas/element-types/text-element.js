@@ -507,7 +507,7 @@ export default class TextElement extends Component {
     }
 
     if (editing) {
-      elementStyle.minWidth = width || 20;
+      elementStyle.minWidth = 20;
     }
 
     if (isPressed) {
