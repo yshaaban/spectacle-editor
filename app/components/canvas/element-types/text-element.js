@@ -43,7 +43,12 @@ export default class TextElement extends Component {
 
   componentDidMount() {
     defer(() => {
-      this.getElementBoundingClientRect();
+      const { width, height } = this.currentElementComponent.getBoundingClientRect();
+
+      this.setState({ // eslint-disable-line react/no-did-mount-set-state
+        width,
+        height
+      });
     });
   }
 
@@ -51,15 +56,6 @@ export default class TextElement extends Component {
     // This is needed because of the way the component is passed down
     // React isn't re-rendering this when the contextual menu updates the store
     return true;
-  }
-
-  getElementBoundingClientRect() {
-    const { width, height } = this.currentElementComponent.getBoundingClientRect();
-
-    this.setState({ // eslint-disable-line react/no-did-mount-set-state
-      width,
-      height
-    });
   }
 
   handleTouchStartResize = (ev) => {
@@ -362,13 +358,15 @@ export default class TextElement extends Component {
     this.editable.addEventListener("blur", this.createUpdateElementChildren());
     window.addEventListener("click", this.createUpdateElementChildren());
 
-    const range = document.createRange();
-    const sel = window.getSelection();
+    if (this.editable && this.editable.childNodes.length) {
+      const range = document.createRange();
+      const sel = window.getSelection();
 
-    range.setStartAfter(this.editable.childNodes[0]);
-    range.setEndAfter(this.editable.childNodes[0]);
-    sel.removeAllRanges();
-    sel.addRange(range);
+      range.setStartAfter(this.editable.childNodes[0]);
+      range.setEndAfter(this.editable.childNodes[0]);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
 
     this.stopEvent = false;
     this.editable.focus();
@@ -464,12 +462,6 @@ export default class TextElement extends Component {
       left
     } = this.state;
 
-    if (this.context.store.currentElementIndex === this.props.elementIndex && !editing) {
-      window.addEventListener("keypress", this.handleClick);
-    } else {
-      window.removeEventListener("keypress", this.handleClick);
-    }
-
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
     const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
 
@@ -552,7 +544,7 @@ export default class TextElement extends Component {
                 }
                 ref={component => {this.currentElementComponent = component;}}
                 style={{ ...wrapperStyle, ...computedDragStyles }}
-                onMouseDown={this.handleMouseDown}
+                onMouseDown={!editing && this.handleMouseDown}
                 onTouchStart={this.handleTouchStart}
               >
                 {currentlySelected && !editing &&
@@ -587,6 +579,7 @@ export default class TextElement extends Component {
                   :
                   <div
                     {...props}
+                    ref={component => {this.nonEditable = component;}}
                     className={styles.editor}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   >

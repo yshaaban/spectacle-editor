@@ -27,6 +27,11 @@
   margin: 0;
 }
 
+.editor > p:empty:before {
+  background: pink;
+  content: "\200b";
+}
+
 .selected::before {
   content: "";
   position: absolute;
