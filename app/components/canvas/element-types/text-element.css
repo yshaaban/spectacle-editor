@@ -23,6 +23,10 @@
   resize: none;
 }
 
+.editor > p {
+  margin: 0;
+}
+
 .selected::before {
   content: "";
   position: absolute;

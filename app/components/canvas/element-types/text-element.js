@@ -322,7 +322,9 @@ export default class TextElement extends Component {
       window.removeEventListener("touchend", this.handleMouseUp);
 
       this.clickStart = null;
-      this.handleClick();
+      this.setState({ editing: true }, () => {
+        this.handleClick();
+      });
 
       return;
     }
@@ -363,20 +365,17 @@ export default class TextElement extends Component {
     const range = document.createRange();
     const sel = window.getSelection();
 
-    range.selectNodeContents(this.editable);
+    range.setStartAfter(this.editable.childNodes[0]);
+    range.setEndAfter(this.editable.childNodes[0]);
     sel.removeAllRanges();
     sel.addRange(range);
 
     this.stopEvent = false;
     this.editable.focus();
 
-    const nextState = { editing: true };
-
     if (!this.props.component.children) {
-      nextState.currentContent = "";
+      this.setState({ currentContent: "" });
     }
-
-    this.setState(nextState);
   }
 
   handleKeyPress = (ev) => {
@@ -509,7 +508,7 @@ export default class TextElement extends Component {
       }
     }
 
-    elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0, whiteSpace: "pre" };
+    elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
     if (this.props.component.props.style.width !== undefined || isResizing) {
       elementStyle = omit(elementStyle, "whiteSpace");
@@ -565,19 +564,43 @@ export default class TextElement extends Component {
                     component={this.props.component}
                   />
                 }
-                <div
-                  contentEditable="true"
-                  ref={component => {this.editable = component;}}
-                  {...props}
-                  className={styles.editor}
-                  style={{ ...elementStyle, ...computedResizeStyles }}
-                >
-                  {content !== null ?
-                    content
-                    :
-                    defaultText
-                  }
-                </div>
+                {editing ?
+                  <div
+                    contentEditable="true"
+                    ref={component => {this.editable = component;}}
+                    {...props}
+                    className={styles.editor}
+                    style={
+                      Object.assign(
+                        elementStyle,
+                        computedResizeStyles,
+                        { whiteSpace: "pre" }
+                      )
+                    }
+                  >
+                    {content !== null ?
+                      content
+                      :
+                      defaultText
+                    }
+                  </div>
+                  :
+                  <div
+                    {...props}
+                    className={styles.editor}
+                    style={{ ...elementStyle, ...computedResizeStyles }}
+                  >
+                    {content !== null ?
+                      content.split("\n").map((line, i) => (
+                        <p style={{ ...elementStyle, ...computedResizeStyles }} key={i}>
+                          {line}
+                        </p>)
+                      )
+                      :
+                      defaultText
+                    }
+                  </div>
+                }
                 {currentlySelected && !editing &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}
