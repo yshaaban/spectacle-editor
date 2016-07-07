@@ -7,7 +7,7 @@
 }
 
 /* Need this to capture all click events on elements */
-.canvasElement::before {
+/*.canvasElement::before {
   content: "";
   position: absolute;
   width: 100%;
@@ -15,7 +15,7 @@
   top: 0;
   left: 0;
   z-index: 2;
-}
+}*/
 
 .editor {
   outline: none;

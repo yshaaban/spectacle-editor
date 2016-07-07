@@ -419,7 +419,7 @@ export default class TextElement extends Component {
         return;
       }
 
-      if (ev.type === "blur" || ev.target !== this.currentElementComponent) {
+      if (ev.type === "blur" || ev.target !== this.editable) {
         this.stopEvent = true;
         window.removeEventListener("click", updateElementChildren);
         this.editable.removeEventListener("blur", updateElementChildren);
