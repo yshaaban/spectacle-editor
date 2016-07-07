@@ -5,16 +5,20 @@ export default class TextContentEditor extends Component {
   static propTypes = {
     isEditing: React.PropTypes.bool,
     placeholderText: React.PropTypes.string,
+    contentClass: React.PropTypes.string,
     editorClass: React.PropTypes.string,
+    lineClass: React.PropTypes.string,
     componentProps: React.PropTypes.object,
     style: React.PropTypes.object,
     content: React.PropTypes.string
   }
   render() {
     const {
+      editorClass,
+      lineClass,
       componentProps,
       isEditing,
-      editorClass,
+      contentClass,
       placeholderText,
       style,
       content
@@ -25,8 +29,8 @@ export default class TextContentEditor extends Component {
         contentEditable="true"
         ref={component => {this.editable = component;}}
         {...componentProps}
-        className={editorClass}
-        style={Object.assign(style, { whiteSpace: "pre" })}
+        className={`${contentClass} ${editorClass}`}
+        style={Object.assign(style, { whiteSpace: "pre-wrap" })}
       >
         {content !== null ?
           content
@@ -37,12 +41,12 @@ export default class TextContentEditor extends Component {
       :
       (<div
         {...componentProps}
-        className={editorClass}
+        className={contentClass}
         style={style}
       >
         {content !== null ?
           content.split("\n").map((line, i) => (
-            <p style={style} key={i}>
+            <p className={lineClass} style={style} key={i}>
               {line}
             </p>)
           )

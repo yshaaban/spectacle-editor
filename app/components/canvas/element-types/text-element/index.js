@@ -1,13 +1,13 @@
 import React, { Component, PropTypes } from "react";
 import ReactDOM from "react-dom";
 import { Motion, spring } from "react-motion";
-import { omit, defer } from "lodash";
+import { omit, defer, trimEnd } from "lodash";
 
 import {
   SpringSettings,
   BLACKLIST_CURRENT_ELEMENT_DESELECT
 } from "../../../../constants";
-import { getElementDimensions, getPointsToSnap, snap } from "../../../../utils";
+import { getPointsToSnap, snap } from "../../../../utils";
 import styles from "./text-element.css";
 import ResizeNode from "../../resize-node";
 import TextContentEditor from "./text-content-editor";
@@ -186,6 +186,11 @@ export default class TextElement extends Component {
     propStyles.left = left;
 
     this.context.store.updateElementProps({ style: propStyles });
+
+    // defer measuring new height, otherwise value will be what height was before resize
+    defer(() => {
+      this.setState({ height: this.currentElementComponent.clientHeight });
+    });
   }
 
   handleTouchStart = (ev) => {
@@ -228,7 +233,6 @@ export default class TextElement extends Component {
         // Set either x or y
         newDelta[isVertical ? 0 : 1] = line - offset;
       };
-
       snap(
         this.gridLines.horizontal,
         getPointsToSnap(offsetY, height, mouseOffsetY),
@@ -259,23 +263,14 @@ export default class TextElement extends Component {
 
     this.context.store.setCurrentElementIndex(this.props.elementIndex);
 
-    const { pageX, pageY, target } = ev;
-    const boundingBox = target.getBoundingClientRect();
+    const { pageX, pageY } = ev;
+    const boundingBox = this.currentElementComponent.getBoundingClientRect();
     const mouseOffset = [Math.floor(boundingBox.left - pageX), Math.floor(boundingBox.top - pageY)];
     const originalPosition = [
       this.props.component.props.style.left,
       this.props.component.props.style.top
     ];
-
-    let { width, height } = getElementDimensions(this.props.component);
-
-    if (height === undefined) {
-      height = this.currentElementComponent.getBoundingClientRect().height;
-    }
-
-    if (width === undefined) {
-      width = this.currentElementComponent.getBoundingClientRect().width;
-    }
+    const { width, height } = boundingBox;
 
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("touchend", this.handleMouseUp);
@@ -383,7 +378,7 @@ export default class TextElement extends Component {
 
       const sel = window.getSelection();
       const caretPostion = sel.anchorOffset;
-      const innerText = ev.target.innerText.replace(/\n$/, "");
+      const innerText = ev.target.innerText.replace(/\n\n$/, "\n");
       const stringLength = innerText.length;
       const range = document.createRange();
 
@@ -392,8 +387,9 @@ export default class TextElement extends Component {
 
       if (caretPostion === stringLength) {
         this.setState({ currentContent: `${innerText}\n\n` }, () => {
+          range.setStart(this.editable.childNodes[0], this.state.currentContent.length);
+          range.setEnd(this.editable.childNodes[0], this.state.currentContent.length);
           sel.addRange(range);
-          sel.collapseToEnd(range);
         });
       } else {
         this.setState({
@@ -433,8 +429,9 @@ export default class TextElement extends Component {
       }
 
       if (ev.type === "blur" || ev.target !== this.editable) {
-        this.stopEvent = true;
         window.removeEventListener("click", updateElementChildren);
+
+        this.stopEvent = true;
         this.editable.removeEventListener("blur", updateElementChildren);
         this.editable.removeEventListener("input", this.handleInput);
         this.editable.blur();
@@ -443,14 +440,17 @@ export default class TextElement extends Component {
 
         if (typeof currentContent === "string" && currentContent !== currentElementChildren) {
           this.context.store.updateChildren(
-            currentContent,
+            trimEnd(currentContent, "\n"),
             currentSlideIndex,
             currentElementIndex
           );
         }
-        const { width, height } = this.currentElementComponent.getBoundingClientRect();
 
-        this.setState({ currentContent: null, editing: false, width, height });
+        if (this.currentElementComponent) {
+          const { width, height } = this.currentElementComponent.getBoundingClientRect();
+
+          this.setState({ currentContent: null, editing: false, width, height });
+        }
       }
     };
 
@@ -486,6 +486,7 @@ export default class TextElement extends Component {
     if (this.context.store.isDragging) {
       wrapperStyle.pointerEvents = "none";
     }
+
 
     if (mousePosition || props.style && props.style.position === "absolute") {
       wrapperStyle.position = "absolute";
@@ -577,10 +578,12 @@ export default class TextElement extends Component {
                       this.editable = element;
                     }
                   }}
+                  lineClass={styles.line}
+                  editorClass={styles.editor}
                   isEditing={editing}
                   placeholderText={defaultText}
                   componentProps={props}
-                  editorClass={styles.editor}
+                  contentClass={styles.content}
                   style={{ ...elementStyle, ...computedResizeStyles }}
                   content={content}
                 />
