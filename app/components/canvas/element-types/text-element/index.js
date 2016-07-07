@@ -379,18 +379,31 @@ export default class TextElement extends Component {
 
   handleKeyPress = (ev) => {
     if (ev.charCode === 13) {
-      const innerText = ev.target.innerText.replace(/\n$/, "");
       ev.preventDefault();
-      this.setState({ currentContent: `${innerText}\n\n` }, () => {
-        const range = document.createRange();
-        const sel = window.getSelection();
 
-        range.selectNodeContents(this.editable);
+      const sel = window.getSelection();
+      const caretPostion = sel.anchorOffset;
+      const innerText = ev.target.innerText.replace(/\n$/, "");
+      const stringLength = innerText.length;
+      const range = document.createRange();
 
-        sel.removeAllRanges();
-        sel.addRange(range);
-        sel.collapseToEnd(range);
-      });
+      range.selectNodeContents(this.editable);
+      sel.removeAllRanges();
+
+      if (caretPostion === stringLength) {
+        this.setState({ currentContent: `${innerText}\n\n` }, () => {
+          sel.addRange(range);
+          sel.collapseToEnd(range);
+        });
+      } else {
+        this.setState({
+          currentContent: `${innerText.slice(0, caretPostion)}\n${innerText.slice(caretPostion)}`
+        }, () => {
+          range.setStart(this.editable.childNodes[0], caretPostion + 1);
+          range.setEnd(this.editable.childNodes[0], caretPostion + 1);
+          sel.addRange(range);
+        });
+      }
     }
   }
 
