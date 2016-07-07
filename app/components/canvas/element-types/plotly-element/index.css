@@ -1,0 +1,35 @@
+@import '../../../../variables.css';
+
+.canvasElement {
+  position: relative;
+  display: inline-block;
+  cursor: move;
+}
+
+/* Need this to capture all click events on elements */
+.canvasElement::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.editor {
+  outline: none;
+  border: none;
+  resize: none;
+}
+
+.selected::before {
+  content: "";
+  position: absolute;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  top: 0;
+  left: -1px;
+  border: 2px dashed var(--secondary-border-color);
+  border-radius: 2px;
+}
