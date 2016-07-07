@@ -8,7 +8,7 @@ import {
   BLACKLIST_CURRENT_ELEMENT_DESELECT
 } from "../../../../constants";
 import { getPointsToSnap, snap } from "../../../../utils";
-import styles from "./text-element.css";
+import styles from "./index.css";
 import ResizeNode from "../../resize-node";
 import TextContentEditor from "./text-content-editor";
 
@@ -348,7 +348,6 @@ export default class TextElement extends Component {
   }
 
   handleClick = () => {
-    window.removeEventListener("keypress", this.handleClick);
     this.editable.addEventListener("input", this.handleInput);
     this.editable.addEventListener("keypress", this.handleKeyPress);
     this.editable.addEventListener("blur", this.createUpdateElementChildren());
@@ -364,7 +363,7 @@ export default class TextElement extends Component {
       sel.addRange(range);
     }
 
-    this.stopEvent = false;
+    this.stopBlurEvent = false;
     this.editable.focus();
 
     if (!this.props.component.children) {
@@ -378,6 +377,7 @@ export default class TextElement extends Component {
 
       const sel = window.getSelection();
       const caretPostion = sel.anchorOffset;
+      // trim an extra line break if it's at the end.
       const innerText = ev.target.innerText.replace(/\n\n$/, "\n");
       const stringLength = innerText.length;
       const range = document.createRange();
@@ -386,6 +386,7 @@ export default class TextElement extends Component {
       sel.removeAllRanges();
 
       if (caretPostion === stringLength) {
+        // add 2 line breaks because adding one doesn't create new line for some reason
         this.setState({ currentContent: `${innerText}\n\n` }, () => {
           range.setStart(this.editable.childNodes[0], this.state.currentContent.length);
           range.setEnd(this.editable.childNodes[0], this.state.currentContent.length);
@@ -424,14 +425,14 @@ export default class TextElement extends Component {
     const updateElementChildren = (ev) => {
       ev.preventDefault();
 
-      if (this.stopEvent) {
+      if (this.stopBlurEvent) {
         return;
       }
 
       if (ev.type === "blur" || ev.target !== this.editable) {
         window.removeEventListener("click", updateElementChildren);
 
-        this.stopEvent = true;
+        this.stopBlurEvent = true;
         this.editable.removeEventListener("blur", updateElementChildren);
         this.editable.removeEventListener("input", this.handleInput);
         this.editable.blur();
