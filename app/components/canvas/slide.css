@@ -9,6 +9,10 @@
   box-shadow: var(--slide-stage-shadow);
 }
 
+.isResizing {
+  cursor: ew-resize;
+}
+
 .gridLine {
   position: absolute;
   pointer-events: none;

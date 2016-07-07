@@ -68,6 +68,9 @@ export default class TextElement extends Component {
     ev.stopPropagation();
     ev.preventDefault();
 
+    this.context.store.updateElementResizeState(true);
+
+    document.body.style.setProperty("cursor", "ew-resize", "important");
     const { target, pageX } = ev;
     const isLeftSideDrag = target === this.leftResizeNode;
     const { width, height } = this.currentElementComponent.getBoundingClientRect();
@@ -173,6 +176,8 @@ export default class TextElement extends Component {
     window.removeEventListener("mouseup", this.handleMouseUpResize);
     window.removeEventListener("touchmove", this.handleTouchMoveResize);
     window.removeEventListener("touchend", this.handleTouchEndResize);
+
+    this.context.store.updateElementResizeState(false);
 
     this.props.hideGridLine(true);
     this.setState({
@@ -413,6 +418,10 @@ export default class TextElement extends Component {
   }
 
   createUpdateElementChildren = () => {
+    // closure variables to capture current store state as focus is lost.
+    // if this is done during or after the blur event, store will have already
+    // updated the element index upon deselect and slide index if another
+    // slide is selected, making it impossible to update this element.
     const {
       currentState,
       currentSlideIndex,
@@ -476,6 +485,12 @@ export default class TextElement extends Component {
       width,
       left
     } = this.state;
+
+    if (this.context.store.isResizing) {
+      this.currentElementComponent.style.cursor = "ew-resize";
+    } else if (this.currentElementComponent) {
+      this.currentElementComponent.style.cursor = "move";
+    }
 
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
     const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
@@ -574,9 +589,8 @@ export default class TextElement extends Component {
                 }
                 <TextContentEditor
                   ref={component => {
-                    const element = ReactDOM.findDOMNode(component);
-                    if (element && element.getAttribute("contenteditable")) {
-                      this.editable = element;
+                    if (editing) {
+                      this.editable = ReactDOM.findDOMNode(component);
                     }
                   }}
                   lineClass={styles.line}

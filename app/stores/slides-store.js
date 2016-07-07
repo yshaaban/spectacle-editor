@@ -58,6 +58,7 @@ export default class SlidesStore {
 
   // Needed for handling cursor state and pointer events
   @observable isDragging = false;
+  @observable isResizing = false;
   @observable isDraggingSlide = false;
   @observable isDraggingElement = false;
   @observable isDraggingNewElement = false;
@@ -230,6 +231,12 @@ export default class SlidesStore {
       this.isDragging = isDraggingElement;
       this.isDraggingElement = isDraggingElement;
       this.isDraggingNewElement = isDraggingNewElement;
+    });
+  }
+
+  updateElementResizeState(isResizingElement) {
+    transaction(() => {
+      this.isResizing = isResizingElement;
     });
   }
 
