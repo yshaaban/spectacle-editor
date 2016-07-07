@@ -6,10 +6,11 @@ import { omit, defer } from "lodash";
 import {
   SpringSettings,
   BLACKLIST_CURRENT_ELEMENT_DESELECT
-} from "../../../constants";
-import { getElementDimensions, getPointsToSnap, snap } from "../../../utils";
+} from "../../../../constants";
+import { getElementDimensions, getPointsToSnap, snap } from "../../../../utils";
 import styles from "./text-element.css";
-import ResizeNode from "../resize-node";
+import ResizeNode from "../../resize-node";
+import TextContentEditor from "./text-content-editor";
 
 export default class TextElement extends Component {
   static propTypes = {
@@ -556,44 +557,20 @@ export default class TextElement extends Component {
                     component={this.props.component}
                   />
                 }
-                {editing ?
-                  <div
-                    contentEditable="true"
-                    ref={component => {this.editable = component;}}
-                    {...props}
-                    className={styles.editor}
-                    style={
-                      Object.assign(
-                        elementStyle,
-                        computedResizeStyles,
-                        { whiteSpace: "pre" }
-                      )
+                <TextContentEditor
+                  ref={component => {
+                    const element = ReactDOM.findDOMNode(component);
+                    if (element && element.getAttribute("contenteditable")) {
+                      this.editable = element;
                     }
-                  >
-                    {content !== null ?
-                      content
-                      :
-                      defaultText
-                    }
-                  </div>
-                  :
-                  <div
-                    {...props}
-                    ref={component => {this.nonEditable = component;}}
-                    className={styles.editor}
-                    style={{ ...elementStyle, ...computedResizeStyles }}
-                  >
-                    {content !== null ?
-                      content.split("\n").map((line, i) => (
-                        <p style={{ ...elementStyle, ...computedResizeStyles }} key={i}>
-                          {line}
-                        </p>)
-                      )
-                      :
-                      defaultText
-                    }
-                  </div>
-                }
+                  }}
+                  isEditing={editing}
+                  placeholderText={defaultText}
+                  componentProps={props}
+                  editorClass={styles.editor}
+                  style={{ ...elementStyle, ...computedResizeStyles }}
+                  content={content}
+                />
                 {currentlySelected && !editing &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}

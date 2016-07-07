@@ -1,4 +1,4 @@
-import TextElement from "./text-element.js";
+import TextElement from "./text-element";
 import ImageElement from "./image-element.js";
 
 export default {
