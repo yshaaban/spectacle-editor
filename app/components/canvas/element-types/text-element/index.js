@@ -418,7 +418,7 @@ export default class TextElement extends Component {
   }
 
   createUpdateElementChildren = () => {
-    // closure variables to capture current store state as focus is lost.
+    // closure variables to capture current store state upon focus.
     // if this is done during or after the blur event, store will have already
     // updated the element index upon deselect and slide index if another
     // slide is selected, making it impossible to update this element.

@@ -12,6 +12,7 @@ export default class TextContentEditor extends Component {
     style: React.PropTypes.object,
     content: React.PropTypes.string
   }
+
   render() {
     const {
       editorClass,

@@ -7,7 +7,7 @@ import "./app.global.css";
 
 /**
  * redefinition of console.error is done because
- * app/components/canvas/element-types/text-element/index.js
+ * app/components/canvas/element-types/text-element/text-content-editor.js
  * uses attribute, "contentEditable", which alows for editing
  * of DOM elements by user input. This can result in updates
  * occuring on the DOM outside of the scope of react, and
