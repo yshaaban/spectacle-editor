@@ -55,16 +55,8 @@ class SlideList extends Component {
     }
 
     const element = Elements[dragElementType];
-    let { defaultHeight: height, defaultWidth: width } = element;
-
-    if (!height) {
-      height = element.props.height;
-    }
-
-    if (!width) {
-      width = element.props.width;
-    }
-
+    const height = element.defaultHeight || element.props.height;
+    const width = element.defaultWidth || element.props.width;
     const position = newIsOverPosition.concat();
     const snapOffset = [0, 0];
 
