@@ -377,7 +377,7 @@ export default class ImageElement extends Component {
       delta: [x, y],
       left
     } = this.state;
-    console.log(this.props);
+
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
     const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
 
@@ -397,7 +397,6 @@ export default class ImageElement extends Component {
         mouseX && mouseX || props.style && props.style.left || 0,
         SpringSettings.DRAG
       );
-
       const mouseY = mousePosition && mousePosition[1] ? mousePosition[1] : null;
       motionStyles.top = spring(
         mouseY && mouseY || props.style && props.style.top || 0,
@@ -414,13 +413,9 @@ export default class ImageElement extends Component {
         wrapperStyle.transform = `scale(${scale})`;
       }
     }
+      console.log(motionStyles);
 
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
-
-    if (this.props.component.props.style.width !== undefined || isResizing) {
-      elementStyle = omit(elementStyle, "whiteSpace");
-      elementStyle.wordBreak = "break-all";
-    }
 
     if (isPressed) {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
