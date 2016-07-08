@@ -37,6 +37,8 @@ const DropIndicator = () => <div className={styles.dropIndicator} />;
 @observer
 class SlideList extends Component {
   @observable isDragging = false;
+  @observable hasntMoved = true;
+  @observable returnedToPosition = false;
 
   static contextTypes = {
     store: React.PropTypes.object
@@ -92,6 +94,8 @@ class SlideList extends Component {
     } = this.state;
 
     const listRect = this.listWrapper.getBoundingClientRect();
+
+    this.hasntMoved = false;
 
     if (isPressed && !this.isDragging) {
       this.isDragging = true;
@@ -154,11 +158,13 @@ class SlideList extends Component {
       return;
     }
 
+
     this.setState({
       delta: newDelta,
       currentDragIndex: newIndex,
       scrollTop,
       scrollAmount,
+      totalScrollAmount: scrolled - scrollAmount,
       outside: false
     });
   }
@@ -172,10 +178,14 @@ class SlideList extends Component {
     this.context.store.setSelectedSlideIndex(index);
     window.addEventListener("mouseup", this.handleMouseUp);
 
+    this.hasntMoved = true;
+
     // Only do drag if we hold the mouse down for a bit
     this.mouseClickTimeout = setTimeout(() => {
       // TODO: Notify store and change cursor
       this.mouseClickTimeout = null;
+
+      this.returnedToPosition = false;
 
       this.setState({
         originalDragIndex: index,
@@ -189,7 +199,8 @@ class SlideList extends Component {
         delta: [0, 0],
         mouseStart: [pageX, pageY],
         isPressed: true,
-        scrollTop
+        scrollTop,
+        totalScrollAmount: 0,
       });
 
       window.addEventListener("mousemove", this.handleMouseMove);
@@ -220,6 +231,7 @@ class SlideList extends Component {
     this.setState(state, () => {
       setTimeout(() => {
         this.isDragging = false;
+        this.returnedToPosition = true;
 
         this.setState({
           currentDragIndex: null,
@@ -250,7 +262,8 @@ class SlideList extends Component {
       originalDragIndex,
       isPressed,
       updating,
-      scrollTop
+      scrollTop,
+      totalScrollAmount
     } = this.state;
 
     return (
@@ -293,11 +306,11 @@ class SlideList extends Component {
                   if (i === originalDragIndex) {
                     [x, y] = delta;
 
-                    y = isPressed ? y - scrollTop : (currentDragIndex - i) * totalSlideHeight;
+                    y = isPressed ? y + totalScrollAmount : (currentDragIndex - i) * totalSlideHeight;
 
                     motionStyle = {
-                      translateX: updating ? x + 40 : spring(x + 40, springSetting2),
-                      translateY: updating ? y : spring(y, springSetting2),
+                      translateX: this.hasntMoved ? x + 40 : spring(x + 40, springSetting2),
+                      translateY: this.hasntMoved ? y : spring(y, springSetting2),
                       scale: updating ? 1 : spring(isPressed ? 1.1 : 1, springSetting1),
                       zIndex: this.isDragging ? 1000 : i
                     };
@@ -319,7 +332,7 @@ class SlideList extends Component {
                   const borderStyle = currentSlideIndex === i ?
                     "1px solid #447bdc" : "1px solid transparent";
 
-                  const position = i === originalDragIndex && isPressed ?
+                  const position = i === originalDragIndex && this.returnedToPosition ?
                     "fixed" : "relative";
 
                   return (
