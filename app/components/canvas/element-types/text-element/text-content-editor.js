@@ -31,7 +31,7 @@ export default class TextContentEditor extends Component {
         ref={component => {this.editable = component;}}
         {...componentProps}
         className={`${contentClass} ${editorClass}`}
-        style={Object.assign(style, { whiteSpace: "pre-wrap" })}
+        style={{ ...style, ...{ whiteSpace: "pre-wrap" } }}
       >
         {content !== null ?
           content
