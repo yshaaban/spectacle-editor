@@ -82,7 +82,6 @@ export default class TextElement extends Component {
 
     this.setState({
       isLeftSideDrag,
-      isResizing: true,
       width,
       height,
       left,
@@ -177,12 +176,10 @@ export default class TextElement extends Component {
     window.removeEventListener("touchmove", this.handleTouchMoveResize);
     window.removeEventListener("touchend", this.handleTouchEndResize);
 
-    this.context.store.updateElementResizeState(false);
 
     this.props.hideGridLine(true);
-    this.setState({
-      isResizing: false
-    });
+
+    this.context.store.updateElementResizeState(false);
 
     const { width, left } = this.state;
     const propStyles = { ...this.props.component.props.style };
@@ -480,13 +477,14 @@ export default class TextElement extends Component {
       currentContent,
       delta: [x, y],
       editing,
-      isResizing,
       isPressed,
       width,
       left
     } = this.state;
 
-    if (this.context.store.isResizing) {
+    const { isResizing } = this.context.store;
+
+    if (isResizing) {
       this.currentElementComponent.style.cursor = "ew-resize";
     } else if (this.currentElementComponent) {
       this.currentElementComponent.style.cursor = "move";
