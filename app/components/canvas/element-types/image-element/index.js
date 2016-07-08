@@ -41,12 +41,14 @@ export default class ImageElement extends Component {
 
   componentDidMount() {
     defer(() => {
-      const { width, height } = this.currentElementComponent.getBoundingClientRect();
+      if (this.currentElementComponent) {
+        const { width, height } = this.currentElementComponent.getBoundingClientRect();
 
-      this.setState({ // eslint-disable-line react/no-did-mount-set-state
-        width,
-        height
-      });
+        this.setState({ // eslint-disable-line react/no-did-mount-set-state
+          width,
+          height
+        });
+      }
     });
   }
 
@@ -375,7 +377,7 @@ export default class ImageElement extends Component {
       delta: [x, y],
       left
     } = this.state;
-
+    console.log(this.props);
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
     const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
 
@@ -391,15 +393,14 @@ export default class ImageElement extends Component {
       wrapperStyle.position = "absolute";
 
       const mouseX = mousePosition && mousePosition[0] ? mousePosition[0] : null;
-
       motionStyles.left = spring(
-        mouseX && mouseX || props.style.left || 0,
+        mouseX && mouseX || props.style && props.style.left || 0,
         SpringSettings.DRAG
       );
 
       const mouseY = mousePosition && mousePosition[1] ? mousePosition[1] : null;
       motionStyles.top = spring(
-        mouseY && mouseY || props.style.top || 0,
+        mouseY && mouseY || props.style && props.style.top || 0,
         SpringSettings.DRAG
       );
 

@@ -25,7 +25,7 @@ class CanvasElement extends Component {
 
     return React.cloneElement(
       this.getElementType(component.type),
-      { ...this.props, component }
+      { ...this.props }
     );
   }
 }
