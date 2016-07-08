@@ -28,6 +28,7 @@ export default class TextContentEditor extends Component {
     return isEditing ?
       (<div
         contentEditable="true"
+        suppressContentEditableWarning
         ref={component => {this.editable = component;}}
         {...componentProps}
         className={`${contentClass} ${editorClass}`}
