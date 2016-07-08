@@ -26,9 +26,9 @@
 .selected::before {
   content: "";
   position: absolute;
-  width: calc(100% - 2px);
-  height: calc(100% - 2px);
-  top: 0;
+  width: calc(100% - 1px);
+  height: calc(100% - 5px);
+  top: -1px;
   left: -1px;
   border: 2px dashed var(--secondary-border-color);
   border-radius: 2px;

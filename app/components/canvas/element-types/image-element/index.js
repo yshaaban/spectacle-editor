@@ -41,14 +41,12 @@ export default class ImageElement extends Component {
 
   componentDidMount() {
     defer(() => {
-      if (this.currentElementComponent) {
-        const { width, height } = this.currentElementComponent.getBoundingClientRect();
+      const { width, height } = this.currentElementComponent.getBoundingClientRect();
 
-        this.setState({ // eslint-disable-line react/no-did-mount-set-state
-          width,
-          height
-        });
-      }
+      this.setState({ // eslint-disable-line react/no-did-mount-set-state
+        width,
+        height
+      });
     });
   }
 
@@ -413,7 +411,6 @@ export default class ImageElement extends Component {
         wrapperStyle.transform = `scale(${scale})`;
       }
     }
-      console.log(motionStyles);
 
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
