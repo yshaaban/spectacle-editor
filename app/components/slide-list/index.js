@@ -111,6 +111,17 @@ class SlideList extends Component {
 
     let scrollAmount;
 
+    const outside = rightOfSlide < listRect.left || leftOfSlide > listRect.right ||
+      topOfSlide > listRect.bottom || topOfSlide < listRect.top;
+
+    const topDragThreshold = topOfSlide < listRect.top && topOfSlide > listRect.top - (slideHeight / 2);
+
+    let newIndex = getDragIndex(topOfSlide, currentDragIndex, newScrollTop, listRect);
+
+    // Safety check
+    if (newIndex > slideList.length) {
+      newIndex = slideList.length - 1;
+    }
 
     if (topOfSlide < topScroll) {
       scrollAmount = -5;
@@ -120,10 +131,8 @@ class SlideList extends Component {
       scrollAmount = null;
     }
 
-    this.setState({ scrollAmount })
-
     // Let the slide overflow halfway for the zero index location.
-    if (topOfSlide < listRect.top && topOfSlide > listRect.top - (slideHeight / 2)) {
+    if (topDragThreshold) {
       this.setState({
         delta: newDelta,
         currentDragIndex: 0,
@@ -134,12 +143,7 @@ class SlideList extends Component {
     }
 
     // If we're outside of the column, setState to outside
-    if (
-      rightOfSlide < listRect.left ||
-      leftOfSlide > listRect.right ||
-      topOfSlide > listRect.bottom ||
-      topOfSlide < listRect.top
-    ) {
+    if (outside) {
       this.setState({
         delta: newDelta,
         outside: true,
@@ -150,17 +154,11 @@ class SlideList extends Component {
       return;
     }
 
-    let newIndex = getDragIndex(topOfSlide, currentDragIndex, newScrollTop, listRect);
-
-    // Safety check
-    if (newIndex > slideList.length) {
-      newIndex = slideList.length - 1;
-    }
-
     this.setState({
       delta: newDelta,
       currentDragIndex: newIndex,
       scrollTop,
+      scrollAmount,
       outside: false
     });
   }
