@@ -1,15 +1,16 @@
 import React, { Component, PropTypes } from "react";
 import ReactDOM from "react-dom";
 import { Motion, spring } from "react-motion";
-import { omit, defer } from "lodash";
+import { omit, defer, trimEnd } from "lodash";
 
 import {
   SpringSettings,
   BLACKLIST_CURRENT_ELEMENT_DESELECT
-} from "../../../constants";
-import { getElementDimensions, getPointsToSnap, snap } from "../../../utils";
-import styles from "../canvas-element.css";
-import ResizeNode from "../resize-node";
+} from "../../../../constants";
+import { getPointsToSnap, snap } from "../../../../utils";
+import styles from "./index.css";
+import ResizeNode from "../../resize-node";
+import TextContentEditor from "./text-content-editor";
 
 export default class TextElement extends Component {
   static propTypes = {
@@ -34,6 +35,7 @@ export default class TextElement extends Component {
     super(props, context);
 
     this.state = {
+      currentContent: null,
       isPressed: false,
       mouseStart: [0, 0],
       delta: [0, 0]
@@ -66,6 +68,9 @@ export default class TextElement extends Component {
     ev.stopPropagation();
     ev.preventDefault();
 
+    this.context.store.updateElementResizeState(true);
+
+    document.body.style.setProperty("cursor", "ew-resize", "important");
     const { target, pageX } = ev;
     const isLeftSideDrag = target === this.leftResizeNode;
     const { width, height } = this.currentElementComponent.getBoundingClientRect();
@@ -77,7 +82,6 @@ export default class TextElement extends Component {
 
     this.setState({
       isLeftSideDrag,
-      isResizing: true,
       width,
       height,
       left,
@@ -172,10 +176,10 @@ export default class TextElement extends Component {
     window.removeEventListener("touchmove", this.handleTouchMoveResize);
     window.removeEventListener("touchend", this.handleTouchEndResize);
 
+
     this.props.hideGridLine(true);
-    this.setState({
-      isResizing: false
-    });
+
+    this.context.store.updateElementResizeState(false);
 
     const { width, left } = this.state;
     const propStyles = { ...this.props.component.props.style };
@@ -184,6 +188,11 @@ export default class TextElement extends Component {
     propStyles.left = left;
 
     this.context.store.updateElementProps({ style: propStyles });
+
+    // defer measuring new height, otherwise value will be what height was before resize
+    defer(() => {
+      this.setState({ height: this.currentElementComponent.clientHeight });
+    });
   }
 
   handleTouchStart = (ev) => {
@@ -226,7 +235,6 @@ export default class TextElement extends Component {
         // Set either x or y
         newDelta[isVertical ? 0 : 1] = line - offset;
       };
-
       snap(
         this.gridLines.horizontal,
         getPointsToSnap(offsetY, height, mouseOffsetY),
@@ -251,33 +259,20 @@ export default class TextElement extends Component {
   handleMouseDown = (ev) => {
     ev.preventDefault();
 
-    if (this.clickStart) {
-      this.clicking = false;
-      this.handleDoubleClick(ev);
-
-      return;
+    if (this.context.store.currentElementIndex === this.props.elementIndex) {
+      this.clickStart = new Date().getTime();
     }
 
-    this.clickStart = new Date().getTime();
     this.context.store.setCurrentElementIndex(this.props.elementIndex);
 
-    const { pageX, pageY, target } = ev;
-    const boundingBox = target.getBoundingClientRect();
+    const { pageX, pageY } = ev;
+    const boundingBox = this.currentElementComponent.getBoundingClientRect();
     const mouseOffset = [Math.floor(boundingBox.left - pageX), Math.floor(boundingBox.top - pageY)];
     const originalPosition = [
       this.props.component.props.style.left,
       this.props.component.props.style.top
     ];
-
-    let { width, height } = getElementDimensions(this.props.component);
-
-    if (height === undefined) {
-      height = this.currentElementComponent.getBoundingClientRect().height;
-    }
-
-    if (width === undefined) {
-      width = this.currentElementComponent.getBoundingClientRect().width;
-    }
+    const { width, height } = boundingBox;
 
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("touchend", this.handleMouseUp);
@@ -312,20 +307,18 @@ export default class TextElement extends Component {
   }
 
   handleMouseUp = () => {
-    if (this.mouseClickTimeout || this.mouseClickTimeout === 0) {
-      clearTimeout(this.mouseClickTimeout);
+    const timeSinceMouseDown = new Date().getTime() - this.clickStart;
+
+    clearTimeout(this.mouseClickTimeout);
+
+    if (this.clickStart && timeSinceMouseDown <= 150) {
       window.removeEventListener("mouseup", this.handleMouseUp);
       window.removeEventListener("touchend", this.handleMouseUp);
 
-      this.mouseClickTimeout = null;
-
-      // this.props.onDropElement(this.props.elementType);
-      const timeSinceMouseDown = new Date().getTime() - this.clickStart;
-
-      // Give the user the remainder of the 250ms to do a double click
-      setTimeout(() => {
-        this.clickStart = null;
-      }, 250 - timeSinceMouseDown);
+      this.clickStart = null;
+      this.setState({ editing: true }, () => {
+        this.handleClick();
+      });
 
       return;
     }
@@ -356,26 +349,146 @@ export default class TextElement extends Component {
     });
   }
 
-  handleDoubleClick = () => {
-    console.log("DISCOUNTDOUBLECLICK");
+  handleClick = () => {
+    this.editable.addEventListener("input", this.handleInput);
+    this.editable.addEventListener("keypress", this.handleKeyPress);
+    this.editable.addEventListener("blur", this.createUpdateElementChildren());
+    window.addEventListener("click", this.createUpdateElementChildren());
+
+    if (this.editable && this.editable.childNodes.length) {
+      const range = document.createRange();
+      const sel = window.getSelection();
+
+      range.setStartAfter(this.editable.childNodes[0]);
+      range.setEndAfter(this.editable.childNodes[0]);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    this.stopBlurEvent = false;
+    this.editable.focus();
+
+    if (!this.props.component.children) {
+      this.setState({ currentContent: "" });
+    }
+  }
+
+  handleKeyPress = (ev) => {
+    if (ev.charCode === 13) {
+      ev.preventDefault();
+
+      const sel = window.getSelection();
+      const caretPostion = sel.anchorOffset;
+      // trim an extra line break if it's at the end.
+      const innerText = ev.target.innerText.replace(/\n\n$/, "\n");
+      const stringLength = innerText.length;
+      const range = document.createRange();
+
+      range.selectNodeContents(this.editable);
+      sel.removeAllRanges();
+
+      if (caretPostion === stringLength) {
+        // add 2 line breaks because adding one doesn't create new line for some reason
+        this.setState({ currentContent: `${innerText}\n\n` }, () => {
+          range.setStart(this.editable.childNodes[0], this.state.currentContent.length);
+          range.setEnd(this.editable.childNodes[0], this.state.currentContent.length);
+          sel.addRange(range);
+        });
+      } else {
+        this.setState({
+          currentContent: `${innerText.slice(0, caretPostion)}\n${innerText.slice(caretPostion)}`
+        }, () => {
+          range.setStart(this.editable.childNodes[0], caretPostion + 1);
+          range.setEnd(this.editable.childNodes[0], caretPostion + 1);
+          sel.addRange(range);
+        });
+      }
+    }
+  }
+
+  handleInput = (ev) => {
+    ev.preventDefault();
+
+    this.setState({
+      currentContent: ev.target.innerText
+    });
+  }
+
+  createUpdateElementChildren = () => {
+    // closure variables to capture current store state upon focus.
+    // if this is done during or after the blur event, store will have already
+    // updated the element index upon deselect and slide index if another
+    // slide is selected, making it impossible to update this element.
+    const {
+      currentState,
+      currentSlideIndex,
+      currentElementIndex
+    } = this.context.store;
+
+    const currentElementChildren =
+      currentState.slides[currentSlideIndex].children[currentElementIndex].children;
+
+    const updateElementChildren = (ev) => {
+      ev.preventDefault();
+
+      if (this.stopBlurEvent) {
+        return;
+      }
+
+      if (ev.type === "blur" || ev.target !== this.editable) {
+        window.removeEventListener("click", updateElementChildren);
+
+        this.stopBlurEvent = true;
+        this.editable.removeEventListener("blur", updateElementChildren);
+        this.editable.removeEventListener("input", this.handleInput);
+        this.editable.blur();
+
+        const { currentContent } = this.state;
+
+        if (typeof currentContent === "string" && currentContent !== currentElementChildren) {
+          this.context.store.updateChildren(
+            trimEnd(currentContent, "\n"),
+            currentSlideIndex,
+            currentElementIndex
+          );
+        }
+
+        if (this.currentElementComponent) {
+          const { width, height } = this.currentElementComponent.getBoundingClientRect();
+
+          this.setState({ currentContent: null, editing: false, width, height });
+        }
+      }
+    };
+
+    return updateElementChildren;
   }
 
   render() {
     const {
       elementIndex,
       selected,
-      component: { ComponentClass, props, children },
+      component: { defaultText, props, children },
       mousePosition,
       scale
     } = this.props;
 
     const {
-      width,
-      isResizing,
-      isPressed,
+      currentContent,
       delta: [x, y],
+      editing,
+      isPressed,
+      width,
       left
     } = this.state;
+
+    const { isResizing } = this.context.store;
+
+    if (isResizing) {
+      this.currentElementComponent.style.cursor = "ew-resize";
+    } else if (this.currentElementComponent) {
+      this.currentElementComponent.style.cursor = "move";
+    }
 
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
     const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
@@ -387,6 +500,7 @@ export default class TextElement extends Component {
     if (this.context.store.isDragging) {
       wrapperStyle.pointerEvents = "none";
     }
+
 
     if (mousePosition || props.style && props.style.position === "absolute") {
       wrapperStyle.position = "absolute";
@@ -438,6 +552,8 @@ export default class TextElement extends Component {
       motionStyles.width = spring(width, SpringSettings.RESIZE);
     }
 
+    const content = typeof currentContent === "string" ? currentContent : children;
+
     return (
         <Motion
           style={motionStyles}
@@ -457,28 +573,37 @@ export default class TextElement extends Component {
                 }
                 ref={component => {this.currentElementComponent = component;}}
                 style={{ ...wrapperStyle, ...computedDragStyles }}
-                onMouseDown={this.handleMouseDown}
+                onMouseDown={!editing && this.handleMouseDown}
                 onTouchStart={this.handleTouchStart}
               >
-                {currentlySelected &&
+                {currentlySelected && !editing &&
                   <ResizeNode
                     ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
                     alignLeft
                     handleMouseDownResize={this.handleMouseDownResize}
-                    onTouch={this.handleTouchStartResize}
+                    handleTouchResize={this.handleTouchStartResize}
                     component={this.props.component}
                   />
                 }
-                  <ComponentClass
-                    {...props}
-                    style={{ ...elementStyle, ...computedResizeStyles }}
-                  >
-                    {children}
-                  </ComponentClass>
-                {currentlySelected &&
+                <TextContentEditor
+                  ref={component => {
+                    if (editing) {
+                      this.editable = ReactDOM.findDOMNode(component);
+                    }
+                  }}
+                  lineClass={styles.line}
+                  editorClass={styles.editor}
+                  isEditing={editing}
+                  placeholderText={defaultText}
+                  componentProps={props}
+                  contentClass={styles.content}
+                  style={{ ...elementStyle, ...computedResizeStyles }}
+                  content={content}
+                />
+                {currentlySelected && !editing &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}
-                    onTouch={this.handleTouchStartResize}
+                    handleTouchResize={this.handleTouchStartResize}
                     component={this.props.component}
                   />
                 }

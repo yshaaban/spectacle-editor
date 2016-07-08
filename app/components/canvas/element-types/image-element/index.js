@@ -6,10 +6,10 @@ import { omit, defer } from "lodash";
 import {
   SpringSettings,
   BLACKLIST_CURRENT_ELEMENT_DESELECT
-} from "../../../constants";
-import { getElementDimensions, getPointsToSnap, snap } from "../../../utils";
-import styles from "../canvas-element.css";
-import ResizeNode from "../resize-node";
+} from "../../../../constants";
+import { getElementDimensions, getPointsToSnap, snap } from "../../../../utils";
+import styles from "./index.css";
+import ResizeNode from "../../resize-node";
 
 export default class ImageElement extends Component {
   static propTypes = {

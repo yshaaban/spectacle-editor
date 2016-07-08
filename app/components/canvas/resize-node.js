@@ -4,7 +4,8 @@ import styles from "./resize-node.css";
 export default class ResizeNode extends Component {
   static propTypes = {
     alignLeft: PropTypes.bool,
-    handleMouseDownResize: PropTypes.func
+    handleMouseDownResize: PropTypes.func,
+    handleTouchResize: PropTypes.func
   }
 
   render() {
@@ -15,7 +16,7 @@ export default class ResizeNode extends Component {
            ${this.props.alignLeft ? styles.handleLeft : styles.handleRight}`
         }
         onMouseDown={this.props.handleMouseDownResize}
-        onTouchStart={this.handleTouchResize}
+        onTouchStart={this.props.handleTouchResize}
       ></div>
     );
   }

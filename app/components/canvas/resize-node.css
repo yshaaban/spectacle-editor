@@ -12,7 +12,7 @@
   border: 1px solid #000;
   box-sizing: border-box;
   content: "";
-  cursor: pointer;
+  cursor: ew-resize;
   height: 7px;
   position: absolute;
   width: 7px;

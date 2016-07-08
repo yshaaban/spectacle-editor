@@ -58,6 +58,7 @@ export default class SlidesStore {
 
   // Needed for handling cursor state and pointer events
   @observable isDragging = false;
+  @observable isResizing = false;
   @observable isDraggingSlide = false;
   @observable isDraggingElement = false;
   @observable isDraggingNewElement = false;
@@ -233,6 +234,12 @@ export default class SlidesStore {
     });
   }
 
+  updateElementResizeState(isResizingElement) {
+    transaction(() => {
+      this.isResizing = isResizingElement;
+    });
+  }
+
   updateSlideDraggingState(isDraggingSlide) {
     transaction(() => {
       this.isDragging = isDraggingSlide;
@@ -248,6 +255,13 @@ export default class SlidesStore {
     const newProps = merge(this.currentElement.props, props);
     const newState = this.currentState;
     newState.slides[this.currentSlideIndex].children[this.currentElementIndex].props = newProps;
+    this._addToHistory(newState);
+  }
+
+  updateChildren(nextChild, slideIndex, elementIndex) {
+    const newState = this.currentState;
+
+    newState.slides[slideIndex].children[elementIndex].children = nextChild;
     this._addToHistory(newState);
   }
 
