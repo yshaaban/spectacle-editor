@@ -136,16 +136,6 @@ class SlideList extends Component {
     }
 
     // Let the slide overflow halfway for the zero index location.
-    if (topDragThreshold) {
-      this.setState({
-        delta: newDelta,
-        currentDragIndex: 0,
-        outside: false
-      });
-
-      return;
-    }
-
     // If we're outside of the column, setState to outside
     if (outside) {
       this.setState({
@@ -157,7 +147,15 @@ class SlideList extends Component {
 
       return;
     }
+    if (topDragThreshold) {
+      this.setState({
+        delta: newDelta,
+        currentDragIndex: 0,
+        outside: false
+      });
 
+      return;
+    }
 
     this.setState({
       delta: newDelta,
@@ -306,7 +304,7 @@ class SlideList extends Component {
                   if (i === originalDragIndex) {
                     [x, y] = delta;
 
-                    y = isPressed ? y + totalScrollAmount : (currentDragIndex - i) * totalSlideHeight;
+                    y = isPressed ? y - scrollTop : (currentDragIndex - i) * totalSlideHeight;
 
                     motionStyle = {
                       translateX: this.hasntMoved ? x + 40 : spring(x + 40, springSetting2),
@@ -332,7 +330,7 @@ class SlideList extends Component {
                   const borderStyle = currentSlideIndex === i ?
                     "1px solid #447bdc" : "1px solid transparent";
 
-                  const position = i === originalDragIndex && this.returnedToPosition ?
+                  const position = i === originalDragIndex && isPressed ?
                     "fixed" : "relative";
 
                   return (
