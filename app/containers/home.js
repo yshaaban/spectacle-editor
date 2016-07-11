@@ -8,6 +8,7 @@ import FileStore from "../stores/file-store";
 import Provider from "../components/utils/provider";
 import HistoryMenu from "../components/history-menu";
 import PropertyEditor from "../components/property-editor";
+import Upload from "../components/upload";
 import MenuBar from "../components/menu-bar";
 import SlideList from "../components/slide-list";
 import Canvas from "../components/canvas";
@@ -85,6 +86,7 @@ class Home extends Component {
       <Provider store={slideStore}>
         <div className={styles.home} style={wrapperStyles}>
           <MenuBar />
+          <Upload />
           <HistoryMenu />
           <div className={styles.container}>
             <SlideList />

@@ -7,6 +7,8 @@
   --primary-font-color: #3d3d3d;
   --secondary-font-color: #757575;
   --select-hover-color: #e6f2ff;
+  --disabled-border-color: #dce1e4;
+  --plotly-blue: #447bdc;
 
   /* Drop Shadows */
   --drag-shadow: 0 1px 3px 0 rgba(204, 204, 204, 0.6);
