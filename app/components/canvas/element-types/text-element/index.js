@@ -568,7 +568,10 @@ export default class TextElement extends Component {
             return (
               <div
                 className={
-                  `${styles.canvasElement} ${extraClasses} ${BLACKLIST_CURRENT_ELEMENT_DESELECT}`
+                  `${styles.canvasElement}
+                   ${extraClasses}
+                   ${BLACKLIST_CURRENT_ELEMENT_DESELECT}
+                   ${styles.list}`
                 }
                 ref={component => {this.currentElementComponent = component;}}
                 style={{ ...wrapperStyle, ...computedDragStyles }}
@@ -590,12 +593,10 @@ export default class TextElement extends Component {
                       this.editable = ReactDOM.findDOMNode(component);
                     }
                   }}
-                  lineClass={styles.line}
-                  editorClass={styles.editor}
+                  classNames={styles}
                   isEditing={editing}
                   placeholderText={defaultText}
                   componentProps={props}
-                  contentClass={styles.content}
                   style={{ ...elementStyle, ...computedResizeStyles }}
                   content={content}
                 />

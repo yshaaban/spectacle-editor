@@ -40,6 +40,7 @@ elements[ElementTypes.TEXT] = {
   defaultText: "totally text",
   props: {
     size: 4,
+    listType: null,
     style: {
       color: "#3d3d3d",
       fontFamily: "openSans",
