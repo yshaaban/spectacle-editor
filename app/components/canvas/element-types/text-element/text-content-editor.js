@@ -147,7 +147,6 @@ export default class TextContentEditor extends Component {
       (<div
         contentEditable="true"
         suppressContentEditableWarning
-        ref={component => {this.editable = component;}}
         {...componentProps}
         className={`${classNames.content} ${classNames.editor}`}
         style={{ ...style, whiteSpace: "pre-wrap" }}
