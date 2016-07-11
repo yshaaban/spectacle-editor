@@ -70,7 +70,6 @@ export default class TextElement extends Component {
 
     this.context.store.updateElementResizeState(true);
 
-    document.body.style.setProperty("cursor", "ew-resize", "important");
     const { target, pageX } = ev;
     const isLeftSideDrag = target === this.leftResizeNode;
     const { width, height } = this.currentElementComponent.getBoundingClientRect();
