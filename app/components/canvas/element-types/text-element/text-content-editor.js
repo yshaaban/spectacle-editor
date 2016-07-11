@@ -137,36 +137,43 @@ export default class TextContentEditor extends Component {
     const {
       classNames,
       componentProps,
-      style
+      isEditing,
+      placeholderText,
+      style,
+      content
     } = this.props;
 
-    return componentProps.listType && this.props.children ?
-      this.getList(componentProps.listType, trimEnd(this.state.contentToRender, "\n"))
+    return isEditing ?
+      (<div
+        contentEditable="true"
+        suppressContentEditableWarning
+        ref={component => {this.editable = component;}}
+        {...componentProps}
+        className={`${classNames.content} ${classNames.editor}`}
+        style={{ ...style, whiteSpace: "pre-wrap" }}
+      >
+        {content !== null ?
+          content
+          :
+          placeholderText
+        }
+      </div>)
       :
       (<div
         ref={(component) => {this.editor = component;}}
         {...componentProps}
         className={classNames.content}
-        onBlur={this.handleBlur}
-        style={{ ...style, whiteSpace: "pre-wrap" }}
-        contentEditable="true"
-        suppressContentEditableWarning
-        onClick={this.handleClick}
-        onKeyDown={this.handleKeyDown}
-        onInput={this.handleInput}
+        style={style}
       >
-        {trimEnd(this.state.contentToRender, "\n").split("\n").map((line, i) => (
-          <p
-            className={
-              `${classNames.content}
-               ${classNames.line}`
-            }
-            style={style}
-            key={i}
-          >
-            {line}
-          </p>)
-        )}
+        {content !== null ?
+          content.split("\n").map((line, i) => (
+            <p className={`${classNames.line} ${classNames.orderedList}`} style={style} key={i}>
+              {line}
+            </p>)
+          )
+          :
+          placeholderText
+        }
       </div>);
   }
 }

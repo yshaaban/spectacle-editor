@@ -613,11 +613,10 @@ export default class TextElement extends Component {
                       this.editable = ReactDOM.findDOMNode(component);
                     }
                   }}
-                  stopEditing={this.stopEditing}
-                  classNames={{ ...styles }}
+                  classNames={styles}
                   isEditing={editing}
                   placeholderText={defaultText}
-                  componentProps={{ ...props }}
+                  componentProps={props}
                   style={{ ...elementStyle, ...computedResizeStyles }}
                   children={children}
                 />
