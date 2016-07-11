@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { observer } from "mobx-react";
 
 import { ElementTypes } from "../../constants";
-import { TextElement, ImageElement } from "./element-types";
+import { TextElement, ImageElement, PlotlyElement } from "./element-types";
 
 @observer
 class CanvasElement extends Component {
@@ -18,6 +18,10 @@ class CanvasElement extends Component {
     if (type === ElementTypes.IMAGE) {
       return <ImageElement />;
     }
+
+    if (type === ElementTypes.PLOTY_PLACEHOLDER_IMAGE || type === ElementTypes.PLOTLY) {
+      return <PlotlyElement />;
+    }
   }
 
   render() {
@@ -25,7 +29,7 @@ class CanvasElement extends Component {
 
     return React.cloneElement(
       this.getElementType(component.type),
-      { ...this.props, component }
+      { ...this.props }
     );
   }
 }

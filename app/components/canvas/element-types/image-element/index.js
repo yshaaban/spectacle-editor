@@ -391,15 +391,13 @@ export default class ImageElement extends Component {
       wrapperStyle.position = "absolute";
 
       const mouseX = mousePosition && mousePosition[0] ? mousePosition[0] : null;
-
       motionStyles.left = spring(
-        mouseX && mouseX || props.style.left || 0,
+        mouseX && mouseX || props.style && props.style.left || 0,
         SpringSettings.DRAG
       );
-
       const mouseY = mousePosition && mousePosition[1] ? mousePosition[1] : null;
       motionStyles.top = spring(
-        mouseY && mouseY || props.style.top || 0,
+        mouseY && mouseY || props.style && props.style.top || 0,
         SpringSettings.DRAG
       );
 
@@ -415,11 +413,6 @@ export default class ImageElement extends Component {
     }
 
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
-
-    if (this.props.component.props.style.width !== undefined || isResizing) {
-      elementStyle = omit(elementStyle, "whiteSpace");
-      elementStyle.wordBreak = "break-all";
-    }
 
     if (isPressed) {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
