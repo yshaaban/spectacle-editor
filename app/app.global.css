@@ -425,11 +425,16 @@
   font-style: italic;
 }
 
+* {
+  box-sizing: inherit;
+}
+
 body {
   background-color: #fff;
+  box-sizing: border-box;
   color: white;
-  font-family: "open-sans", sans-serif;
-  -webkit-font-smoothing: antialiased;
+  font-family: "openSans", "Open Sans", sans-serif;
+  font-weight: 400;
   height: 100vh;
   margin: 0;
   overflow-y: hidden;
