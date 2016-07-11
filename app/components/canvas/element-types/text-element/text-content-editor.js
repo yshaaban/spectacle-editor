@@ -5,9 +5,7 @@ export default class TextContentEditor extends Component {
   static propTypes = {
     isEditing: React.PropTypes.bool,
     placeholderText: React.PropTypes.string,
-    contentClass: React.PropTypes.string,
-    editorClass: React.PropTypes.string,
-    lineClass: React.PropTypes.string,
+    classNames: React.PropTypes.object,
     componentProps: React.PropTypes.object,
     style: React.PropTypes.object,
     content: React.PropTypes.string
@@ -15,11 +13,9 @@ export default class TextContentEditor extends Component {
 
   render() {
     const {
-      editorClass,
-      lineClass,
+      classNames,
       componentProps,
       isEditing,
-      contentClass,
       placeholderText,
       style,
       content
@@ -31,7 +27,7 @@ export default class TextContentEditor extends Component {
         suppressContentEditableWarning
         ref={component => {this.editable = component;}}
         {...componentProps}
-        className={`${contentClass} ${editorClass}`}
+        className={`${classNames.content} ${classNames.editor}`}
         style={{ ...style, whiteSpace: "pre-wrap" }}
       >
         {content !== null ?
@@ -43,12 +39,12 @@ export default class TextContentEditor extends Component {
       :
       (<div
         {...componentProps}
-        className={contentClass}
+        className={classNames.content}
         style={style}
       >
         {content !== null ?
           content.split("\n").map((line, i) => (
-            <p className={lineClass} style={style} key={i}>
+            <p className={`${classNames.line} ${classNames.orderedList}`} style={style} key={i}>
               {line}
             </p>)
           )
