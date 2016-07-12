@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" role="img">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #447bdc;
+      }
+    </style>
+    <filter id="filter" x="562.969" y="75.344" width="14.219" height="14.187" filterUnits="userSpaceOnUse">
+      <feFlood result="flood" flood-color="#447bdc"/>
+      <feComposite result="composite" operator="in" in2="SourceGraphic"/>
+      <feBlend result="blend" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <path class="cls-1" d="M2.795,12.453L2.2,11.859,9.6,4.5l4.341,4.3,6.29-6.259,0.59,0.593L13.941,9.986,9.6,5.682Z" /><path class="cls-1" d="M16.5,2.412l0,0.726,3.3,0.381,0.419,3.358L20.883,6.9l0.011-4.491H16.5Z" /><polygon class="cls-1" points="21.993 16.749 -0.494 16.749 -0.494 0.751 0.506 0.751 0.506 15.749 21.993 15.749 21.993 16.749" />
+</svg>

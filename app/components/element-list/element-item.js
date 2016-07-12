@@ -221,7 +221,7 @@ class ElementItem extends Component {
           >
             {({ translateY, translateX, opacity, padding }) => (
               <Icon
-                name={IconTypes.TEXT}
+                name={elementType}
                 className={`${styles.icon} ${styles.dragIcon}`}
                 style={{
                   transform: `
@@ -238,7 +238,7 @@ class ElementItem extends Component {
         <div
           className={styles.item}
         >
-          <Icon name={IconTypes.TEXT} className={styles.icon} />
+          <Icon name={elementType} className={styles.icon} />
           <h4>
             {elementType}
           </h4>

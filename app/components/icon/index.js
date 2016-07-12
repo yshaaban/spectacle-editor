@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from "react";
 import { IconTypes } from "../../constants";
-import { TEXT } from "../../assets/icons";
+import { TEXT, IMAGE, PLOTLY } from "../../assets/icons";
 import styles from "./index.css";
 
 const iconTypeMap = {
-  [IconTypes.TEXT]: TEXT
+  [IconTypes.TEXT]: TEXT,
+  [IconTypes.IMAGE]: IMAGE,
+  [IconTypes.PLOTLY]: PLOTLY
 };
 
 class Icon extends Component {
