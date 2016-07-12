@@ -1,5 +1,5 @@
+/* eslint-disable react/sort-comp */
 import React, { Component } from "react";
-import { findDOMNode } from "react-dom";
 import { autorun, observable } from "mobx";
 import { observer } from "mobx-react";
 import { Motion, TransitionMotion, spring } from "react-motion";
@@ -93,7 +93,7 @@ class SlideList extends Component {
       scrollTop
     } = this.state;
 
-    const listRect = this.listWrapper.getBoundingClientRect();
+    const { listRect } = this;
 
     this.hasntMoved = false;
 
@@ -118,7 +118,8 @@ class SlideList extends Component {
     const outside = rightOfSlide < listRect.left || leftOfSlide > listRect.right ||
       topOfSlide > listRect.bottom || topOfSlide < listRect.top;
 
-    const topDragThreshold = topOfSlide < listRect.top && topOfSlide > listRect.top - (slideHeight / 2);
+    const topDragThreshold = topOfSlide < listRect.top &&
+      topOfSlide > listRect.top - (slideHeight / 2);
 
     let newIndex = getDragIndex(topOfSlide, currentDragIndex, newScrollTop, listRect);
 
@@ -177,6 +178,7 @@ class SlideList extends Component {
     window.addEventListener("mouseup", this.handleMouseUp);
 
     this.hasntMoved = true;
+    this.listRect = this.listWrapper.getBoundingClientRect();
 
     // Only do drag if we hold the mouse down for a bit
     this.mouseClickTimeout = setTimeout(() => {
@@ -198,7 +200,7 @@ class SlideList extends Component {
         mouseStart: [pageX, pageY],
         isPressed: true,
         scrollTop,
-        totalScrollAmount: 0,
+        totalScrollAmount: 0
       });
 
       window.addEventListener("mousemove", this.handleMouseMove);
@@ -260,8 +262,7 @@ class SlideList extends Component {
       originalDragIndex,
       isPressed,
       updating,
-      scrollTop,
-      totalScrollAmount
+      scrollTop
     } = this.state;
 
     return (
@@ -280,7 +281,11 @@ class SlideList extends Component {
           })}
           styles={this.state.slideList.map(slide => ({
             key: `${slide.id}key`,
-            style: { left: spring(0, springSetting2), height: spring(slideHeight, springSetting2), padding: spring(20, springSetting2) },
+            style: {
+              left: spring(0, springSetting2),
+              height: spring(slideHeight, springSetting2),
+              padding: spring(20, springSetting2)
+            },
             data: slide
           }))}
         >
