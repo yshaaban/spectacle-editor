@@ -42,7 +42,7 @@ class Slide extends Component {
 
   render() {
     const { isOver } = this.props;
-    const { store: { currentSlide, isDragging } } = this.context;
+    const { store: { currentSlide, isDragging, isResizing } } = this.context;
     const { verticalGridLine, horizontalGridLine } = this.state;
 
     let slideClass = styles.slide;
@@ -53,6 +53,10 @@ class Slide extends Component {
 
     if (isOver) {
       slideClass += ` ${styles.isOver}`;
+    }
+
+    if (isResizing) {
+      slideClass += ` ${styles.isResizing}`;
     }
 
     return (

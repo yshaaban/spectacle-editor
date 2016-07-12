@@ -35,20 +35,22 @@ elements[ElementTypes.TEXT] = {
   // TODO: Figure out defaults for text element
   type: ElementTypes.TEXT,
   ComponentClass: Heading,
+  defaultWidth: 222,
+  defaultHeight: 63,
+  defaultText: "totally text",
   props: {
     size: 4,
     style: {
       color: "#3d3d3d",
       fontFamily: "openSans",
       fontSize: 45,
-      height: 45,
       fontWeight: 400,
+      minWidth: 20,
       fontStyle: "normal",
-      textAlign: "center",
-      width: 240
+      textAlign: "center"
     }
   },
-  children: "totally text"
+  children: null
 };
 
 elements[ElementTypes.IMAGE] = {

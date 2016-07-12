@@ -1,0 +1,28 @@
+.handle {
+  bottom: 0;
+  height: 0;
+  margin: auto;
+  position: absolute;
+  top: -6px;
+  width: 7px;
+}
+
+.handle::before {
+  background: #fff;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  content: "";
+  cursor: ew-resize;
+  height: 7px;
+  position: absolute;
+  width: 7px;
+  z-index: 5;
+}
+
+.handleLeft {
+  left: -4px;
+}
+
+.handleRight {
+  right: -4px;
+}

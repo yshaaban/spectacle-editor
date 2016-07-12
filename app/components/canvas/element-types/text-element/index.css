@@ -1,0 +1,36 @@
+@import '../../../../variables.css';
+
+.canvasElement {
+  position: relative;
+  display: inline-block;
+  cursor: move;
+}
+
+.content {
+  outline: none;
+  border: none;
+  resize: none;
+}
+
+.line {
+  margin: 0;
+}
+
+.line:empty::before {
+  content: "\200b";
+}
+
+.editor {
+  cursor: text;
+}
+
+.selected::before {
+  content: "";
+  position: absolute;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  top: 0;
+  left: -1px;
+  border: 2px dashed var(--secondary-border-color);
+  border-radius: 2px;
+}
