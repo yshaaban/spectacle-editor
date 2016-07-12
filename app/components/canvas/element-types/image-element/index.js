@@ -356,7 +356,7 @@ export default class ImageElement extends Component {
   }
 
   handleDoubleClick = () => {
-    console.log("DISCOUNTDOUBLECLICK");
+    // double click
   }
 
   render() {
