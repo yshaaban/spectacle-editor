@@ -23,9 +23,30 @@
   top: -1px;
   position: absolute;
   width: 250px;
-  display: inline-block;
   background-size: cover;
   border-radius: 4px 0 0 4px;
+}
+
+.loginBrandingLogo {
+  position: absolute;
+  left: 65px;
+  top: 35px;
+  width: 120px;
+  height: 140px;
+  background-size: contain;
+}
+
+.loginCloseButton {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  cursor: pointer;
+}
+
+.loginCloseButton i {
+  font-size: 24px;
+  color: #447bdc;
+  line-height: 16px;
 }
 
 .loginMenu {
@@ -90,6 +111,7 @@
   margin: auto;
   margin-top: 20px;
   display: block;
+  cursor: pointer;
 }
 
 .loginForm a {

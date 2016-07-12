@@ -82,6 +82,10 @@ app.on("ready", () => {
     });
   });
 
+  ipcMain.on("open-external", (event, url) => {
+    shell.openExternal(url);
+  });
+
   if (process.env.NODE_ENV === "development") {
     mainWindow.openDevTools();
   }

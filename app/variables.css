@@ -8,6 +8,24 @@
   --secondary-font-color: #757575;
   --select-hover-color: #e6f2ff;
 
+  /*
+  --plotly-blue: #447bdc;
+  --pale-grey: #f8f8f9;
+  --very-light-blue: #ebf5ff;
+  --charcoal: #4b4b4b;
+  --dark-charcoal: #3d3d3d;
+  --darker-charcoal: #32393d;
+  --warm-grey: #999;
+  --dark-warm-grey: #757575;
+  --almost-black: #020303;
+  --thin-border-color: #e7e8e9;
+  --cool-grey: #9ea4b0;
+  --warning: #ff4545;
+  --grey-blue: #69738a;
+  --disabled-color: #a0aab1;
+  --disabled-border-color: #dce1e4;
+  */
+
   /* Drop Shadows */
   --drag-shadow: 0 1px 3px 0 rgba(204, 204, 204, 0.6);
   --slide-stage-shadow: 0 0 3px 0 rgba(204, 204, 204, 0.6);
