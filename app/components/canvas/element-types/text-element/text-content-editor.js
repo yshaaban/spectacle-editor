@@ -72,8 +72,8 @@ export default class TextContentEditor extends Component {
 
     const { placeholderText, children } = this.props;
 
-    if (this.state.content === null) {
-      this.editor.childNodes[0].innerText = children && children || placeholderText;
+    if (this.state.content === null && children) {
+      this.editor.childNodes[0].innerText = children && children.split("\n")[0] || placeholderText;
       return;
     }
 
@@ -84,44 +84,56 @@ export default class TextContentEditor extends Component {
     );
   }
 
+  handleKeyDown = (ev) => {
+    if (ev.which === 8 && ev.target.innerText.length <= 1) {
+      ev.preventDefault();
+    }
+  }
+
   handleInput = (ev) => {
     this.setState({ content: ev.target.innerText });
   }
 
   getList(type, text) {
     const { componentProps, classNames, style } = this.props;
+    const liStyles = { ...style };
+
     if (type === "ordered") {
-      return (
-        <ol
-          ref={(component) => {this.editor = component;}}
-          {...componentProps}
-          className={classNames.content}
-          onBlur={this.handleBlur}
-          style={{ ...style, whiteSpace: "pre-wrap" }}
-          contentEditable="true"
-          suppressContentEditableWarning
-          onClick={this.handleClick}
-          onInput={this.handleInput}
-        >
-          {text.split("\n").map((line, i) => (
-            <li
-              className={
-               `${classNames.content}
-                ${classNames.line}`
-              }
-              style={{ ...style, listStyle: "initial" }}
-              key={i}
-            >
-             {line}
-            </li>)
-          )}
-        </ol>
-      );
+      liStyles.listStyle = "decimal";
+    } else if (type === "unordered") {
+      liStyles.listStyle = "disc";
     }
+
+    return (
+      <ol
+        ref={(component) => {this.editor = component;}}
+        {...componentProps}
+        className={`${classNames.content}`}
+        onBlur={this.handleBlur}
+        style={{ ...style, whiteSpace: "pre-wrap" }}
+        contentEditable="true"
+        suppressContentEditableWarning
+        onClick={this.handleClick}
+        onKeyDown={this.handleKeyDown}
+        onInput={this.handleInput}
+      >
+        {text.split("\n").map((line, i) => (
+          <li
+            className={
+             `${classNames.content}
+              ${classNames.line}`
+            }
+            style={liStyles}
+            key={i}
+          >
+           {line}
+          </li>)
+        )}
+      </ol>
+    );
   }
 
   render() {
-    console.log(document.getElementById("editor"));
     const {
       classNames,
       componentProps,
@@ -132,7 +144,6 @@ export default class TextContentEditor extends Component {
       this.getList(componentProps.listType, trimEnd(this.state.contentToRender, "\n"))
       :
       (<div
-        id="editor"
         ref={(component) => {this.editor = component;}}
         {...componentProps}
         className={classNames.content}
@@ -141,6 +152,7 @@ export default class TextContentEditor extends Component {
         contentEditable="true"
         suppressContentEditableWarning
         onClick={this.handleClick}
+        onKeyDown={this.handleKeyDown}
         onInput={this.handleInput}
       >
         {trimEnd(this.state.contentToRender, "\n").split("\n").map((line, i) => (
