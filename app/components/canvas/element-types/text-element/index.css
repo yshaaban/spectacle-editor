@@ -18,26 +18,12 @@
   position: relative;
 }
 
+/*li.line {
+  margin-left: 10px;
+}*/
+
 .list {
   counter-reset: element;
-}
-
-.line.orderedList {
-}
-
-.orderedList::before {
-  counter-increment: element;
-  content: counter(element)". ";
-  position: relative;
-  margin-left: 0;
-  left: 0;
-  padding-left: 0;
-  text-align: left !important;
-  background: pink;
-}
-
-.unorderedList {
-  
 }
 
 .line:empty::before {
