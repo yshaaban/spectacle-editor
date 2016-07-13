@@ -10,6 +10,8 @@ import ITALICICON from "./italic.svg";
 import QUOTEICON from "./double-quote-serif-left.svg";
 import TEXTICON from "./text.svg";
 import UNDERLINEICON from "./underline.svg";
+import NEWSLIDEICON from "./slide-new.svg";
+import DELETESLIDEICON from "./slide-delete.svg";
 
 export const ALIGNCENTER = ALIGNCENTERICON;
 export const ALIGNLEFT = ALIGNLEFTICON;
@@ -23,3 +25,5 @@ export const ITALIC = ITALICICON;
 export const QUOTE = QUOTEICON;
 export const TEXT = TEXTICON;
 export const UNDERLINE = UNDERLINEICON;
+export const NEWSLIDE = NEWSLIDEICON;
+export const DELETESLIDE = DELETESLIDEICON;
