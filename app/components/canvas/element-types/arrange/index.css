@@ -1,0 +1,75 @@
+.arrangeButton:hover,
+.arrangeButton:focus {
+  cursor: pointer;
+}
+
+.arrangeButton:focus {
+  background-color: #000;
+  outline: none;
+}
+
+.arrangeContainer {
+  position: absolute;
+  bottom: calc(100% + 18px);
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.arrange {
+  background-color: var(--primary-font-color);
+  border: 1px solid #000;
+  border-radius: 4px;
+  color: var(--secondary-background-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 auto;
+  padding: 0;
+  position: relative;
+  width: 200px;
+  z-index: var(--basic);
+}
+
+.arrange::after,
+.arrange::before {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  pointer-events: none;
+  width: 0;
+}
+
+.arrange::after {
+  border-color: transparent;
+  border-top-color: var(--primary-font-color);
+  border-width: 9px;
+  margin-left: -9px;
+}
+
+.arrange::before {
+  border-color: transparent;
+  border-top-color: #000;
+  border-width: 10px;
+  margin-left: -10px;
+}
+
+.arrangeButton {
+  background-color: transparent;
+  border: none;
+  color: var(--secondary-background-color);
+  display: block;
+  margin: 0;
+  padding: 16px;
+}
+
+.arrangeIcon {
+  display: block;
+  fill: var(--secondary-background-color);
+  width: 16px;
+  height: 16px;
+}

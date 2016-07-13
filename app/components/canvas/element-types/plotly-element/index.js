@@ -10,6 +10,7 @@ import {
 import { getElementDimensions, getPointsToSnap, snap } from "../../../../utils";
 import styles from "./index.css";
 import ResizeNode from "../../resize-node";
+import Arrange from "../arrange";
 
 export default class PlotlyElment extends Component {
   static propTypes = {
@@ -460,6 +461,9 @@ export default class PlotlyElment extends Component {
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
                   />
+                }
+                {currentlySelected &&
+                  <Arrange />
                 }
                   <ComponentClass
                     {...props}
