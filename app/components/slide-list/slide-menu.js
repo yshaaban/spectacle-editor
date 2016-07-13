@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from "react";
+import { NEWSLIDE, DELETESLIDE } from "../../assets/icons";
 
 import styles from "./slide-menu.css";
 
@@ -18,8 +19,26 @@ class SlideMenu extends Component {
   render() {
     return (
       <div className={styles.slideMenu}>
-        <button onClick={this.onClickAddSlide}>New Slide</button>
-        <button onClick={this.onClickDeleteSlide}>Delete</button>
+        <button
+          className={styles.slideButton}
+          onClick={this.onClickAddSlide}
+        >
+          <i
+            className={styles.icon}
+            dangerouslySetInnerHTML={ { __html: NEWSLIDE } }
+          />
+          New Slide
+        </button>
+        <button
+          className={styles.slideButton}
+          onClick={this.onClickDeleteSlide}
+        >
+          <i
+            className={styles.icon}
+            dangerouslySetInnerHTML={ { __html: DELETESLIDE } }
+          />
+          Delete Slide
+        </button>
       </div>
     );
   }
