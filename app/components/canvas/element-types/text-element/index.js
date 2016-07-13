@@ -316,9 +316,7 @@ export default class TextElement extends Component {
       window.removeEventListener("touchend", this.handleMouseUp);
 
       this.clickStart = null;
-      this.setState({ editing: true }, () => {
-        this.handleClick();
-      });
+      this.setState({ editing: true });
 
       return;
     }
@@ -350,60 +348,59 @@ export default class TextElement extends Component {
   }
 
   handleClick = () => {
-    this.editable.addEventListener("input", this.handleInput);
-    this.editable.addEventListener("keypress", this.handleKeyPress);
-    this.editable.addEventListener("blur", this.createUpdateElementChildren());
-    window.addEventListener("click", this.createUpdateElementChildren());
+    // this.editable.addEventListener("keypress", this.handleKeyPress);
+    // this.editable.addEventListener("blur", this.createUpdateElementChildren());
+    // window.addEventListener("click", this.createUpdateElementChildren());
 
-    if (this.editable && this.editable.childNodes.length) {
-      const range = document.createRange();
-      const sel = window.getSelection();
+    // if (this.editable && this.editable.childNodes.length) {
+    //   const range = document.createRange();
+    //   const sel = window.getSelection();
 
-      range.setStartAfter(this.editable.childNodes[0]);
-      range.setEndAfter(this.editable.childNodes[0]);
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
+    //   range.setStartAfter(this.editable.childNodes[0]);
+    //   range.setEndAfter(this.editable.childNodes[0]);
+    //   sel.removeAllRanges();
+    //   sel.addRange(range);
+    // }
 
-    this.stopBlurEvent = false;
-    this.editable.focus();
+    // this.stopBlurEvent = false;
+    // this.editable.focus();
 
-    if (!this.props.component.children) {
-      this.setState({ currentContent: "" });
-    }
+    // if (!this.props.component.children) {
+    //   this.setState({ currentContent: "" });
+    // }
   }
 
   handleKeyPress = (ev) => {
-    if (ev.charCode === 13) {
-      ev.preventDefault();
+    // if (ev.charCode === 13) {
+    //   ev.preventDefault();
 
-      const sel = window.getSelection();
-      const caretPostion = sel.anchorOffset;
-      // trim an extra line break if it's at the end.
-      const innerText = ev.target.innerText.replace(/\n\n$/, "\n");
-      const stringLength = innerText.length;
-      const range = document.createRange();
+    //   const sel = window.getSelection();
+    //   const caretPostion = sel.anchorOffset;
+    //   // trim an extra line break if it's at the end.
+    //   const innerText = ev.target.innerText.replace(/\n\n$/, "\n");
+    //   const stringLength = innerText.length;
+    //   const range = document.createRange();
 
-      range.selectNodeContents(this.editable);
-      sel.removeAllRanges();
+    //   range.selectNodeContents(this.editable);
+    //   sel.removeAllRanges();
 
-      if (caretPostion === stringLength) {
-        // add 2 line breaks because adding one doesn't create new line for some reason
-        this.setState({ currentContent: `${innerText}\n\n` }, () => {
-          range.setStart(this.editable.childNodes[0], this.state.currentContent.length);
-          range.setEnd(this.editable.childNodes[0], this.state.currentContent.length);
-          sel.addRange(range);
-        });
-      } else {
-        this.setState({
-          currentContent: `${innerText.slice(0, caretPostion)}\n${innerText.slice(caretPostion)}`
-        }, () => {
-          range.setStart(this.editable.childNodes[0], caretPostion + 1);
-          range.setEnd(this.editable.childNodes[0], caretPostion + 1);
-          sel.addRange(range);
-        });
-      }
-    }
+    //   if (caretPostion === stringLength) {
+    //     // add 2 line breaks because adding one doesn't create new line for some reason
+    //     this.setState({ currentContent: `${innerText}\n\n` }, () => {
+    //       range.setStart(this.editable.childNodes[0], this.state.currentContent.length);
+    //       range.setEnd(this.editable.childNodes[0], this.state.currentContent.length);
+    //       sel.addRange(range);
+    //     });
+    //   } else {
+    //     this.setState({
+    //       currentContent: `${innerText.slice(0, caretPostion)}\n${innerText.slice(caretPostion)}`
+    //     }, () => {
+    //       range.setStart(this.editable.childNodes[0], caretPostion + 1);
+    //       range.setEnd(this.editable.childNodes[0], caretPostion + 1);
+    //       sel.addRange(range);
+    //     });
+    //   }
+    // }
   }
 
   handleInput = (ev) => {
@@ -412,6 +409,12 @@ export default class TextElement extends Component {
     this.setState({
       currentContent: ev.target.innerText
     });
+  }
+
+  stopEditing = () => {
+    const { width } = this.currentElementComponent.getBoundingClientRect();
+
+    this.setState({ editing: false, width });
   }
 
   createUpdateElementChildren = () => {
@@ -577,7 +580,7 @@ export default class TextElement extends Component {
                 ref={component => {this.currentElementComponent = component;}}
                 style={{ ...wrapperStyle, ...computedDragStyles }}
                 onMouseDown={!editing && this.handleMouseDown}
-                onTouchStart={this.handleTouchStart}
+                onTouchStart={!editing && this.handleTouchStart}
               >
                 {currentlySelected && !editing &&
                   <ResizeNode
@@ -597,12 +600,13 @@ export default class TextElement extends Component {
                       this.editable = ReactDOM.findDOMNode(component);
                     }
                   }}
+                  stopEditing={this.stopEditing}
                   classNames={styles}
                   isEditing={editing}
                   placeholderText={defaultText}
                   componentProps={props}
                   style={{ ...elementStyle, ...computedResizeStyles }}
-                  content={content}
+                  children={children}
                 />
                 {currentlySelected && !editing &&
                   <ResizeNode
