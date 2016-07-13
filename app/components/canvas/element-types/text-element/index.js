@@ -617,7 +617,7 @@ export default class TextElement extends Component {
                   classNames={styles}
                   isEditing={editing}
                   placeholderText={defaultText}
-                  componentProps={props}
+                  componentProps={{ ...props }}
                   style={{ ...elementStyle, ...computedResizeStyles }}
                   children={children}
                 />
