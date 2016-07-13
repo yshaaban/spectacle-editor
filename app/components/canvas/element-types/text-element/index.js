@@ -54,6 +54,19 @@ export default class TextElement extends Component {
     });
   }
 
+  componentWillReceiveProps() {
+    // const { isDragging, isResizing } = this.context.store;
+
+    // if (this.currentElementComponent && !isDragging && !isResizing) {
+    //   defer(() => {
+    //     this.setState({
+    //       width: this.currentElementComponent.clientWidth,
+    //       height: this.currentElementComponent.clientHeight
+    //     });
+    //   });
+    // }
+  }
+
   shouldComponentUpdate() {
     // This is needed because of the way the component is passed down
     // React isn't re-rendering this when the contextual menu updates the store
@@ -485,7 +498,7 @@ export default class TextElement extends Component {
       left
     } = this.state;
 
-    const { isResizing } = this.context.store;
+    const { isResizing, isDragging } = this.context.store;
 
     if (isResizing) {
       this.currentElementComponent.style.cursor = "ew-resize";
@@ -500,7 +513,7 @@ export default class TextElement extends Component {
     const motionStyles = {};
     let elementStyle = props.style ? { ...props.style } : {};
 
-    if (this.context.store.isDragging) {
+    if (isDragging) {
       wrapperStyle.pointerEvents = "none";
     }
 
@@ -601,7 +614,7 @@ export default class TextElement extends Component {
                     }
                   }}
                   stopEditing={this.stopEditing}
-                  classNames={styles}
+                  classNames={{ ...styles }}
                   isEditing={editing}
                   placeholderText={defaultText}
                   componentProps={{ ...props }}
