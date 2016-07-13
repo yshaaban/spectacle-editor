@@ -32,6 +32,12 @@ export default class TextContentEditor extends Component {
     this.setState({ contentToRender: this.props.placeholderText });
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.componentProps.listType !== nextProps.componentProps.listType) {
+      this.setState({ contentToRender: this.props.children });
+    }
+  }
+
   handleClick = (ev) => {
     const { isEditing, placeholderText } = this.props;
     const { content, contentToRender } = this.state;
@@ -64,8 +70,10 @@ export default class TextContentEditor extends Component {
     this.active = false;
     this.editor.style.cursor = "move";
 
+    const { placeholderText, children } = this.props;
+
     if (this.state.content === null) {
-      this.editor.innerText = this.props.placeholderText;
+      this.editor.childNodes[0].innerText = children && children || placeholderText;
       return;
     }
 
@@ -78,76 +86,53 @@ export default class TextContentEditor extends Component {
 
   handleInput = (ev) => {
     this.setState({ content: ev.target.innerText });
-    // if (ev.charCode === 13) {
-    //   ev.preventDefault();
-
-    //   const sel = window.getSelection();
-    //   const caretPostion = sel.anchorOffset;
-    //   const range = document.createRange();
-    //   const allElementTextArray = this.editor.innerText.split("/n");
-    //   const currentNodeIndex = Array.prototype.indexOf.call(this.editor.children, ev.target);
-    //   const innerText = ev.target.innerText;
-    //   const before = innerText.slice(0, caretPostion);
-    //   const after = innerText.slice(caretPostion);
-
-    //   allElementTextArray[currentNodeIndex] = `${before}\n${after}`;
-
-    //   this.setState({ content: allElementTextArray.join("\n") });
-      // this.setState({ content: })
-
-      // if (caretPostion === stringLength) {
-      //   // add 2 line breaks because adding one doesn't create new line for some reason
-      //   this.setState({ currentContent: `${innerText}\n\n` }, () => {
-      //     range.setStart(this.editable.childNodes[0], this.state.currentContent.length);
-      //     range.setEnd(this.editable.childNodes[0], this.state.currentContent.length);
-      //     sel.addRange(range);
-      //   });
-      // } else {
-      //   this.setState({
-      //     currentContent: `${innerText.slice(0, caretPostion)}\n${innerText.slice(caretPostion)}`
-      //   }, () => {
-      //     range.setStart(this.editable.childNodes[0], caretPostion + 1);
-      //     range.setEnd(this.editable.childNodes[0], caretPostion + 1);
-      //     sel.addRange(range);
-      //   });
-      // }
-    // }
   }
 
   getList(type, text) {
-    const { classNames, style } = this.props;
-
+    const { componentProps, classNames, style } = this.props;
     if (type === "ordered") {
       return (
-        <ol>
-          {text.split("\n").map((line, i) => {
-            console.log(line);
-            return (
+        <ol
+          ref={(component) => {this.editor = component;}}
+          {...componentProps}
+          className={classNames.content}
+          onBlur={this.handleBlur}
+          style={{ ...style, whiteSpace: "pre-wrap" }}
+          contentEditable="true"
+          suppressContentEditableWarning
+          onClick={this.handleClick}
+          onInput={this.handleInput}
+        >
+          {text.split("\n").map((line, i) => (
             <li
               className={
                `${classNames.content}
                 ${classNames.line}`
               }
-              style={{...style, listStyle: "initial" }}
+              style={{ ...style, listStyle: "initial" }}
               key={i}
             >
              {line}
-            </li>);
-          })}
+            </li>)
+          )}
         </ol>
       );
     }
   }
 
   render() {
+    console.log(document.getElementById("editor"));
     const {
       classNames,
       componentProps,
       style
     } = this.props;
 
-    return (
-      <div
+    return componentProps.listType && this.props.children ?
+      this.getList(componentProps.listType, trimEnd(this.state.contentToRender, "\n"))
+      :
+      (<div
+        id="editor"
         ref={(component) => {this.editor = component;}}
         {...componentProps}
         className={classNames.content}
@@ -158,24 +143,19 @@ export default class TextContentEditor extends Component {
         onClick={this.handleClick}
         onInput={this.handleInput}
       >
-        {componentProps.listType && this.props.children ?
-          this.getList(componentProps.listType, trimEnd(this.state.contentToRender, "\n"))
-          :
-          trimEnd(this.state.contentToRender, "\n").split("\n").map((line, i) => (
-            <p
-              className={
-                `${classNames.content}
-                 ${classNames.line}`
-              }
-              style={style}
-              key={i}
-            >
-              {line}
-            </p>)
-          )
-        }
-      </div>
-    );
+        {trimEnd(this.state.contentToRender, "\n").split("\n").map((line, i) => (
+          <p
+            className={
+              `${classNames.content}
+               ${classNames.line}`
+            }
+            style={style}
+            key={i}
+          >
+            {line}
+          </p>)
+        )}
+      </div>);
   }
 }
 
