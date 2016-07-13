@@ -43,6 +43,7 @@ export default class TextContentEditor extends Component {
     const { content, contentToRender } = this.state;
 
     if (!isEditing && !this.state.content) {
+      ev.preventDefault();
       return;
     }
 
@@ -51,6 +52,7 @@ export default class TextContentEditor extends Component {
     }
 
     if (!this.props.children && !this.active) {
+      console.log("return");
       ev.preventDefault();
       this.active = true;
       const sel = window.getSelection();
@@ -120,8 +122,7 @@ export default class TextContentEditor extends Component {
         {text.split("\n").map((line, i) => (
           <li
             className={
-             `${classNames.content}
-              ${classNames.line}`
+             `${classNames.line}`
             }
             style={liStyles}
             key={i}
