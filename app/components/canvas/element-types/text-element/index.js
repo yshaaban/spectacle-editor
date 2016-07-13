@@ -614,7 +614,7 @@ export default class TextElement extends Component {
                     }
                   }}
                   stopEditing={this.stopEditing}
-                  classNames={styles}
+                  classNames={{ ...styles }}
                   isEditing={editing}
                   placeholderText={defaultText}
                   componentProps={{ ...props }}
