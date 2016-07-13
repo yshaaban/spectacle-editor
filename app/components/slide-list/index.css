@@ -35,6 +35,7 @@
 .slideOuter {
   position: relative;
   padding: 20px;
+  box-sizing: content-box;
 }
 
 .slideWrapper {
