@@ -5,7 +5,6 @@ import ReactDOM from "react-dom";
 export default class TextContentEditor extends Component {
   static propTypes = {
     isEditing: React.PropTypes.bool,
-    editable: React.PropTypes.bool,
     placeholderText: React.PropTypes.string,
     classNames: React.PropTypes.object,
     componentProps: React.PropTypes.object,
@@ -34,18 +33,15 @@ export default class TextContentEditor extends Component {
     this.setState({ contentToRender: this.props.placeholderText });
   }
 
-  componentWillReceiveProps(nextProps) {
-    // if (this.props.componentProps.listType !== nextProps.componentProps.listType) {
-    //   this.setState({ contentToRender: this.props.children });
-    // }
-  }
-
   handleClick = (ev) => {
     const { isEditing, placeholderText } = this.props;
     const { content, contentToRender } = this.state;
+    const sel = window.getSelection();
+    const range = document.createRange();
 
-    if (!isEditing && !this.state.content) {
+    if (!isEditing) {
       ev.preventDefault();
+
       return;
     }
 
@@ -53,12 +49,16 @@ export default class TextContentEditor extends Component {
       this.editor.childNodes[0].innerText = "";
     }
 
-    if (!this.props.children && !this.active) {
+    if (!this.props.children) {
       ev.preventDefault();
-      this.active = true;
-      const sel = window.getSelection();
-      const range = document.createRange();
       range.selectNodeContents(this.editor.childNodes[0]);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (!this.isHighLighted) {
+      this.isHighLighted = true;
+      const length = this.editor.childNodes.length;
+      range.setStartBefore(this.editor.childNodes[0]);
+      range.setEndAfter(this.editor.childNodes[length - 1]);
       sel.removeAllRanges();
       sel.addRange(range);
     }
@@ -69,8 +69,9 @@ export default class TextContentEditor extends Component {
   }
 
   handleBlur = () => {
-    this.active = false;
     this.editor.style.cursor = "move";
+    this.props.stopEditing();
+    this.isHighLighted = false;
 
     const { placeholderText, children } = this.props;
 
@@ -84,8 +85,6 @@ export default class TextContentEditor extends Component {
       this.currentSlide,
       this.currentElement
     );
-
-    this.props.stopEditing();
   }
 
   handleKeyDown = (ev) => {
@@ -118,6 +117,7 @@ export default class TextContentEditor extends Component {
         contentEditable="true"
         suppressContentEditableWarning
         onClick={this.handleClick}
+        onBlur={this.handleBlur}
         onKeyDown={this.handleKeyDown}
         onInput={this.handleInput}
       >
@@ -140,8 +140,7 @@ export default class TextContentEditor extends Component {
     const {
       classNames,
       componentProps,
-      style,
-      editable
+      style
     } = this.props;
 
     return componentProps.listType ?
@@ -153,7 +152,7 @@ export default class TextContentEditor extends Component {
         className={classNames.content}
         onBlur={this.handleBlur}
         style={{ ...style, whiteSpace: "pre-wrap" }}
-        contentEditable={editable}
+        contentEditable="true"
         suppressContentEditableWarning
         onClick={this.handleClick}
         onKeyDown={this.handleKeyDown}
