@@ -55,16 +55,18 @@ export default class TextElement extends Component {
   }
 
   componentWillReceiveProps() {
-    // const { isDragging, isResizing } = this.context.store;
+    const { isDragging, isResizing } = this.context.store;
 
-    // if (this.currentElementComponent && !isDragging && !isResizing) {
-    //   defer(() => {
-    //     this.setState({
-    //       width: this.currentElementComponent.clientWidth,
-    //       height: this.currentElementComponent.clientHeight
-    //     });
-    //   });
-    // }
+    if (this.currentElementComponent && !isDragging && !isResizing) {
+      const width = this.currentElementComponent.clientWidth;
+
+      defer(() => {
+        this.setState({
+          width,
+          height: this.currentElementComponent.clientHeight
+        });
+      });
+    }
   }
 
   shouldComponentUpdate() {
@@ -424,11 +426,6 @@ export default class TextElement extends Component {
     });
   }
 
-  stopEditing = () => {
-    const { width } = this.currentElementComponent.getBoundingClientRect();
-
-    this.setState({ editing: false, width });
-  }
 
   createUpdateElementChildren = () => {
     // closure variables to capture current store state upon focus.
@@ -478,6 +475,20 @@ export default class TextElement extends Component {
     };
 
     return updateElementChildren;
+  }
+
+  stopEditing = () => {
+    const { width } = this.currentElementComponent.getBoundingClientRect();
+
+    this.setState({ editing: false, width, reRender: true });
+
+    // this defer is necessary to force an entire re-render of the text editor
+    // because contentEditable creates new elements outside of react's knowledge
+    // this will unmount the editor and remount it with the updated children incorperated
+    // into the virtual DOM.
+    defer(() => {
+      this.setState({ reRender: false });
+    });
   }
 
   render() {
@@ -607,20 +618,21 @@ export default class TextElement extends Component {
                 {currentlySelected &&
                   <Arrange />
                 }
-                <TextContentEditor
-                  ref={component => {
-                    if (editing) {
+                {!this.state.reRender &&
+                  <TextContentEditor
+                    ref={component => {
                       this.editable = ReactDOM.findDOMNode(component);
-                    }
-                  }}
-                  stopEditing={this.stopEditing}
-                  classNames={{ ...styles }}
-                  isEditing={editing}
-                  placeholderText={defaultText}
-                  componentProps={{ ...props }}
-                  style={{ ...elementStyle, ...computedResizeStyles }}
-                  children={children}
-                />
+                    }}
+                    stopEditing={this.stopEditing}
+                    classNames={{ ...styles }}
+                    isEditing={editing}
+                    editable
+                    placeholderText={defaultText}
+                    componentProps={{ ...props }}
+                    style={{ ...elementStyle, ...computedResizeStyles }}
+                    children={children}
+                  />
+                }
                 {currentlySelected && !editing &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}
