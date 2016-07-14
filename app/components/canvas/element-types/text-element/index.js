@@ -58,11 +58,10 @@ export default class TextElement extends Component {
     const { isDragging, isResizing } = this.context.store;
 
     if (this.currentElementComponent && !isDragging && !isResizing) {
-      const width = this.currentElementComponent.clientWidth;
-
+      // defer measuring new height and width, otherwise value will be what height was before resize
       defer(() => {
         this.setState({
-          width,
+          width: this.currentElementComponent.clientWidth,
           height: this.currentElementComponent.clientHeight
         });
       });
@@ -88,7 +87,7 @@ export default class TextElement extends Component {
 
     const { target, pageX } = ev;
     const isLeftSideDrag = target === this.leftResizeNode;
-    const { width, height } = this.currentElementComponent.getBoundingClientRect();
+    const { width, height } = this.editable.getBoundingClientRect();
     const componentProps = this.props.component.props;
     const componentLeft = componentProps.style && componentProps.style.left;
     const left = componentLeft || 0;
@@ -201,13 +200,7 @@ export default class TextElement extends Component {
 
     propStyles.width = width;
     propStyles.left = left;
-
     this.context.store.updateElementProps({ style: propStyles });
-
-    // defer measuring new height, otherwise value will be what height was before resize
-    defer(() => {
-      this.setState({ height: this.currentElementComponent.clientHeight });
-    });
   }
 
   handleTouchStart = (ev) => {
@@ -362,124 +355,8 @@ export default class TextElement extends Component {
     });
   }
 
-  handleClick = () => {
-    // this.editable.addEventListener("keypress", this.handleKeyPress);
-    // this.editable.addEventListener("blur", this.createUpdateElementChildren());
-    // window.addEventListener("click", this.createUpdateElementChildren());
-
-    // if (this.editable && this.editable.childNodes.length) {
-    //   const range = document.createRange();
-    //   const sel = window.getSelection();
-
-    //   range.setStartAfter(this.editable.childNodes[0]);
-    //   range.setEndAfter(this.editable.childNodes[0]);
-    //   sel.removeAllRanges();
-    //   sel.addRange(range);
-    // }
-
-    // this.stopBlurEvent = false;
-    // this.editable.focus();
-
-    // if (!this.props.component.children) {
-    //   this.setState({ currentContent: "" });
-    // }
-  }
-
-  handleKeyPress = (ev) => {
-    // if (ev.charCode === 13) {
-    //   ev.preventDefault();
-
-    //   const sel = window.getSelection();
-    //   const caretPostion = sel.anchorOffset;
-    //   // trim an extra line break if it's at the end.
-    //   const innerText = ev.target.innerText.replace(/\n\n$/, "\n");
-    //   const stringLength = innerText.length;
-    //   const range = document.createRange();
-
-    //   range.selectNodeContents(this.editable);
-    //   sel.removeAllRanges();
-
-    //   if (caretPostion === stringLength) {
-    //     // add 2 line breaks because adding one doesn't create new line for some reason
-    //     this.setState({ currentContent: `${innerText}\n\n` }, () => {
-    //       range.setStart(this.editable.childNodes[0], this.state.currentContent.length);
-    //       range.setEnd(this.editable.childNodes[0], this.state.currentContent.length);
-    //       sel.addRange(range);
-    //     });
-    //   } else {
-    //     this.setState({
-    //       currentContent: `${innerText.slice(0, caretPostion)}\n${innerText.slice(caretPostion)}`
-    //     }, () => {
-    //       range.setStart(this.editable.childNodes[0], caretPostion + 1);
-    //       range.setEnd(this.editable.childNodes[0], caretPostion + 1);
-    //       sel.addRange(range);
-    //     });
-    //   }
-    // }
-  }
-
-  handleInput = (ev) => {
-    ev.preventDefault();
-
-    this.setState({
-      currentContent: ev.target.innerText
-    });
-  }
-
-
-  createUpdateElementChildren = () => {
-    // closure variables to capture current store state upon focus.
-    // if this is done during or after the blur event, store will have already
-    // updated the element index upon deselect and slide index if another
-    // slide is selected, making it impossible to update this element.
-    const {
-      currentState,
-      currentSlideIndex,
-      currentElementIndex
-    } = this.context.store;
-
-    const currentElementChildren =
-      currentState.slides[currentSlideIndex].children[currentElementIndex].children;
-
-    const updateElementChildren = (ev) => {
-      ev.preventDefault();
-
-      if (this.stopBlurEvent) {
-        return;
-      }
-
-      if (ev.type === "blur" || ev.target !== this.editable) {
-        window.removeEventListener("click", updateElementChildren);
-
-        this.stopBlurEvent = true;
-        this.editable.removeEventListener("blur", updateElementChildren);
-        this.editable.removeEventListener("input", this.handleInput);
-        this.editable.blur();
-
-        const { currentContent } = this.state;
-
-        if (typeof currentContent === "string" && currentContent !== currentElementChildren) {
-          this.context.store.updateChildren(
-            trimEnd(currentContent, "\n"),
-            currentSlideIndex,
-            currentElementIndex
-          );
-        }
-
-        if (this.currentElementComponent) {
-          const { width, height } = this.currentElementComponent.getBoundingClientRect();
-
-          this.setState({ currentContent: null, editing: false, width, height });
-        }
-      }
-    };
-
-    return updateElementChildren;
-  }
-
   stopEditing = () => {
     const { width } = this.currentElementComponent.getBoundingClientRect();
-
     this.setState({ editing: false, width, reRender: true });
 
     // this defer is necessary to force an entire re-render of the text editor
@@ -539,6 +416,7 @@ export default class TextElement extends Component {
       );
 
       const mouseY = mousePosition && mousePosition[1] ? mousePosition[1] : null;
+
       motionStyles.top = spring(
         mouseY && mouseY || props.style.top || 0,
         SpringSettings.DRAG

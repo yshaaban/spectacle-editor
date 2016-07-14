@@ -13,14 +13,24 @@
   resize: none;
 }
 
+ol.content {
+  margin-left: 1em;
+  padding: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+  width: auto;
+}
+
 .line {
   margin: 0;
   position: relative;
 }
 
-/*li.line {
-  margin-left: 10px;
-}*/
+li.line {
+  box-sizing: border-box;
+  width: 100%;
+}
+
 
 .list {
   counter-reset: element;
@@ -37,10 +47,16 @@
 .selected::before {
   content: "";
   position: absolute;
-  width: calc(100% - 2px);
+  box-sizing: border-box;
+  width: calc(100% + 1px);
   height: calc(100% - 2px);
   top: 0;
   left: -1px;
+<<<<<<< ec213eb6c0b9348abea61481d0ccf55fd7a55e79
   border: var(--selected-border);
+=======
+  right: -5px;
+  border: 2px dashed var(--secondary-border-color);
+>>>>>>> lists are now properly wrapped by selection border
   border-radius: 2px;
 }
