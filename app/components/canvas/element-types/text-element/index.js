@@ -483,8 +483,8 @@ export default class TextElement extends Component {
     this.setState({ editing: false, width, reRender: true });
 
     // this defer is necessary to force an entire re-render of the text editor
-    // because contentEditable creates new elements outside of react's knowledge
-    // this will unmount the editor and remount it with the updated children incorperated
+    // because contentEditable creates new elements outside of react's knowledge.
+    // This will unmount the editor and remount it with the updated children incorporated
     // into the virtual DOM.
     defer(() => {
       this.setState({ reRender: false });
@@ -501,7 +501,6 @@ export default class TextElement extends Component {
     } = this.props;
 
     const {
-      currentContent,
       delta: [x, y],
       editing,
       isPressed,
@@ -579,8 +578,6 @@ export default class TextElement extends Component {
       motionStyles.width = spring(width, SpringSettings.RESIZE);
     }
 
-    const content = typeof currentContent === "string" ? currentContent : children;
-
     return (
         <Motion
           style={motionStyles}
@@ -626,7 +623,6 @@ export default class TextElement extends Component {
                     stopEditing={this.stopEditing}
                     classNames={{ ...styles }}
                     isEditing={editing}
-                    editable
                     placeholderText={defaultText}
                     componentProps={{ ...props }}
                     style={{ ...elementStyle, ...computedResizeStyles }}
