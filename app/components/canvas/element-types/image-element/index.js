@@ -10,6 +10,7 @@ import {
 import { getElementDimensions, getPointsToSnap, snap } from "../../../../utils";
 import styles from "./index.css";
 import ResizeNode from "../../resize-node";
+import Arrange from "../arrange";
 
 export default class ImageElement extends Component {
   static propTypes = {
@@ -461,14 +462,17 @@ export default class ImageElement extends Component {
                     component={this.props.component}
                   />
                 }
-                  {currentlySelected &&
-                    <ResizeNode
-                      cornerTopLeft
-                      handleMouseDownResize={this.handleMouseDownResize}
-                      onTouch={this.handleTouchStartResize}
-                      component={this.props.component}
-                    />
-                  }
+                {currentlySelected &&
+                  <ResizeNode
+                    cornerTopLeft
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <Arrange />
+                }
                   <ComponentClass
                     {...props}
                     style={{ ...elementStyle, ...computedResizeStyles }}

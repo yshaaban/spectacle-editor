@@ -11,6 +11,7 @@ import { getPointsToSnap, snap } from "../../../../utils";
 import styles from "./index.css";
 import ResizeNode from "../../resize-node";
 import TextContentEditor from "./text-content-editor";
+import Arrange from "../arrange";
 
 export default class TextElement extends Component {
   static propTypes = {
@@ -583,6 +584,9 @@ export default class TextElement extends Component {
                     handleTouchResize={this.handleTouchStartResize}
                     component={this.props.component}
                   />
+                }
+                {currentlySelected &&
+                  <Arrange />
                 }
                 <TextContentEditor
                   ref={component => {
