@@ -17,6 +17,8 @@ import BRINGFORWARDICON from "./bring-forward.svg";
 import BRINGTOFRONTICON from "./bring-to-front.svg";
 import SENDBACKWARDICON from "./send-backward.svg";
 import SENDTOBACKICON from "./send-to-back.svg";
+import RESIZECORNERICON from "./resize-corner.svg";
+
 
 export const ALIGNCENTER = ALIGNCENTERICON;
 export const ALIGNLEFT = ALIGNLEFTICON;
@@ -37,3 +39,4 @@ export const BRINGFORWARD = BRINGFORWARDICON;
 export const BRINGTOFRONT = BRINGTOFRONTICON;
 export const SENDBACKWARD = SENDBACKWARDICON;
 export const SENDTOBACK = SENDTOBACKICON;
+export const RESIZECORNER = RESIZECORNERICON;
