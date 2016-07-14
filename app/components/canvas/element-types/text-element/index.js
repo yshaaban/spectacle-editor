@@ -601,6 +601,7 @@ export default class TextElement extends Component {
                 />
                 {currentlySelected && !editing &&
                   <ResizeNode
+                    alignRight
                     handleMouseDownResize={this.handleMouseDownResize}
                     handleTouchResize={this.handleTouchStartResize}
                     component={this.props.component}

@@ -1,5 +1,4 @@
 .handle {
-  bottom: 0;
   height: 0;
   margin: auto;
   position: absolute;
@@ -20,9 +19,19 @@
 }
 
 .handleLeft {
+  bottom: 0;
   left: -4px;
 }
 
 .handleRight {
+  bottom: 0;
   right: -4px;
+}
+
+.cornerTopLeft {
+  left: -4px;
+  top: -4px;
+  width: 20px;
+  height: 20px;
+  border: 1px solid red;
 }

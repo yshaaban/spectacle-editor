@@ -30,6 +30,6 @@
   height: calc(100% - 5px);
   top: -1px;
   left: -1px;
-  border: 2px dashed var(--secondary-border-color);
+  border: var(--selected-border);
   border-radius: 2px;
 }

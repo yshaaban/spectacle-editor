@@ -15,6 +15,9 @@
 
   --plotly-blue: #447bdc;
 
+  /* Resize Node Border */
+  --selected-border: 1px dashed #000;
+
   /* Drop Shadows */
   --drag-shadow: 0 1px 3px 0 rgba(204, 204, 204, 0.6);
   --slide-stage-shadow: 0 0 3px 0 rgba(204, 204, 204, 0.6);

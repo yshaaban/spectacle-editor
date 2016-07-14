@@ -461,12 +461,21 @@ export default class ImageElement extends Component {
                     component={this.props.component}
                   />
                 }
+                  {currentlySelected &&
+                    <ResizeNode
+                      cornerTopLeft
+                      handleMouseDownResize={this.handleMouseDownResize}
+                      onTouch={this.handleTouchStartResize}
+                      component={this.props.component}
+                    />
+                  }
                   <ComponentClass
                     {...props}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   />
                 {currentlySelected &&
                   <ResizeNode
+                    alignRight
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
