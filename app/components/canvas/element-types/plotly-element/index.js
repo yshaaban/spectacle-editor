@@ -455,8 +455,24 @@ export default class PlotlyElment extends Component {
               >
                 {currentlySelected &&
                   <ResizeNode
+                    cornerTopLeft
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
                     ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
                     alignLeft
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
+                    cornerBottomLeft
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
@@ -471,6 +487,23 @@ export default class PlotlyElment extends Component {
                   />
                 {currentlySelected &&
                   <ResizeNode
+                    cornerTopRight
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
+                    alignRight
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
+                    cornerBottomRight
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
