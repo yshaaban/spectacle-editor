@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { trimEnd } from "lodash";
+import ReactDOM from "react-dom";
 
 export default class TextContentEditor extends Component {
   static propTypes = {
     isEditing: React.PropTypes.bool,
+    editable: React.PropTypes.bool,
     placeholderText: React.PropTypes.string,
     classNames: React.PropTypes.object,
     componentProps: React.PropTypes.object,
@@ -33,9 +35,9 @@ export default class TextContentEditor extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.componentProps.listType !== nextProps.componentProps.listType) {
-      this.setState({ contentToRender: this.props.children });
-    }
+    // if (this.props.componentProps.listType !== nextProps.componentProps.listType) {
+    //   this.setState({ contentToRender: this.props.children });
+    // }
   }
 
   handleClick = (ev) => {
@@ -52,7 +54,6 @@ export default class TextContentEditor extends Component {
     }
 
     if (!this.props.children && !this.active) {
-      console.log("return");
       ev.preventDefault();
       this.active = true;
       const sel = window.getSelection();
@@ -68,7 +69,6 @@ export default class TextContentEditor extends Component {
   }
 
   handleBlur = () => {
-    this.props.stopEditing();
     this.active = false;
     this.editor.style.cursor = "move";
 
@@ -84,6 +84,8 @@ export default class TextContentEditor extends Component {
       this.currentSlide,
       this.currentElement
     );
+
+    this.props.stopEditing();
   }
 
   handleKeyDown = (ev) => {
@@ -138,10 +140,11 @@ export default class TextContentEditor extends Component {
     const {
       classNames,
       componentProps,
-      style
+      style,
+      editable
     } = this.props;
 
-    return componentProps.listType && this.props.children ?
+    return componentProps.listType ?
       this.getList(componentProps.listType, trimEnd(this.state.contentToRender, "\n"))
       :
       (<div
@@ -150,7 +153,7 @@ export default class TextContentEditor extends Component {
         className={classNames.content}
         onBlur={this.handleBlur}
         style={{ ...style, whiteSpace: "pre-wrap" }}
-        contentEditable="true"
+        contentEditable={editable}
         suppressContentEditableWarning
         onClick={this.handleClick}
         onKeyDown={this.handleKeyDown}
