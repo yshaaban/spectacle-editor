@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { trimEnd } from "lodash";
-import ReactDOM from "react-dom";
 
 export default class TextContentEditor extends Component {
   static propTypes = {
@@ -31,70 +30,6 @@ export default class TextContentEditor extends Component {
     }
 
     this.setState({ contentToRender: this.props.placeholderText });
-  }
-
-  handleClick = (ev) => {
-    const { isEditing, placeholderText } = this.props;
-    const { content, contentToRender } = this.state;
-    const sel = window.getSelection();
-    const range = document.createRange();
-
-    if (!isEditing) {
-      ev.preventDefault();
-
-      return;
-    }
-
-    if (content === null && contentToRender === placeholderText) {
-      this.editor.childNodes[0].innerText = "";
-    }
-
-    if (!this.props.children) {
-      ev.preventDefault();
-      range.selectNodeContents(this.editor.childNodes[0]);
-      sel.removeAllRanges();
-      sel.addRange(range);
-    } else if (!this.isHighLighted) {
-      this.isHighLighted = true;
-      const length = this.editor.childNodes.length;
-      range.setStartBefore(this.editor.childNodes[0]);
-      range.setEndAfter(this.editor.childNodes[length - 1]);
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
-
-    this.editor.style.cursor = "text";
-    this.currentSlide = this.context.store.currentSlideIndex;
-    this.currentElement = this.context.store.currentElementIndex;
-  }
-
-  handleBlur = () => {
-    this.editor.style.cursor = "move";
-    this.props.stopEditing();
-    this.isHighLighted = false;
-
-    const { placeholderText, children } = this.props;
-
-    if (this.state.content === null && children) {
-      this.editor.childNodes[0].innerText = children && children.split("\n")[0] || placeholderText;
-      return;
-    }
-
-    this.context.store.updateChildren(
-      this.editor.innerText,
-      this.currentSlide,
-      this.currentElement
-    );
-  }
-
-  handleKeyDown = (ev) => {
-    if (ev.which === 8 && ev.target.innerText.length <= 1) {
-      ev.preventDefault();
-    }
-  }
-
-  handleInput = (ev) => {
-    this.setState({ content: ev.target.innerText });
   }
 
   getList(type, text) {
@@ -134,6 +69,70 @@ export default class TextContentEditor extends Component {
         )}
       </ol>
     );
+  }
+
+  handleKeyDown = (ev) => {
+    if (ev.which === 8 && ev.target.innerText.length <= 1) {
+      ev.preventDefault();
+    }
+  }
+
+  handleInput = (ev) => {
+    this.setState({ content: ev.target.innerText });
+  }
+
+  handleBlur = () => {
+    this.editor.style.cursor = "move";
+    this.props.stopEditing();
+    this.isHighLighted = false;
+
+    const { placeholderText, children } = this.props;
+
+    if (this.state.content === null && children) {
+      this.editor.childNodes[0].innerText = children && children.split("\n")[0] || placeholderText;
+      return;
+    }
+
+    this.context.store.updateChildren(
+      this.editor.innerText,
+      this.currentSlide,
+      this.currentElement
+    );
+  }
+
+  handleClick = (ev) => {
+    const { isEditing, placeholderText } = this.props;
+    const { content, contentToRender } = this.state;
+    const sel = window.getSelection();
+    const range = document.createRange();
+
+    if (!isEditing) {
+      ev.preventDefault();
+
+      return;
+    }
+
+    if (content === null && contentToRender === placeholderText) {
+      this.editor.childNodes[0].innerText = "";
+    }
+
+    if (!this.props.children) {
+      ev.preventDefault();
+      range.selectNodeContents(this.editor.childNodes[0]);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (!this.isHighLighted) {
+      this.isHighLighted = true;
+      const length = this.editor.childNodes.length;
+      range.setStartBefore(this.editor.childNodes[0]);
+      range.setEndAfter(this.editor.childNodes[length - 1]);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    this.editor.style.cursor = "text";
+    this.currentSlide = this.context.store.currentSlideIndex;
+    this.currentElement = this.context.store.currentElementIndex;
   }
 
   render() {
