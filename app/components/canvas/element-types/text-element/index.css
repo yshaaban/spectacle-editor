@@ -52,11 +52,8 @@ li.line {
   height: calc(100% - 2px);
   top: 0;
   left: -1px;
-<<<<<<< ec213eb6c0b9348abea61481d0ccf55fd7a55e79
   border: var(--selected-border);
-=======
   right: -5px;
   border: 2px dashed var(--secondary-border-color);
->>>>>>> lists are now properly wrapped by selection border
   border-radius: 2px;
 }
