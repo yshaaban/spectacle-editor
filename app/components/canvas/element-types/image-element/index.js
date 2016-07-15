@@ -483,6 +483,7 @@ export default class ImageElement extends Component {
                 }
                   <ComponentClass
                     {...props}
+                    className={styles.image}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   />
                 {currentlySelected &&

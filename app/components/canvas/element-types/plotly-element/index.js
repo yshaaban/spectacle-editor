@@ -413,7 +413,7 @@ export default class PlotlyElment extends Component {
       }
     }
 
-    elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
+    elementStyle = { ...elementStyle, position: "relative", top: 0, left: 0 };
 
     if (isPressed) {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
@@ -483,6 +483,7 @@ export default class PlotlyElment extends Component {
                 }
                   <ComponentClass
                     {...props}
+                    className={styles.iframe}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   />
                 {currentlySelected &&
