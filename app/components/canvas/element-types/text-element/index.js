@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from "react";
 import ReactDOM from "react-dom";
 import { Motion, spring } from "react-motion";
-import { omit, defer, trimEnd } from "lodash";
+import { omit, defer } from "lodash";
 
 import {
   SpringSettings,
@@ -57,13 +57,15 @@ export default class TextElement extends Component {
   componentWillReceiveProps() {
     const { isDragging, isResizing } = this.context.store;
 
-    if (this.currentElementComponent && !isDragging && !isResizing) {
+    if (!isDragging && !isResizing) {
       // defer measuring new height and width, otherwise value will be what height was before resize
       defer(() => {
-        this.setState({
-          width: this.editable.clientWidth,
-          height: this.editable.clientHeight
-        });
+        if (this.editable) {
+          this.setState({
+            width: this.editable.clientWidth,
+            height: this.editable.clientHeight
+          });
+        }
       });
     }
   }
@@ -97,6 +99,7 @@ export default class TextElement extends Component {
     this.setState({
       isLeftSideDrag,
       width,
+      canvasElementWidth: this.currentElementComponent.clientWidth,
       height,
       left,
       resizeLastX: pageX
@@ -116,10 +119,11 @@ export default class TextElement extends Component {
   handleMouseMoveResize = (ev) => {
     ev.preventDefault();
     const { pageX } = ev;
-    const { isLeftSideDrag, resizeLastX, width } = this.state;
+    const { isLeftSideDrag, resizeLastX, width, canvasElementWidth } = this.state;
     let { left } = this.state;
     let change;
     let isSnapped;
+
     const snapCallback = (line, index) => {
       if (line === null) {
         this.props.hideGridLine(true);
@@ -134,11 +138,11 @@ export default class TextElement extends Component {
       }
 
       if (index === 1) {
-        pointToAlignWithLine = Math.ceil(left + width / 2);
+        pointToAlignWithLine = Math.ceil(left + canvasElementWidth / 2);
       }
 
       if (index === 2) {
-        pointToAlignWithLine = Math.ceil(left + width);
+        pointToAlignWithLine = Math.ceil(left + canvasElementWidth);
       }
 
       const distance = Math.abs(pointToAlignWithLine - line);
@@ -153,7 +157,7 @@ export default class TextElement extends Component {
       this.gridLines.vertical,
       getPointsToSnap(
         left,
-        width,
+        canvasElementWidth,
         (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
       ),
       snapCallback
@@ -170,10 +174,15 @@ export default class TextElement extends Component {
       change = pageX - resizeLastX;
     }
 
-    const newWidth = change + width;
+    const newCanvasElementWidth = change + canvasElementWidth;
 
-    if (newWidth >= 0) {
-      this.setState({ left, width: (change + width), resizeLastX: pageX });
+    if (newCanvasElementWidth >= 0) {
+      this.setState({
+        left,
+        width: (change + width),
+        canvasElementWidth: newCanvasElementWidth,
+        resizeLastX: pageX
+      });
     }
   }
 
@@ -489,7 +498,7 @@ export default class TextElement extends Component {
                     component={this.props.component}
                   />
                 }
-                {currentlySelected &&
+                {currentlySelected && !isResizing && !editing && !isDragging &&
                   <Arrange />
                 }
                 {!this.state.reRender &&
