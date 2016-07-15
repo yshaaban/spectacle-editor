@@ -496,7 +496,6 @@ export default class TextElement extends Component {
                   <TextContentEditor
                     ref={component => {
                       this.editable = ReactDOM.findDOMNode(component);
-<<<<<<< HEAD
                     }}
                     stopEditing={this.stopEditing}
                     classNames={{ ...styles }}
@@ -507,18 +506,6 @@ export default class TextElement extends Component {
                     children={children}
                   />
                 }
-=======
-                    }
-                  }}
-                  stopEditing={this.stopEditing}
-                  classNames={{ ...styles }}
-                  isEditing={editing}
-                  placeholderText={defaultText}
-                  componentProps={{ ...props }}
-                  style={{ ...elementStyle, ...computedResizeStyles }}
-                  children={children}
-                />
->>>>>>> debae7d1e8c41de9d9ce157e8d25406e13ac6a3f
                 {currentlySelected && !editing &&
                   <ResizeNode
                     handleMouseDownResize={this.handleMouseDownResize}
