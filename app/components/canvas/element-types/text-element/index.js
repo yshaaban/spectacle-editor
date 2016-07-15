@@ -45,7 +45,7 @@ export default class TextElement extends Component {
 
   componentDidMount() {
     defer(() => {
-      const { width, height } = this.currentElementComponent.getBoundingClientRect();
+      const { width, height } = this.editable.getBoundingClientRect();
 
       this.setState({ // eslint-disable-line react/no-did-mount-set-state
         width,
@@ -61,8 +61,8 @@ export default class TextElement extends Component {
       // defer measuring new height and width, otherwise value will be what height was before resize
       defer(() => {
         this.setState({
-          width: this.currentElementComponent.clientWidth,
-          height: this.currentElementComponent.clientHeight
+          width: this.editable.clientWidth,
+          height: this.editable.clientHeight
         });
       });
     }
@@ -100,12 +100,12 @@ export default class TextElement extends Component {
       height,
       left,
       resizeLastX: pageX
+    }, () => {
+      window.addEventListener("mousemove", this.handleMouseMoveResize);
+      window.addEventListener("touchmove", this.handleTouchMoveResize);
+      window.addEventListener("mouseup", this.handleMouseUpResize);
+      window.addEventListener("touchend", this.handleTouchEndResize);
     });
-
-    window.addEventListener("mousemove", this.handleMouseMoveResize);
-    window.addEventListener("touchmove", this.handleTouchMoveResize);
-    window.addEventListener("mouseup", this.handleMouseUpResize);
-    window.addEventListener("touchend", this.handleTouchEndResize);
   }
 
   handleTouchMoveResize = (ev) => {
@@ -120,7 +120,6 @@ export default class TextElement extends Component {
     let { left } = this.state;
     let change;
     let isSnapped;
-
     const snapCallback = (line, index) => {
       if (line === null) {
         this.props.hideGridLine(true);
