@@ -52,7 +52,6 @@ export default class TextContentEditor extends Component {
         contentEditable="true"
         suppressContentEditableWarning
         onClick={this.handleClick}
-        onBlur={this.handleBlur}
         onKeyDown={this.handleKeyDown}
         onInput={this.handleInput}
       >
