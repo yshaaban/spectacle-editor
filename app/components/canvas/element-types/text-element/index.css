@@ -31,11 +31,6 @@ li.line {
   width: 100%;
 }
 
-
-.list {
-  counter-reset: element;
-}
-
 .line:empty::before {
   content: "\200b";
 }
@@ -54,6 +49,5 @@ li.line {
   left: -1px;
   border: var(--selected-border);
   right: -5px;
-  border: 2px dashed var(--secondary-border-color);
   border-radius: 2px;
 }
