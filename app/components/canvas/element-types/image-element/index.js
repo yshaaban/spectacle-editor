@@ -66,22 +66,41 @@ export default class ImageElement extends Component {
     ev.stopPropagation();
     ev.preventDefault();
 
-    const { target, pageX } = ev;
-    const isLeftSideDrag = target === this.leftResizeNode;
+    const { currentTarget, pageX, pageY } = ev;
+
+    const isLeftSideDrag =
+      currentTarget === this.leftResizeNode ||
+      currentTarget === this.topLeftNode ||
+      currentTarget === this.bottomLeftNode;
+    const isTopDrag =
+      currentTarget === this.topLeftNode ||
+      currentTarget === this.topRightNode;
+    const verticalResize =
+      currentTarget === this.topLeftNode ||
+      currentTarget === this.bottomLeftNode ||
+      currentTarget === this.topRightNode ||
+      currentTarget === this.bottomRightNode;
+
     const { width, height } = this.currentElementComponent.getBoundingClientRect();
     const componentProps = this.props.component.props;
     const componentLeft = componentProps.style && componentProps.style.left;
+    const componentTop = componentProps.style && componentProps.style.top;
     const left = componentLeft || 0;
+    const top = componentTop || 0;
 
     this.gridLines = this.context.store.gridLines;
 
     this.setState({
+      isTopDrag,
       isLeftSideDrag,
+      verticalResize,
       isResizing: true,
       width,
       height,
+      top,
       left,
-      resizeLastX: pageX
+      resizeLastX: pageX,
+      resizeLastY: pageY
     });
 
     window.addEventListener("mousemove", this.handleMouseMoveResize);
@@ -97,10 +116,19 @@ export default class ImageElement extends Component {
 
   handleMouseMoveResize = (ev) => {
     ev.preventDefault();
-    const { pageX } = ev;
-    const { isLeftSideDrag, resizeLastX, width } = this.state;
-    let { left } = this.state;
-    let change;
+    const { pageX, pageY } = ev;
+    const {
+      isLeftSideDrag,
+      resizeLastX,
+      width,
+      height,
+      resizeLastY,
+      isTopDrag,
+      verticalResize
+    } = this.state;
+
+    let { left, top } = this.state;
+    const delta = [];
     let isSnapped;
 
     const snapCallback = (line, index) => {
@@ -142,21 +170,50 @@ export default class ImageElement extends Component {
       snapCallback
     );
 
+    if (verticalResize) {
+      snap(
+        this.gridLines.horizontal,
+        getPointsToSnap(
+          top,
+          height,
+          (Math.max(pageY, resizeLastY) - Math.min(pageY, resizeLastY)) / 2
+        ),
+        snapCallback
+      );
+    }
+
     if (isSnapped) {
       return;
     }
 
     if (isLeftSideDrag) {
-      change = resizeLastX - pageX;
-      left -= change;
+      delta[0] = resizeLastX - pageX;
+      left -= delta[0];
     } else {
-      change = pageX - resizeLastX;
+      delta[0] = pageX - resizeLastX;
     }
 
-    const newWidth = change + width;
+    if (isTopDrag) {
+      delta[1] = resizeLastY - pageY;
+      top -= delta[1];
+    } else {
+      delta[1] = pageY - resizeLastY;
+    }
+
+    const newWidth = delta[0] + width;
+    const newHeight = delta[1] + height;
+    let nextState = {};
 
     if (newWidth >= 0) {
-      this.setState({ left, width: (change + width), resizeLastX: pageX });
+      nextState = { left, width: (delta[0] + width), resizeLastX: pageX };
+    }
+
+    if (newHeight >= 0) {
+      nextState = { ...nextState, top, height: (delta[0] + height), resizeLastY: pageY };
+    }
+
+    if (Object.keys(nextState).length) {
+      this.setState(nextState);
     }
   }
 
@@ -177,11 +234,8 @@ export default class ImageElement extends Component {
       isResizing: false
     });
 
-    const { width, left } = this.state;
-    const propStyles = { ...this.props.component.props.style };
-
-    propStyles.width = width;
-    propStyles.left = left;
+    const { width, left, top, height } = this.state;
+    const propStyles = { ...this.props.component.props.style, width, left, top, height };
 
     this.context.store.updateElementProps({ style: propStyles });
   }
@@ -371,10 +425,12 @@ export default class ImageElement extends Component {
 
     const {
       width,
+      height,
       isResizing,
       isPressed,
       delta: [x, y],
-      left
+      left,
+      top
     } = this.state;
 
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
@@ -403,6 +459,7 @@ export default class ImageElement extends Component {
       );
 
       motionStyles.width = spring((width && width || 0), SpringSettings.RESIZE);
+      motionStyles.height = spring((height && height || 0), SpringSettings.RESIZE);
 
       if (mousePosition) {
         wrapperStyle.whiteSpace = "nowrap";
@@ -423,21 +480,27 @@ export default class ImageElement extends Component {
 
     if (isResizing) {
       const componentStylesLeft = props.style && props.style.left || 0;
+      const componentStylesTop = props.style && props.style.top || 0;
 
+      motionStyles.top = spring(
+        top === undefined ? componentStylesTop : top,
+        SpringSettings.RESIZE
+      );
       motionStyles.left = spring(
         left === undefined ? componentStylesLeft : left,
         SpringSettings.RESIZE
       );
+      motionStyles.height = spring(height, SpringSettings.RESIZE);
       motionStyles.width = spring(width, SpringSettings.RESIZE);
     }
-
+    console.log(motionStyles);
     return (
         <Motion
           style={motionStyles}
         >
           {computedStyles => {
-            const computedDragStyles = omit(computedStyles, "width");
-            let computedResizeStyles = omit(computedStyles, "top", "left");
+            const computedDragStyles = omit(computedStyles, "width", "height");
+            let computedResizeStyles = { ...computedStyles };
 
             if (!isResizing) {
               computedResizeStyles = {};
@@ -456,6 +519,7 @@ export default class ImageElement extends Component {
                 {currentlySelected &&
                   <ResizeNode
                     cornerTopLeft
+                    ref={component => {this.topLeftNode = ReactDOM.findDOMNode(component);}}
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
@@ -472,6 +536,7 @@ export default class ImageElement extends Component {
                 }
                 {currentlySelected &&
                   <ResizeNode
+                    ref={component => {this.bottomLeftNode = ReactDOM.findDOMNode(component);}}
                     cornerBottomLeft
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
@@ -489,6 +554,7 @@ export default class ImageElement extends Component {
                 {currentlySelected &&
                   <ResizeNode
                     cornerTopRight
+                    ref={component => {this.topRightNode = ReactDOM.findDOMNode(component);}}
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
