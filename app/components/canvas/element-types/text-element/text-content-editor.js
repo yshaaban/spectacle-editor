@@ -34,13 +34,9 @@ export default class TextContentEditor extends Component {
 
   getList(type, text) {
     const { componentProps, classNames, style } = this.props;
-    const liStyles = { ...style };
     let ListTag = "ol";
 
-    if (type === "ordered") {
-      liStyles.listStyleType = "decimal";
-    } else if (type === "unordered") {
-      liStyles.listStyleType = "disc";
+    if (type === "unordered") {
       ListTag = "ul";
     }
 
@@ -63,7 +59,7 @@ export default class TextContentEditor extends Component {
             className={
              `${classNames.line}`
             }
-            style={liStyles}
+            style={style}
             key={i}
           >
            {line}
