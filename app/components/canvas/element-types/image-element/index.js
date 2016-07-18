@@ -170,6 +170,21 @@ export default class ImageElement extends Component {
       snapCallback
     );
 
+    if (isLeftSideDrag) {
+      delta[0] = resizeLastX - pageX;
+      left -= delta[0];
+    } else {
+      delta[0] = pageX - resizeLastX;
+    }
+
+
+    let nextState = {};
+    const newWidth = delta[0] + width;
+
+    if (newWidth >= 0) {
+      nextState = { left, width: newWidth, resizeLastX: pageX };
+    }
+
     if (verticalResize) {
       snap(
         this.gridLines.horizontal,
@@ -180,36 +195,23 @@ export default class ImageElement extends Component {
         ),
         snapCallback
       );
+
+      if (isTopDrag) {
+        delta[1] = resizeLastY - pageY;
+        top -= delta[1];
+      } else {
+        delta[1] = pageY - resizeLastY;
+      }
+
+      const newHeight = delta[1] + height;
+
+      if (newHeight >= 0) {
+        nextState = { ...nextState, top, height: newHeight, resizeLastY: pageY };
+      }
     }
 
     if (isSnapped) {
       return;
-    }
-
-    if (isLeftSideDrag) {
-      delta[0] = resizeLastX - pageX;
-      left -= delta[0];
-    } else {
-      delta[0] = pageX - resizeLastX;
-    }
-
-    if (isTopDrag) {
-      delta[1] = resizeLastY - pageY;
-      top -= delta[1];
-    } else {
-      delta[1] = pageY - resizeLastY;
-    }
-
-    const newWidth = delta[0] + width;
-    const newHeight = delta[1] + height;
-    let nextState = {};
-
-    if (newWidth >= 0) {
-      nextState = { left, width: (delta[0] + width), resizeLastX: pageX };
-    }
-
-    if (newHeight >= 0) {
-      nextState = { ...nextState, top, height: (delta[0] + height), resizeLastY: pageY };
     }
 
     if (Object.keys(nextState).length) {
@@ -493,7 +495,7 @@ export default class ImageElement extends Component {
       motionStyles.height = spring(height, SpringSettings.RESIZE);
       motionStyles.width = spring(width, SpringSettings.RESIZE);
     }
-    console.log(motionStyles);
+
     return (
         <Motion
           style={motionStyles}
@@ -570,6 +572,7 @@ export default class ImageElement extends Component {
                 }
                 {currentlySelected &&
                   <ResizeNode
+                    ref={component => {this.bottomRightNode = ReactDOM.findDOMNode(component);}}
                     cornerBottomRight
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
