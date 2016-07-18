@@ -35,20 +35,22 @@ export default class TextContentEditor extends Component {
   getList(type, text) {
     const { componentProps, classNames, style } = this.props;
     const liStyles = { ...style };
+    let ListTag = "ol";
 
     if (type === "ordered") {
-      liStyles.listStyle = "decimal";
+      liStyles.listStyleType = "decimal";
     } else if (type === "unordered") {
-      liStyles.listStyle = "disc";
+      liStyles.listStyleType = "disc";
+      ListTag = "ul";
     }
 
     return (
-      <ol
+      <ListTag
         ref={(component) => {this.editor = component;}}
         {...componentProps}
         className={`${classNames.content}`}
         onBlur={this.handleBlur}
-        style={{ ...style, whiteSpace: "pre-wrap" }}
+        style={style}
         contentEditable="true"
         suppressContentEditableWarning
         onClick={this.handleClick}
@@ -67,7 +69,7 @@ export default class TextContentEditor extends Component {
            {line}
           </li>)
         )}
-      </ol>
+      </ListTag>
     );
   }
 
@@ -172,4 +174,3 @@ export default class TextContentEditor extends Component {
       </div>);
   }
 }
-
