@@ -2,7 +2,7 @@
 
 .canvasElement {
   cursor: move;
-  display: inline-block;
+  display: block;
 }
 
 .content {
@@ -12,12 +12,11 @@
   resize: none;
 }
 
-ol.content {
+ol.content,
+ul.content {
   display: block;
   margin: 0;
-  padding: 0 0 0 1em;
-
-  white-space: pre-wrap;
+  padding: 0;
   width: auto;
 }
 
@@ -29,6 +28,7 @@ ol.content {
 li.line {
   margin: 0;
   padding: 0;
+  list-style-position: inside;
   width: auto;
 }
 
