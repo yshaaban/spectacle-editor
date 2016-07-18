@@ -51,6 +51,22 @@ export default class ImageElement extends Component {
     });
   }
 
+  componentWillReceiveProps() {
+    const { isDragging, isResizing } = this.context.store;
+
+    if (!isDragging && !isResizing) {
+      // defer measuring new height and width, otherwise value will be what height was before resize
+      defer(() => {
+        if (this.editable) {
+          this.setState({
+            width: this.editable.clientWidth,
+            height: this.editable.clientHeight
+          });
+        }
+      });
+    }
+  }
+
   shouldComponentUpdate() {
     // This is needed because of the way the component is passed down
     // React isn't re-rendering this when the contextual menu updates the store
@@ -116,6 +132,7 @@ export default class ImageElement extends Component {
 
   handleMouseMoveResize = (ev) => {
     ev.preventDefault();
+
     const { pageX, pageY } = ev;
     const {
       isLeftSideDrag,
@@ -128,7 +145,6 @@ export default class ImageElement extends Component {
     } = this.state;
 
     let { left, top } = this.state;
-    const delta = [];
     let isSnapped;
 
     const snapCallback = (line, index) => {
@@ -160,15 +176,17 @@ export default class ImageElement extends Component {
       }
     };
 
-    snap(
-      this.gridLines.vertical,
-      getPointsToSnap(
-        left,
-        width,
-        (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
-      ),
-      snapCallback
-    );
+    // snap(
+    //   this.gridLines.vertical,
+    //   getPointsToSnap(
+    //     left,
+    //     width,
+    //     (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
+    //   ),
+    //   snapCallback
+    // );
+
+    const delta = [];
 
     if (isLeftSideDrag) {
       delta[0] = resizeLastX - pageX;
@@ -186,15 +204,15 @@ export default class ImageElement extends Component {
     }
 
     if (verticalResize) {
-      snap(
-        this.gridLines.horizontal,
-        getPointsToSnap(
-          top,
-          height,
-          (Math.max(pageY, resizeLastY) - Math.min(pageY, resizeLastY)) / 2
-        ),
-        snapCallback
-      );
+      // snap(
+      //   this.gridLines.horizontal,
+      //   getPointsToSnap(
+      //     top,
+      //     height,
+      //     (Math.max(pageY, resizeLastY) - Math.min(pageY, resizeLastY)) / 2
+      //   ),
+      //   snapCallback
+      // );
 
       if (isTopDrag) {
         delta[1] = resizeLastY - pageY;
@@ -502,7 +520,7 @@ export default class ImageElement extends Component {
         >
           {computedStyles => {
             const computedDragStyles = omit(computedStyles, "width", "height");
-            let computedResizeStyles = { ...computedStyles };
+            let computedResizeStyles = omit(computedStyles, "top", "left");
 
             if (!isResizing) {
               computedResizeStyles = {};
