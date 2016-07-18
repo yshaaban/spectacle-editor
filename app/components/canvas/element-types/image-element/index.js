@@ -106,11 +106,12 @@ export default class ImageElement extends Component {
 
     this.gridLines = this.context.store.gridLines;
 
+    this.context.store.updateElementResizeState(true);
+
     this.setState({
       isTopDrag,
       isLeftSideDrag,
       verticalResize,
-      isResizing: true,
       width,
       height,
       top,
@@ -176,15 +177,15 @@ export default class ImageElement extends Component {
       }
     };
 
-    // snap(
-    //   this.gridLines.vertical,
-    //   getPointsToSnap(
-    //     left,
-    //     width,
-    //     (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
-    //   ),
-    //   snapCallback
-    // );
+    snap(
+      this.gridLines.vertical,
+      getPointsToSnap(
+        left,
+        width,
+        (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
+      ),
+      snapCallback
+    );
 
     const delta = [];
 
@@ -204,15 +205,15 @@ export default class ImageElement extends Component {
     }
 
     if (verticalResize) {
-      // snap(
-      //   this.gridLines.horizontal,
-      //   getPointsToSnap(
-      //     top,
-      //     height,
-      //     (Math.max(pageY, resizeLastY) - Math.min(pageY, resizeLastY)) / 2
-      //   ),
-      //   snapCallback
-      // );
+      snap(
+        this.gridLines.horizontal,
+        getPointsToSnap(
+          top,
+          height,
+          (Math.max(pageY, resizeLastY) - Math.min(pageY, resizeLastY)) / 2
+        ),
+        snapCallback
+      );
 
       if (isTopDrag) {
         delta[1] = resizeLastY - pageY;
@@ -250,9 +251,8 @@ export default class ImageElement extends Component {
     window.removeEventListener("touchend", this.handleTouchEndResize);
 
     this.props.hideGridLine(true);
-    this.setState({
-      isResizing: false
-    });
+
+    this.context.store.updateElementResizeState(false);
 
     const { width, left, top, height } = this.state;
     const propStyles = { ...this.props.component.props.style, width, left, top, height };
@@ -325,33 +325,20 @@ export default class ImageElement extends Component {
   handleMouseDown = (ev) => {
     ev.preventDefault();
 
-    if (this.clickStart) {
-      this.clicking = false;
-      this.handleDoubleClick(ev);
-
-      return;
+    if (this.context.store.currentElementIndex === this.props.elementIndex) {
+      this.clickStart = new Date().getTime();
     }
 
-    this.clickStart = new Date().getTime();
     this.context.store.setCurrentElementIndex(this.props.elementIndex);
 
-    const { pageX, pageY, target } = ev;
-    const boundingBox = target.getBoundingClientRect();
+    const { pageX, pageY } = ev;
+    const boundingBox = this.currentElementComponent.getBoundingClientRect();
     const mouseOffset = [Math.floor(boundingBox.left - pageX), Math.floor(boundingBox.top - pageY)];
     const originalPosition = [
       this.props.component.props.style.left,
       this.props.component.props.style.top
     ];
-
-    let { width, height } = getElementDimensions(this.props.component);
-
-    if (height === undefined) {
-      height = this.currentElementComponent.getBoundingClientRect().height;
-    }
-
-    if (width === undefined) {
-      width = this.currentElementComponent.getBoundingClientRect().width;
-    }
+    const { width, height } = boundingBox;
 
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("touchend", this.handleMouseUp);
@@ -446,12 +433,13 @@ export default class ImageElement extends Component {
     const {
       width,
       height,
-      isResizing,
       isPressed,
       delta: [x, y],
       left,
       top
     } = this.state;
+
+    const { isDragging, isResizing } = this.context.store;
 
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
     const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
@@ -460,7 +448,7 @@ export default class ImageElement extends Component {
     const motionStyles = {};
     let elementStyle = props.style ? { ...props.style } : {};
 
-    if (this.context.store.isDragging) {
+    if (isDragging) {
       wrapperStyle.pointerEvents = "none";
     }
 
