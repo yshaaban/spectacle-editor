@@ -31,6 +31,6 @@
   height: calc(100% - 2px);
   top: 0;
   left: -1px;
-  border: 2px dashed var(--secondary-border-color);
+  border: var(--selected-border);
   border-radius: 2px;
 }
