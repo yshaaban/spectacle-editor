@@ -1,23 +1,23 @@
 @import '../../../../variables.css';
 
 .canvasElement {
-  position: relative;
-  display: inline-block;
   cursor: move;
+  display: inline-block;
 }
 
 .content {
+  border: none;
   margin: 0;
   outline: none;
-  border: none;
   resize: none;
 }
 
 ol.content {
-  margin-left: 1em;
-  padding: 0;
-  margin-right: 0;
-  box-sizing: border-box;
+  display: block;
+  margin: 0;
+  padding: 0 0 0 1em;
+
+  white-space: pre-wrap;
   width: auto;
 }
 
@@ -27,8 +27,9 @@ ol.content {
 }
 
 li.line {
-  box-sizing: border-box;
-  width: 100%;
+  margin: 0;
+  padding: 0;
+  width: auto;
 }
 
 .line:empty::before {
@@ -42,12 +43,11 @@ li.line {
 .selected::before {
   content: "";
   position: absolute;
-  box-sizing: border-box;
-  width: calc(100% + 1px);
-  height: calc(100% - 2px);
   top: 0;
-  left: -1px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
   border: var(--selected-border);
-  right: -5px;
   border-radius: 2px;
 }
