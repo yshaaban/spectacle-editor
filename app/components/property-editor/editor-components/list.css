@@ -11,7 +11,7 @@
 }
 
 .listWrapper .selectedList {
-  background: var(--secondary-border-color);
+  background: var(--primary-border-color);
 }
 
 .listWrapper > .listBox {
