@@ -364,13 +364,16 @@ export default class TextElement extends Component {
   }
 
   stopEditing = () => {
-    const { width } = this.currentElementComponent.getBoundingClientRect();
-    this.setState({ editing: false, width, reRender: true });
+    this.setState({
+      editing: false,
+      width: this.currentElementComponent.clientWidth,
+      reRender: true
+    });
 
     // this defer is necessary to force an entire re-render of the text editor
     // because contentEditable creates new elements outside of react's knowledge.
     // This will unmount the editor and remount it with the updated children incorporated
-    // into the virtual DOM.
+    // into the virtual DOM from the store.
     defer(() => {
       this.setState({ reRender: false });
     });

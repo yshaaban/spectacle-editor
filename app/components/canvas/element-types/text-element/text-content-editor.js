@@ -29,7 +29,7 @@ export default class TextContentEditor extends Component {
     });
   }
 
-  getList(type, text) {
+  renderList(type, text) {
     const { componentProps, classNames, style } = this.props;
     let ListTag = "ol";
 
@@ -66,7 +66,7 @@ export default class TextContentEditor extends Component {
     );
   }
 
-  getContent(contentToRender) {
+  renderEditor(contentToRender) {
     const {
       classNames,
       componentProps,
@@ -111,7 +111,7 @@ export default class TextContentEditor extends Component {
   }
 
   handleInput = (ev) => {
-    this.setState({ content: ev.target.innerText });
+    this.setState({ content: ev.target.textContent });
   }
 
   handleBlur = () => {
@@ -119,9 +119,10 @@ export default class TextContentEditor extends Component {
     this.props.stopEditing();
     this.isHighLighted = false;
 
+    const { content } = this.state;
     const { placeholderText, children } = this.props;
 
-    if (this.state.content === null && children) {
+    if (content === null || content.length === 0) {
       this.editor.childNodes[0].innerText = children && children[0] || placeholderText;
       return;
     }
@@ -190,8 +191,8 @@ export default class TextContentEditor extends Component {
     } = this.props;
 
     return componentProps.listType ?
-      this.getList(componentProps.listType, this.state.contentToRender)
+      this.renderList(componentProps.listType, this.state.contentToRender)
       :
-      this.getContent(this.state.contentToRender);
+      this.renderEditor(this.state.contentToRender);
   }
 }
