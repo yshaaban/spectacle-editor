@@ -489,7 +489,7 @@ export default class TextElement extends Component {
                 onMouseDown={!editing && this.handleMouseDown}
                 onTouchStart={!editing && this.handleTouchStart}
               >
-                {currentlySelected && !editing &&
+                {currentlySelected &&
                   <ResizeNode
                     ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
                     alignLeft
@@ -498,7 +498,7 @@ export default class TextElement extends Component {
                     component={this.props.component}
                   />
                 }
-                {currentlySelected && !isResizing && !editing && !isDragging &&
+                {currentlySelected && !isResizing && !isDragging &&
                   <Arrange />
                 }
                 {!this.state.reRender &&
@@ -515,7 +515,7 @@ export default class TextElement extends Component {
                     children={children}
                   />
                 }
-                {currentlySelected && !editing &&
+                {currentlySelected &&
                   <ResizeNode
                     alignRight
                     handleMouseDownResize={this.handleMouseDownResize}

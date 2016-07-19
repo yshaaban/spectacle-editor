@@ -58,7 +58,8 @@ ol.content li::before {
   position: relative;
 }
 
-.line > span {
+.line > span,
+.line > div {
   width: 100%;
   display: block;
 }
@@ -72,7 +73,9 @@ li.line {
   width: auto;
 }
 
-.line:empty::before {
+.line:empty::after,
+.line > div:empty::after,
+.line > span:empty::after {
   content: "\200b";
 }
 
