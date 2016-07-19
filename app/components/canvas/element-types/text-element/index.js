@@ -554,6 +554,14 @@ export default class TextElement extends Component {
 
     const content = typeof currentContent === "string" ? currentContent : children;
 
+    const lineClass = this.props.component.props.isQuote ?
+      `${styles.line} ${styles.quote}` :
+      styles.line;
+
+    const editorClass = this.props.component.props.isQuote ?
+      `${styles.editor} ${styles.quote}` :
+      styles.editor;
+
     return (
         <Motion
           style={motionStyles}
@@ -594,8 +602,8 @@ export default class TextElement extends Component {
                       this.editable = ReactDOM.findDOMNode(component);
                     }
                   }}
-                  lineClass={styles.line}
-                  editorClass={styles.editor}
+                  lineClass={lineClass}
+                  editorClass={editorClass}
                   isEditing={editing}
                   placeholderText={defaultText}
                   componentProps={props}
