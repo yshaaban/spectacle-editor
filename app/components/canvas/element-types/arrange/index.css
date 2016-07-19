@@ -11,9 +11,8 @@
 .arrangeContainer {
   position: absolute;
   bottom: calc(100% + 18px);
-  left: 0;
+  left: calc(50% - 100px);
   right: 0;
-  text-align: center;
 }
 
 .arrange {
@@ -24,7 +23,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 0 auto;
+  margin: 0;
   padding: 0;
   position: relative;
   width: 200px;
