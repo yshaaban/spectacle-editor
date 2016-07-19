@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import { trimEnd } from "lodash";
 
 export default class TextContentEditor extends Component {
   static propTypes = {
     isEditing: React.PropTypes.bool,
-    placeholderText: React.PropTypes.string,
+    placeholderText: React.PropTypes.array,
     classNames: React.PropTypes.object,
     componentProps: React.PropTypes.object,
     style: React.PropTypes.object,
-    children: React.PropTypes.string,
+    children: React.PropTypes.array,
     stopEditing: React.PropTypes.func
   }
 
@@ -54,7 +53,7 @@ export default class TextContentEditor extends Component {
         onKeyDown={this.handleKeyDown}
         onInput={this.handleInput}
       >
-        {text.split("\n").map((line, i) => (
+        {text.map((element, i) => (
           <li
             className={
              `${classNames.line}`
@@ -62,7 +61,7 @@ export default class TextContentEditor extends Component {
             style={style}
             key={i}
           >
-           {line}
+           {element.split("\n").map((line, k) => <div key={k}>{line}</div>)}
           </li>)
         )}
       </ListTag>
@@ -87,12 +86,16 @@ export default class TextContentEditor extends Component {
     const { placeholderText, children } = this.props;
 
     if (this.state.content === null && children) {
-      this.editor.childNodes[0].innerText = children && children.split("\n")[0] || placeholderText;
+      this.editor.childNodes[0].innerText = children && children[0] || placeholderText;
       return;
     }
 
+    const nextChildren = Array.prototype.map.call(this.editor.childNodes, (child) => (
+      child.innerText || ""
+    ));
+
     this.context.store.updateChildren(
-      this.editor.innerText,
+      nextChildren,
       this.currentSlide,
       this.currentElement
     );
@@ -110,7 +113,7 @@ export default class TextContentEditor extends Component {
       return;
     }
 
-    if (content === null && contentToRender === placeholderText) {
+    if (content === null && contentToRender[0] === placeholderText[0]) {
       this.editor.childNodes[0].innerText = "";
     }
 
@@ -141,7 +144,7 @@ export default class TextContentEditor extends Component {
     } = this.props;
 
     return componentProps.listType ?
-      this.getList(componentProps.listType, trimEnd(this.state.contentToRender, "\n"))
+      this.getList(componentProps.listType, this.state.contentToRender)
       :
       (<div
         ref={(component) => {this.editor = component;}}
@@ -155,8 +158,8 @@ export default class TextContentEditor extends Component {
         onKeyDown={this.handleKeyDown}
         onInput={this.handleInput}
       >
-        {trimEnd(this.state.contentToRender, "\n").split("\n").map((line, i) => (
-          <p
+        {this.state.contentToRender.map((element, i) =>
+          (<p
             className={
               `${classNames.content}
                ${classNames.line}`
@@ -164,7 +167,7 @@ export default class TextContentEditor extends Component {
             style={style}
             key={i}
           >
-            {line}
+            {element.split("\n")}
           </p>)
         )}
       </div>);
