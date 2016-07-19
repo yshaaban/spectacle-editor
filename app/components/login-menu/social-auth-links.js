@@ -1,14 +1,38 @@
 import React, { Component, PropTypes } from "react";
+import { ipcRenderer } from "electron";
+import { find } from "lodash";
 
-import SocialAuthModal from "./social-auth-modal";
 import socialLinkSprite from "../../assets/images/social-link-sprite.png";
 import styles from "./social-auth-links.css";
 
+import { getCurrentUser } from "../../api/user";
+
+const socialAuthProviders = {
+  Facebook: "/facebook/",
+  Twitter: "/twitter/",
+  GitHub: "/github/",
+  Google: "/google-oauth2/"
+};
+
 class SocialAuthenticationLinks extends Component {
-  handleSocialAuth(provider) {
-    SocialAuthModal.authenticate(provider, (userInfo) => {
-      this.props.onLoginSuccess(userInfo);
+  authenticate(provider, onSuccess, onError) {
+    ipcRenderer.once("social-login", (event, cookies) => {
+      const csrfToken = find(cookies, { name: "plotly_csrf_pr" }).value;
+
+      getCurrentUser(this.props.apiUrl)
+        .then((user) => {
+          if (!user || !user.username) {
+            throw new Error("no user found");
+          }
+
+          this.props.onLoginSuccess(user);
+        })
+        .catch(() => {
+          this.props.onLoginError(provider);
+        });
     });
+
+    ipcRenderer.send("social-login", `${this.props.domain}${socialAuthProviders[provider]}`);
   }
 
   render() {
@@ -17,14 +41,16 @@ class SocialAuthenticationLinks extends Component {
         <h3>Sign in with</h3>
         <div className={styles.socialAuthButtonGroup}>
           <button
-            onClick={this.handleSocialAuth.bind(this, SocialAuthModal.Facebook)}
+            type="button"
+            onClick={this.authenticate.bind(this, "Facebook")}
             className={styles.socialAuthButton}
             style={{
               backgroundImage: `url(${socialLinkSprite})`
             }}
           ></button>
           <button
-            onClick={this.handleSocialAuth.bind(this, SocialAuthModal.Twitter)}
+            type="button"
+            onClick={this.authenticate.bind(this, "Twitter")}
             className={styles.socialAuthButton}
             style={{
               backgroundImage: `url(${socialLinkSprite})`,
@@ -32,7 +58,8 @@ class SocialAuthenticationLinks extends Component {
             }}
           ></button>
           <button
-            onClick={this.handleSocialAuth.bind(this, SocialAuthModal.GitHub)}
+            type="button"
+            onClick={this.authenticate.bind(this, "GitHub")}
             className={styles.socialAuthButton}
             style={{
               backgroundImage: `url(${socialLinkSprite})`,
@@ -40,7 +67,8 @@ class SocialAuthenticationLinks extends Component {
             }}
           ></button>
           <button
-            onClick={this.handleSocialAuth.bind(this, SocialAuthModal.Google)}
+            type="button"
+            onClick={this.authenticate.bind(this, "Google")}
             className={styles.socialAuthButton}
             style={{
               backgroundImage: `url(${socialLinkSprite})`,

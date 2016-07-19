@@ -9,7 +9,7 @@ const parseJSON = ({ response, text }) => {
   }
 };
 
-export const login = (username, password) => fetch(`https://api.plot.ly/v2/users/login`, {
+export const login = (domain, username, password) => fetch(`${domain}/v2/users/login`, {
   method: "post",
   headers: {
     Accept: "application/json",
@@ -25,8 +25,24 @@ export const login = (username, password) => fetch(`https://api.plot.ly/v2/users
 .then(parseJSON)
 .then(({ response, json }) => {
   if (!response.ok) {
-    return Promise.reject(json.errors);
+    const errorMessage = Array.isArray(json.errors) ?
+      json.errors[0].message :
+      "There was a problem logging in, please try again";
+
+    return Promise.reject(errorMessage);
   }
 
   return json;
 });
+
+export const getCurrentUser = (domain, csrfToken) => fetch(`${domain}/v2/users/current`, {
+  method: "get",
+  credentials: "include",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "Plotly-Client-Platform": "Python 0.2",
+    "X-CSRFToken": csrfToken
+  }
+})
+.then((res) => res.json());

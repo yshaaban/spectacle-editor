@@ -3,6 +3,7 @@ import Immutable from "seamless-immutable";
 import { generate } from "shortid";
 import { merge } from "lodash";
 
+import ApiStore from "./api-store";
 import elementMap from "../elements";
 import { getGridLinesObj, getGridLineHashes } from "../utils";
 
@@ -120,6 +121,7 @@ export default class SlidesStore {
 
   constructor(fileStore, slides) {
     this.fileStore = fileStore;
+    this.api = new ApiStore();
 
     if (slides) {
       this.history = Immutable.from([{
@@ -299,7 +301,6 @@ export default class SlidesStore {
     }
   }
 
-  // TODO: Cap history length to some number to prevent absurd memory leaks
   _addToHistory(snapshot) {
     // Only notify observers once all expressions have completed
     transaction(() => {
@@ -311,6 +312,12 @@ export default class SlidesStore {
       // Wrap the new slides array in an array so they aren't concatted as individual slide objects
       this.history = this.history.concat([Immutable.from(snapshot)]);
       this.historyIndex += 1;
+
+      // Cap history to 40 entries
+      if (this.history.length > 40) {
+        this.history = this.history.slice(1, this.history.length);
+        this.historyIndex -= 1;
+      }
 
       if (!this.fileStore.isDirty) {
         this.fileStore.setIsDirty(true);

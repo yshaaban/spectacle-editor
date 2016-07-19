@@ -29,7 +29,7 @@ class LoginMenu extends Component {
   }
 
   render() {
-    const { user } = this.context.store;
+    const { user } = this.context.store.api;
     const { loginModalVisible } = this.state;
 
     return (

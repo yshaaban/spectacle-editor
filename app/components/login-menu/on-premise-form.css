@@ -1,0 +1,107 @@
+.loginForm {
+  width: 350px;
+  height: 100%;
+  color: #3d3d3d;
+}
+
+.loginForm h2 {
+  color: #3d3d3d;
+  font-size: 24px;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.loginForm label {
+  display: block;
+  width: 180px;
+  margin: auto;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 2;
+  letter-spacing: 0.2px;
+  color: #32393d;
+}
+
+.loginForm label input {
+  outline: none;
+  display: block;
+  width: 180px;
+  height: 30px;
+  border-radius: 4px;
+  background-color: #fff;
+  border: solid 1px #ccc;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.loginForm button[type=submit] {
+  outline: none;
+  width: 180px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #447bdc;
+  border: solid 1px #dce1e4;
+  color: #fff;
+  font-size: 14px;
+  margin: auto;
+  margin-top: 20px;
+  display: block;
+  cursor: pointer;
+}
+
+.loginForm a {
+  text-decoration: none;
+  margin: 15px auto;
+  width: 100%;
+  display: block;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: #3d3d3d;
+}
+
+.errorMessage {
+  margin: 10px 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 400;
+  color: red;
+}
+
+.errorMessage + a {
+  margin: 0;
+}
+
+.signUp {
+  position: absolute;
+  width: 100%;
+  height: 80px;
+  bottom: 0;
+  text-align: center;
+  border-top: 1px solid #e7e8e9;
+}
+
+.signUp h3 {
+  margin-top: 20px;
+  margin-bottom: 0;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.75;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: #32393d;
+}
+
+.signUp a {
+  text-decoration: none;
+  margin: 0 auto;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: #447bdc;
+}

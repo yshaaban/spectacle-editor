@@ -4,6 +4,8 @@ let menu;
 let template;
 let mainWindow = null;
 
+app.commandLine.appendSwitch("--ignore-certificate-errors");
+
 const handleSocialAuth = (socialUrl) => {
   const socialLoginWindow = new BrowserWindow({
     show: true,
