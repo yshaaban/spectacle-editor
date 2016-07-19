@@ -7,7 +7,7 @@ import {
   SpringSettings,
   BLACKLIST_CURRENT_ELEMENT_DESELECT
 } from "../../../../constants";
-import { getElementDimensions, getPointsToSnap, snap } from "../../../../utils";
+import { getPointsToSnap, snap } from "../../../../utils";
 import styles from "./index.css";
 import ResizeNode from "../../resize-node";
 import Arrange from "../arrange";
@@ -146,34 +146,32 @@ export default class ImageElement extends Component {
     } = this.state;
 
     let { left, top } = this.state;
-    let isSnapped;
 
-    const snapCallback = (line, index) => {
+    const createSnapCallback = (isVertical, length, offset) => (line, index) => {
       if (line === null) {
-        this.props.hideGridLine(true);
-        isSnapped = false;
+        this.props.hideGridLine(isVertical);
+
         return;
       }
 
       let pointToAlignWithLine;
 
       if (index === 0) {
-        pointToAlignWithLine = left;
+        pointToAlignWithLine = offset;
       }
 
       if (index === 1) {
-        pointToAlignWithLine = Math.ceil(left + width / 2);
+        pointToAlignWithLine = Math.ceil(offset + length / 2);
       }
 
       if (index === 2) {
-        pointToAlignWithLine = Math.ceil(left + width);
+        pointToAlignWithLine = Math.ceil(offset + length);
       }
 
-      const distance = Math.abs(pointToAlignWithLine - line);
+      const distance = pointToAlignWithLine - line;
 
-      if (distance <= 3) {
-        isSnapped = true;
-        this.props.showGridLine(line, true);
+      if (Math.abs(distance) <= 3) {
+        this.props.showGridLine(line, isVertical);
       }
     };
 
@@ -184,7 +182,7 @@ export default class ImageElement extends Component {
         width,
         (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
       ),
-      snapCallback
+      createSnapCallback(true, width, left)
     );
 
     const delta = [];
@@ -212,7 +210,7 @@ export default class ImageElement extends Component {
           height,
           (Math.max(pageY, resizeLastY) - Math.min(pageY, resizeLastY)) / 2
         ),
-        snapCallback
+        createSnapCallback(false, height, top)
       );
 
       if (isTopDrag) {
@@ -229,9 +227,9 @@ export default class ImageElement extends Component {
       }
     }
 
-    if (isSnapped) {
-      return;
-    }
+    // if (isSnapped) {
+    //   return;
+    // }
 
     if (Object.keys(nextState).length) {
       this.setState(nextState);
@@ -251,6 +249,7 @@ export default class ImageElement extends Component {
     window.removeEventListener("touchend", this.handleTouchEndResize);
 
     this.props.hideGridLine(true);
+    this.props.hideGridLine(false);
 
     this.context.store.updateElementResizeState(false);
 
