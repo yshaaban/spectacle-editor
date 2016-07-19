@@ -29,87 +29,6 @@ export default class TextContentEditor extends Component {
     });
   }
 
-  renderList(type, text) {
-    const { componentProps, classNames, style } = this.props;
-    let ListTag = "ol";
-
-    if (type === "unordered") {
-      ListTag = "ul";
-    }
-
-    return (
-      <ListTag
-        ref={(component) => {this.editor = component;}}
-        {...componentProps}
-        className={`${classNames.content}`}
-        onBlur={this.handleBlur}
-        style={style}
-        contentEditable="true"
-        suppressContentEditableWarning
-        onClick={this.handleClick}
-        onBlur={this.handleBlur}
-        onKeyDown={this.handleKeyDown}
-        onInput={this.handleInput}
-      >
-        {text.map((element, i) => (
-          <li
-            className={
-             `${classNames.line}`
-            }
-            style={style}
-            key={i}
-          >
-           {element.replace(/\n$/, "").split("\n").map((line, k) => <div key={k}>{line}</div>)}
-          </li>)
-        )}
-      </ListTag>
-    );
-  }
-
-  renderEditor(contentToRender) {
-    const {
-      classNames,
-      componentProps,
-      style
-    } = this.props;
-
-    return (
-      <div
-        ref={(component) => {this.editor = component;}}
-        {...componentProps}
-        className={classNames.content}
-        onBlur={this.handleBlur}
-        style={{ ...style, whiteSpace: "pre-wrap" }}
-        contentEditable="true"
-        suppressContentEditableWarning
-        onClick={this.handleClick}
-        onKeyDown={this.handleKeyDown}
-        onInput={this.handleInput}
-      >
-        {contentToRender.map((element, i) =>
-          (<p
-            className={
-              `${classNames.content}
-               ${classNames.line}`
-            }
-            style={style}
-            key={i}
-          >
-            {element.replace(/\n$/, "").split("\n").map((line, k) => (
-                <span
-                  className={classNames.line}
-                  key={k}
-                >
-                  {line}
-                </span>
-              )
-            )}
-          </p>)
-        )}
-      </div>
-    );
-  }
-
   handleInput = (ev) => {
     this.setState({ content: ev.target.textContent });
   }
@@ -183,6 +102,87 @@ export default class TextContentEditor extends Component {
     if (ev.which === 13 && ev.shiftKey && !this.props.componentProps.listType) {
       ev.preventDefault();
     }
+  }
+
+  renderEditor(contentToRender) {
+    const {
+      classNames,
+      componentProps,
+      style
+    } = this.props;
+
+    return (
+      <div
+        ref={(component) => {this.editor = component;}}
+        {...componentProps}
+        className={classNames.content}
+        onBlur={this.handleBlur}
+        style={{ ...style, whiteSpace: "pre-wrap" }}
+        contentEditable="true"
+        suppressContentEditableWarning
+        onClick={this.handleClick}
+        onKeyDown={this.handleKeyDown}
+        onInput={this.handleInput}
+      >
+        {contentToRender.map((element, i) =>
+          (<p
+            className={
+              `${classNames.content}
+               ${classNames.line}`
+            }
+            style={style}
+            key={i}
+          >
+            {element.replace(/\n$/, "").split("\n").map((line, k) => (
+                <span
+                  className={classNames.line}
+                  key={k}
+                >
+                  {line}
+                </span>
+              )
+            )}
+          </p>)
+        )}
+      </div>
+    );
+  }
+
+  renderList(type, text) {
+    const { componentProps, classNames, style } = this.props;
+    let ListTag = "ol";
+
+    if (type === "unordered") {
+      ListTag = "ul";
+    }
+
+    return (
+      <ListTag
+        ref={(component) => {this.editor = component;}}
+        {...componentProps}
+        className={`${classNames.content}`}
+        onBlur={this.handleBlur}
+        style={style}
+        contentEditable="true"
+        suppressContentEditableWarning
+        onClick={this.handleClick}
+        onBlur={this.handleBlur}
+        onKeyDown={this.handleKeyDown}
+        onInput={this.handleInput}
+      >
+        {text.map((element, i) => (
+          <li
+            className={
+             `${classNames.line}`
+            }
+            style={style}
+            key={i}
+          >
+           {element.replace(/\n$/, "").split("\n").map((line, k) => <div key={k}>{line}</div>)}
+          </li>)
+        )}
+      </ListTag>
+    );
   }
 
   render() {
