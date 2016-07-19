@@ -1,31 +1,74 @@
 import React, { Component } from "react";
-import { BOLD, ITALIC, QUOTE, UNDERLINE } from "../../../assets/icons";
+import { QUOTE, UNDERLINE } from "../../../assets/icons";
 import styles from "./formatting.css";
 
 export default class Formatting extends Component {
+  static contextTypes = {
+    store: React.PropTypes.object
+  }
+
+  static propTypes = {
+    style: React.PropTypes.object,
+    currentElement: React.PropTypes.object
+  }
+
+  toggleUnderlineStyles = (isUnderlined) => () => {
+    let textDecoration;
+    if (isUnderlined) {
+      textDecoration = "none";
+    } else {
+      textDecoration = "underline";
+    }
+    const { style } = this.props.currentElement.props;
+    const updatedStyles = {
+      ...style,
+      textDecoration
+    };
+
+    this.context.store.updateElementProps({ style: updatedStyles });
+  }
+
+  toggleQuoteStyles = (currentQuote) => () => {
+    let toggleQuote;
+    if (currentQuote) {
+      toggleQuote = false;
+    } else {
+      toggleQuote = true;
+    }
+
+    this.context.store.updateElementProps({
+      isQuote: toggleQuote
+    });
+  }
+
   render() {
+    const { currentElement } = this.props;
+    const currentTextDecoration = currentElement.props.style.textDecoration;
+    const isUnderlined = currentTextDecoration === "underline";
+    const isQuote = currentElement.props.isQuote;
+
+    const quoteButtonClass = isQuote ?
+      `${styles.formattingButtonSelected} ${styles.formattingButton}` :
+      styles.formattingButton;
+
+    const underlineButtonClass = isUnderlined ?
+      `${styles.formattingButtonSelected} ${styles.formattingButton} ${styles.borderRight}` :
+      `${styles.formattingButton} ${styles.borderRight}`;
+
     return (
       <div className={styles.formattingWrapper}>
-        <span
-          className={styles.formattingBox}
-          dangerouslySetInnerHTML={{ __html: BOLD }}
-        >
-        </span>
-        <span
-          className={styles.formattingBox}
-          dangerouslySetInnerHTML={{ __html: ITALIC }}
-        >
-        </span>
-        <span
-          className={styles.formattingBox}
+        <button
+          onClick={this.toggleUnderlineStyles(isUnderlined)}
+          className={underlineButtonClass}
           dangerouslySetInnerHTML={{ __html: UNDERLINE }}
         >
-        </span>
-        <span
-          className={styles.formattingBox}
+        </button>
+        <button
+          onClick={this.toggleQuoteStyles(isQuote)}
+          className={quoteButtonClass}
           dangerouslySetInnerHTML={{ __html: QUOTE }}
         >
-        </span>
+        </button>
       </div>
     );
   }

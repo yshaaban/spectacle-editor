@@ -39,6 +39,7 @@ elements[ElementTypes.TEXT] = {
   defaultHeight: 63,
   defaultText: "totally text",
   props: {
+    isQuote: false,
     size: 4,
     style: {
       color: "#3d3d3d",
