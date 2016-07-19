@@ -13,19 +13,28 @@
 }
 
 .dropper {
-  cursor: pointer;
-  height: 20px;
-  width: 20px;
   position: relative;
+
+  cursor: pointer;
+  height: 30px;
+  margin: 0 0 0 5px;
+  padding: 0;
+  width: 22px;
+
+  background-color: transparent;
+  border: 0;
+  outline: none;
 }
 
 .dropper > svg {
-  fill: #3563d3;
-  height: 20px;
-  left: 10px;
   position: absolute;
-  top: 10px;
-  width: 15px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  fill: #3563d3;
+  height: auto;
+  width: 100%;
 }
 
 .pickerWrapper {
