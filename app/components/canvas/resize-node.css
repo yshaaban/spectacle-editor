@@ -86,4 +86,5 @@
 
 .iconBottomRight {
   transform: rotate(180deg);
+  right: -2px;
 }
