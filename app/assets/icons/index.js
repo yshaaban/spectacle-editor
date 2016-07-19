@@ -7,7 +7,7 @@ import CHECKICON from "./check.svg";
 import CHEVRONICON from "./chevron-bottom.svg";
 import EYEDROPPERICON from "./eyedropper.svg";
 import ITALICICON from "./italic.svg";
-import QUOTEICON from "./double-quote-serif-left.svg";
+import QUOTEICON from "./quote.svg";
 import TEXTICON from "./text.svg";
 import UNDERLINEICON from "./underline.svg";
 import NEWSLIDEICON from "./slide-new.svg";
