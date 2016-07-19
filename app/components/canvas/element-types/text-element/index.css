@@ -58,6 +58,11 @@ ol.content li::before {
   position: relative;
 }
 
+.line > span {
+  width: 100%;
+  display: block;
+}
+
 li.line {
   list-style-type: none;
   margin: 0;

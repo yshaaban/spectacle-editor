@@ -22,13 +22,11 @@ export default class TextContentEditor extends Component {
   }
 
   componentWillMount() {
-    if (this.props.children) {
-      this.setState({ contentToRender: this.props.children });
+    const { children, placeholderText } = this.props;
 
-      return;
-    }
-
-    this.setState({ contentToRender: this.props.placeholderText });
+    this.setState({
+      contentToRender: children && children || placeholderText
+    });
   }
 
   getList(type, text) {
@@ -61,17 +59,55 @@ export default class TextContentEditor extends Component {
             style={style}
             key={i}
           >
-           {element.split("\n").map((line, k) => <div key={k}>{line}</div>)}
+           {element.replace(/\n$/, "").split("\n").map((line, k) => <div key={k}>{line}</div>)}
           </li>)
         )}
       </ListTag>
     );
   }
 
-  handleKeyDown = (ev) => {
-    if (ev.which === 8 && ev.target.innerText.length <= 1) {
-      ev.preventDefault();
-    }
+  getContent(contentToRender) {
+    const {
+      classNames,
+      componentProps,
+      style
+    } = this.props;
+
+    return (
+      <div
+        ref={(component) => {this.editor = component;}}
+        {...componentProps}
+        className={classNames.content}
+        onBlur={this.handleBlur}
+        style={{ ...style, whiteSpace: "pre-wrap" }}
+        contentEditable="true"
+        suppressContentEditableWarning
+        onClick={this.handleClick}
+        onKeyDown={this.handleKeyDown}
+        onInput={this.handleInput}
+      >
+        {contentToRender.map((element, i) =>
+          (<p
+            className={
+              `${classNames.content}
+               ${classNames.line}`
+            }
+            style={style}
+            key={i}
+          >
+            {element.replace(/\n$/, "").split("\n").map((line, k) => (
+                <span
+                  className={classNames.line}
+                  key={k}
+                >
+                  {line}
+                </span>
+              )
+            )}
+          </p>)
+        )}
+      </div>
+    );
   }
 
   handleInput = (ev) => {
@@ -119,12 +155,14 @@ export default class TextContentEditor extends Component {
 
     if (!this.props.children) {
       ev.preventDefault();
+
       range.selectNodeContents(this.editor.childNodes[0]);
       sel.removeAllRanges();
       sel.addRange(range);
     } else if (!this.isHighLighted) {
       this.isHighLighted = true;
       const length = this.editor.childNodes.length;
+
       range.setStartBefore(this.editor.childNodes[0]);
       range.setEndAfter(this.editor.childNodes[length - 1]);
       sel.removeAllRanges();
@@ -136,40 +174,24 @@ export default class TextContentEditor extends Component {
     this.currentElement = this.context.store.currentElementIndex;
   }
 
+  handleKeyDown = (ev) => {
+    if (ev.which === 8 && ev.target.innerText.length <= 1) {
+      ev.preventDefault();
+    }
+
+    if (ev.which === 13 && ev.shiftKey && !this.props.componentProps.listType) {
+      ev.preventDefault();
+    }
+  }
+
   render() {
     const {
-      classNames,
-      componentProps,
-      style
+      componentProps
     } = this.props;
 
     return componentProps.listType ?
       this.getList(componentProps.listType, this.state.contentToRender)
       :
-      (<div
-        ref={(component) => {this.editor = component;}}
-        {...componentProps}
-        className={classNames.content}
-        onBlur={this.handleBlur}
-        style={{ ...style, whiteSpace: "pre-wrap" }}
-        contentEditable="true"
-        suppressContentEditableWarning
-        onClick={this.handleClick}
-        onKeyDown={this.handleKeyDown}
-        onInput={this.handleInput}
-      >
-        {this.state.contentToRender.map((element, i) =>
-          (<p
-            className={
-              `${classNames.content}
-               ${classNames.line}`
-            }
-            style={style}
-            key={i}
-          >
-            {element.split("\n")}
-          </p>)
-        )}
-      </div>);
+      this.getContent(this.state.contentToRender);
   }
 }
