@@ -5,6 +5,7 @@ import { map, omit, find } from "lodash";
 import {
   Alignment,
   ColorPicker,
+  Formatting,
   Incrementer,
   List,
   LinkTo,
@@ -183,12 +184,22 @@ export default class TextMenu extends Component {
                 propertyName={"fontSize"}
               />
             </div>
-            <div className={styles.subHeading}>
-              Color
+
+            <div className={`${styles.flexrow} ${styles.flexspacebetween}`}>
+              <div>
+                <div className={styles.subHeading}>
+                  Color
+                </div>
+                <ColorPicker currentElement={this.state.currentElement} />
+              </div>
+              <div>
+                <div className={styles.subHeading}>
+                  Formatting
+                </div>
+                <Formatting currentElement={this.state.currentElement} />
+              </div>
             </div>
-            <div className={styles.row}>
-              <ColorPicker currentElement={this.state.currentElement} />
-            </div>
+
             <div className={styles.rowAlt}>
               <div className={styles.subHeading}>
                 Alignment
