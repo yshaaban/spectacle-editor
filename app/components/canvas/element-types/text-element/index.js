@@ -467,15 +467,7 @@ export default class TextElement extends Component {
       motionStyles.width = spring(width, SpringSettings.RESIZE);
     }
 
-    // const content = typeof currentContent === "string" ? currentContent : children;
-
-    const lineClass = this.props.component.props.isQuote ?
-      `${styles.line} ${styles.quote}` :
-      styles.line;
-
-    const editorClass = this.props.component.props.isQuote ?
-      `${styles.editor} ${styles.quote}` :
-      styles.editor;
+    const paragraphClass = this.props.component.props.isQuote ? styles.quote : "";
 
     return (
         <Motion
@@ -520,7 +512,7 @@ export default class TextElement extends Component {
                       this.editable = ReactDOM.findDOMNode(component);
                     }}
                     stopEditing={this.stopEditing}
-                    classNames={{ ...styles, line: lineClass }}
+                    classNames={{ ...styles, paragraph: paragraphClass }}
                     isEditing={editing}
                     placeholderText={defaultText}
                     componentProps={{ ...props }}

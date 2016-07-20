@@ -128,7 +128,8 @@ export default class TextContentEditor extends Component {
           (<p
             className={
               `${classNames.content}
-               ${classNames.line}`
+               ${classNames.line}
+               ${classNames.paragraph}`
             }
             style={style}
             key={i}
