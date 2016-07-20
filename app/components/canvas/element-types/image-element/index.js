@@ -153,13 +153,11 @@ export default class ImageElement extends Component {
       isLeftSideDrag,
       resizeLastX,
       resizeLastY,
-      height,
-      width,
       isTopDrag,
       horizontalResize
     } = this.state;
 
-    let { left, top } = this.state;
+    let { height, width, left, top } = this.state;
     let verticalSnap = false;
     let horizontalSnap = false;
 
@@ -194,12 +192,22 @@ export default class ImageElement extends Component {
 
       if (Math.abs(distance) <= 7) {
         if (!isVertical) {
-          top -= distance;
+          if (isTopDrag) {
+            top -= distance;
+            height += distance;
+          } else {
+            height -= distance;
+          }
           horizontalSnap = true;
         }
 
         if (isVertical) {
-          left -= distance;
+          if (isLeftSideDrag) {
+            left -= distance;
+            width += distance;
+          } else {
+            width -= distance;
+          }
           verticalSnap = true;
         }
 
@@ -221,19 +229,20 @@ export default class ImageElement extends Component {
 
     if (isLeftSideDrag) {
       delta[0] = resizeLastX - pageX;
-      left -= delta[0];
+      left = verticalSnap ? left : left - delta[0];
     } else {
       delta[0] = pageX - resizeLastX;
     }
 
-
     let nextState = {};
-    const newWidth = delta[0] + width;
+    let newWidth = delta[0] + width;
+
+    newWidth = verticalSnap ? width : newWidth;
 
     if (newWidth >= 0) {
       nextState = {
         left,
-        width: verticalSnap ? width : newWidth,
+        width: newWidth,
         resizeLastX: verticalSnap ? resizeLastX : pageX
       };
     }
@@ -249,28 +258,37 @@ export default class ImageElement extends Component {
         createSnapCallback(false, height, top)
       );
 
+      const { component: { props } } = this.props;
+
       if (isTopDrag) {
         delta[1] = resizeLastY - pageY;
-        top -= delta[1];
+
+        if (!horizontalSnap) {
+          top = this.shiftHeld ?
+            top - ((delta[0] + (props.height * newWidth) / props.width) - height)
+            :
+            top - delta[1];
+        }
       } else {
         delta[1] = pageY - resizeLastY;
       }
 
-      const newHeight = delta[1] + height;
+      let newHeight = this.shiftHeld ?
+        (delta[0] + (props.height * newWidth) / props.width)
+        :
+        (delta[1] + height);
+
+      newHeight = horizontalSnap ? height : newHeight;
 
       if (newHeight >= 0) {
         nextState = {
           ...nextState,
           top,
-          height: horizontalSnap ? height : newHeight,
+          height: newHeight,
           resizeLastY: horizontalSnap ? resizeLastY : pageY
         };
       }
     }
-
-    // if (isSnapped) {
-    //   return;
-    // }
 
     if (Object.keys(nextState).length) {
       this.setState(nextState);
@@ -298,6 +316,20 @@ export default class ImageElement extends Component {
     const propStyles = { ...this.props.component.props.style, width, left, top, height };
 
     this.context.store.updateElementProps({ style: propStyles });
+  }
+
+  handleKeyDown = (ev) => {
+    if (ev.shiftKey) {
+      window.addEventListener("keyup", this.handleKeyUp);
+      this.shiftHeld = true;
+    }
+  }
+
+  handleKeyUp = (ev) => {
+    if (!ev.shiftKey) {
+      window.removeEventListener("keyup", this.handleKeyUp);
+      this.shiftHeld = false;
+    }
   }
 
   handleTouchStart = (ev) => {
@@ -479,7 +511,6 @@ export default class ImageElement extends Component {
       top
     } = this.state;
 
-
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
     const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
 
@@ -487,7 +518,14 @@ export default class ImageElement extends Component {
     const motionStyles = {};
     let elementStyle = props.style ? { ...props.style } : {};
 
-    const { isDragging, isResizing, cursorType } = this.context.store;
+    const { isDragging, isResizing, cursorType, currentElementIndex } = this.context.store;
+
+    if (currentElementIndex === elementIndex) {
+      window.addEventListener("keydown", this.handleKeyDown);
+    } else {
+      window.removeEventListener("keydown", this.handleKeyDown);
+      window.removeEventListener("keyup", this.handleKeyUp);
+    }
 
     if (isDragging) {
       wrapperStyle.pointerEvents = "none";
@@ -495,6 +533,8 @@ export default class ImageElement extends Component {
 
     if (isResizing) {
       this.currentElementComponent.style.cursor = cursorType;
+    } else if (this.currentElementComponent) {
+      this.currentElementComponent.style.cursor = "auto";
     }
 
     if (mousePosition || props.style && props.style.position === "absolute") {
