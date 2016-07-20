@@ -225,28 +225,6 @@ export default class ImageElement extends Component {
       createSnapCallback(true, width, left)
     );
 
-    const delta = [];
-
-    if (isLeftSideDrag) {
-      delta[0] = resizeLastX - pageX;
-      left = verticalSnap ? left : left - delta[0];
-    } else {
-      delta[0] = pageX - resizeLastX;
-    }
-
-    let nextState = {};
-    let newWidth = delta[0] + width;
-
-    newWidth = verticalSnap ? width : newWidth;
-
-    if (newWidth >= 0) {
-      nextState = {
-        left,
-        width: newWidth,
-        resizeLastX: verticalSnap ? resizeLastX : pageX
-      };
-    }
-
     if (horizontalResize) {
       snap(
         this.gridLines.horizontal,
@@ -257,13 +235,37 @@ export default class ImageElement extends Component {
         ),
         createSnapCallback(false, height, top)
       );
+    }
 
+    const delta = [];
+
+    if (isLeftSideDrag) {
+      delta[0] = resizeLastX - pageX;
+      left = verticalSnap || (horizontalSnap && this.shiftHeld) ? left : left - delta[0];
+    } else {
+      delta[0] = pageX - resizeLastX;
+    }
+
+    let nextState = {};
+    let newWidth = delta[0] + width;
+
+    newWidth = verticalSnap || (horizontalSnap && this.shiftHeld) ? width : newWidth;
+
+    if (newWidth >= 0) {
+      nextState = {
+        left,
+        width: newWidth,
+        resizeLastX: verticalSnap ? resizeLastX : pageX
+      };
+    }
+
+    if (horizontalResize) {
       const { component: { props } } = this.props;
 
       if (isTopDrag) {
         delta[1] = resizeLastY - pageY;
 
-        if (!horizontalSnap) {
+        if (!horizontalSnap && (!this.shiftHeld || !verticalSnap)) {
           top = this.shiftHeld ?
             top - ((delta[0] + (props.height * newWidth) / props.width) - height)
             :
@@ -278,7 +280,7 @@ export default class ImageElement extends Component {
         :
         (delta[1] + height);
 
-      newHeight = horizontalSnap ? height : newHeight;
+      newHeight = horizontalSnap || (this.shiftHeld && verticalSnap) ? height : newHeight;
 
       if (newHeight >= 0) {
         nextState = {
