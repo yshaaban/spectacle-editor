@@ -198,7 +198,7 @@ export default class ImageElement extends Component {
           } else {
             height -= distance;
           }
-          horizontalSnap = true;
+          horizontalSnap = distance;
         }
 
         if (isVertical) {
@@ -208,7 +208,7 @@ export default class ImageElement extends Component {
           } else {
             width -= distance;
           }
-          verticalSnap = true;
+          verticalSnap = distance;
         }
 
         this.props.showGridLine(line, isVertical);
@@ -237,11 +237,21 @@ export default class ImageElement extends Component {
       );
     }
 
+    if (this.shiftHeld && typeof horizontalSnap === "number" && typeof verticalSnap === "number") {
+      verticalSnap = true;
+      horizontalSnap = false;
+
+      this.props.hideGridLine();
+    } else {
+      verticalSnap = verticalSnap !== false && true;
+      horizontalSnap = horizontalSnap !== false && true;
+    }
+
     const delta = [];
 
     if (isLeftSideDrag) {
       delta[0] = resizeLastX - pageX;
-      left = verticalSnap || (horizontalSnap && this.shiftHeld) ? left : left - delta[0];
+      left = verticalSnap ? left : left - delta[0];
     } else {
       delta[0] = pageX - resizeLastX;
     }
@@ -249,7 +259,7 @@ export default class ImageElement extends Component {
     let nextState = {};
     let newWidth = delta[0] + width;
 
-    newWidth = verticalSnap || (horizontalSnap && this.shiftHeld) ? width : newWidth;
+    newWidth = verticalSnap ? width : newWidth;
 
     if (newWidth >= 0) {
       nextState = {
@@ -265,7 +275,7 @@ export default class ImageElement extends Component {
       if (isTopDrag) {
         delta[1] = resizeLastY - pageY;
 
-        if (!horizontalSnap && (!this.shiftHeld || !verticalSnap)) {
+        if (!horizontalSnap) {
           top = this.shiftHeld ?
             top - ((delta[0] + (props.height * newWidth) / props.width) - height)
             :
@@ -280,7 +290,7 @@ export default class ImageElement extends Component {
         :
         (delta[1] + height);
 
-      newHeight = horizontalSnap || (this.shiftHeld && verticalSnap) ? height : newHeight;
+      newHeight = horizontalSnap ? height : newHeight;
 
       if (newHeight >= 0) {
         nextState = {
