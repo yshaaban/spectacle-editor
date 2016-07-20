@@ -39,6 +39,7 @@ elements[ElementTypes.TEXT] = {
   defaultHeight: 63,
   defaultText: ["Text"],
   props: {
+    isQuote: false,
     size: 4,
     listType: null,
     style: {
