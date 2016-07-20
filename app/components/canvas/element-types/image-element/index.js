@@ -518,9 +518,9 @@ export default class ImageElement extends Component {
     const motionStyles = {};
     let elementStyle = props.style ? { ...props.style } : {};
 
-    const { isDragging, isResizing, cursorType, currentElementIndex } = this.context.store;
+    const { isDragging, isResizing, cursorType } = this.context.store;
 
-    if (currentElementIndex === elementIndex) {
+    if (currentlySelected) {
       window.addEventListener("keydown", this.handleKeyDown);
     } else {
       window.removeEventListener("keydown", this.handleKeyDown);
