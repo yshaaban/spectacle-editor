@@ -85,6 +85,10 @@ export default class ImageElement extends Component {
     if (el === this.topRightNode || el === this.bottomLeftNode) {
       return "nesw-resize";
     }
+
+    if (el === this.topResizeNode || el === this.bottomResizeNode) {
+      return "ns-resize";
+    }
   }
 
   handleTouchStartResize = (ev) => {
@@ -98,18 +102,20 @@ export default class ImageElement extends Component {
 
     const { currentTarget, pageX, pageY } = ev;
 
+    const verticalResize =
+      currentTarget !== this.topResizeNode &&
+      currentTarget !== this.bottomResizeNode;
     const isLeftSideDrag =
       currentTarget === this.leftResizeNode ||
       currentTarget === this.topLeftNode ||
       currentTarget === this.bottomLeftNode;
     const isTopDrag =
+      currentTarget === this.topResizeNode ||
       currentTarget === this.topLeftNode ||
       currentTarget === this.topRightNode;
     const horizontalResize =
-      currentTarget === this.topLeftNode ||
-      currentTarget === this.bottomLeftNode ||
-      currentTarget === this.topRightNode ||
-      currentTarget === this.bottomRightNode;
+      currentTarget !== this.leftResizeNode &&
+      currentTarget !== this.rightResizeNode;
 
     const { width, height } = this.currentElementComponent.getBoundingClientRect();
     const componentProps = this.props.component.props;
@@ -123,6 +129,7 @@ export default class ImageElement extends Component {
     this.context.store.updateElementResizeState(true, this.getCursorTypes(currentTarget));
 
     this.setState({
+      verticalResize,
       isTopDrag,
       isLeftSideDrag,
       horizontalResize,
@@ -154,12 +161,15 @@ export default class ImageElement extends Component {
       resizeLastX,
       resizeLastY,
       isTopDrag,
-      horizontalResize
+      horizontalResize,
+      verticalResize
     } = this.state;
 
     let { height, width, left, top } = this.state;
     let verticalSnap = false;
     let horizontalSnap = false;
+    let lineX;
+    let lineY;
 
     const createSnapCallback = (isVertical, length, offset) => (line, index) => {
       if (line === null) {
@@ -191,14 +201,15 @@ export default class ImageElement extends Component {
       const distance = pointToAlignWithLine - line;
 
       if (Math.abs(distance) <= 7) {
-        if (!isVertical && (!verticalSnap && !this.shiftHeld)) {
+        if (!isVertical) {
           if (isTopDrag) {
             top -= distance;
             height += distance;
           } else {
             height -= distance;
           }
-          horizontalSnap = true;
+          horizontalSnap = distance;
+          lineY = line;
         }
 
         if (isVertical) {
@@ -208,26 +219,25 @@ export default class ImageElement extends Component {
           } else {
             width -= distance;
           }
-          verticalSnap = true;
-        }
-
-        if (isVertical || (!verticalSnap && !this.shiftHeld)) {
-          this.props.showGridLine(line, isVertical);
+          verticalSnap = distance;
+          lineX = line;
         }
       }
     };
 
-    snap(
-      this.gridLines.vertical,
-      getPointsToSnap(
-        left,
-        width,
-        (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
-      ),
-      createSnapCallback(true, width, left)
-    );
+    if (verticalResize || this.shiftHeld) {
+      snap(
+        this.gridLines.vertical,
+        getPointsToSnap(
+          left,
+          width,
+          (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
+        ),
+        createSnapCallback(true, width, left)
+      );
+    }
 
-    if (horizontalResize) {
+    if (horizontalResize || this.shiftHeld) {
       snap(
         this.gridLines.horizontal,
         getPointsToSnap(
@@ -239,39 +249,58 @@ export default class ImageElement extends Component {
       );
     }
 
-    // if (this.shiftHeld && typeof horizontalSnap === "number" && typeof verticalSnap === "number") {
-    //   verticalSnap = true;
-    //   horizontalSnap = false;
+    if (this.shiftHeld && typeof horizontalSnap === "number" && typeof verticalSnap === "number") {
+      verticalSnap = Math.abs(verticalSnap) >= Math.abs(horizontalSnap);
+      horizontalSnap = Math.abs(horizontalSnap) > Math.abs(verticalSnap);
 
-    //   this.props.hideGridLine();
-    // } else {
-    //   verticalSnap = verticalSnap !== false && true;
-    //   horizontalSnap = horizontalSnap !== false && true;
-    // }
+      if (verticalSnap) {
+        this.props.showGridLine(lineX, true);
+        this.props.hideGridLine();
+      }
+
+      if (horizontalSnap) {
+        this.props.showGridLine(lineY);
+        this.props.hideGridLine(true);
+      }
+    } else {
+      verticalSnap = verticalSnap !== false && true;
+      horizontalSnap = horizontalSnap !== false && true;
+
+      if (verticalSnap) {
+        this.props.showGridLine(lineX, true);
+      }
+
+      if (horizontalSnap) {
+        this.props.showGridLine(lineY);
+      }
+    }
 
     const delta = [];
-
-    if (isLeftSideDrag) {
-      delta[0] = resizeLastX - pageX;
-      left = verticalSnap || (horizontalSnap && this.shiftHeld) ? left : left - delta[0];
-    } else {
-      delta[0] = pageX - resizeLastX;
-    }
-
     let nextState = {};
-    let newWidth = delta[0] + width;
+    let newWidth = width;
 
-    newWidth = verticalSnap || (horizontalSnap && this.shiftHeld) ? width : newWidth;
+    if (verticalResize || this.shiftHeld) {
+      if (isLeftSideDrag) {
+        delta[0] = resizeLastX - pageX;
+        left = verticalSnap || (horizontalSnap && this.shiftHeld) ? left : left - delta[0];
+      } else {
+        delta[0] = pageX - resizeLastX;
+      }
 
-    if (newWidth >= 0) {
-      nextState = {
-        left,
-        width: newWidth,
-        resizeLastX: verticalSnap ? resizeLastX : pageX
-      };
+      newWidth = delta[0] + width;
+
+      newWidth = verticalSnap || (horizontalSnap && this.shiftHeld) ? width : newWidth;
+
+      if (newWidth >= 0) {
+        nextState = {
+          left,
+          width: newWidth,
+          resizeLastX: verticalSnap || (horizontalSnap && this.shiftHeld) ? resizeLastX : pageX
+        };
+      }
     }
 
-    if (horizontalResize) {
+    if (horizontalResize || this.shiftHeld) {
       const { component: { props } } = this.props;
 
       if (isTopDrag) {
@@ -652,6 +681,15 @@ export default class ImageElement extends Component {
                     component={this.props.component}
                   />
                 }
+                {currentlySelected &&
+                  <ResizeNode
+                    ref={component => {this.topResizeNode = ReactDOM.findDOMNode(component);}}
+                    alignTop
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
                 {currentlySelected && !isResizing && !isDragging &&
                   <Arrange />
                 }
@@ -682,6 +720,15 @@ export default class ImageElement extends Component {
                   <ResizeNode
                     ref={component => {this.bottomRightNode = ReactDOM.findDOMNode(component);}}
                     cornerBottomRight
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
+                    ref={component => {this.bottomResizeNode = ReactDOM.findDOMNode(component);}}
+                    alignBottom
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
