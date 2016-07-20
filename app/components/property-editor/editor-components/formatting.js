@@ -37,7 +37,8 @@ export default class Formatting extends Component {
     }
 
     this.context.store.updateElementProps({
-      isQuote: toggleQuote
+      isQuote: toggleQuote,
+      listType: null
     });
   }
 

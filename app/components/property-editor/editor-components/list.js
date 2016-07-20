@@ -15,7 +15,8 @@ export default class List extends Component {
     const currentListType = this.props.currentElement.props.listType;
 
     this.context.store.updateElementProps({
-      listType: currentListType === nextListType ? null : nextListType
+      listType: currentListType === nextListType ? null : nextListType,
+      isQuote: false
     });
   }
 
