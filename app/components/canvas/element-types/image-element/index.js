@@ -191,14 +191,14 @@ export default class ImageElement extends Component {
       const distance = pointToAlignWithLine - line;
 
       if (Math.abs(distance) <= 7) {
-        if (!isVertical) {
+        if (!isVertical && (!verticalSnap && !this.shiftHeld)) {
           if (isTopDrag) {
             top -= distance;
             height += distance;
           } else {
             height -= distance;
           }
-          horizontalSnap = distance;
+          horizontalSnap = true;
         }
 
         if (isVertical) {
@@ -208,10 +208,12 @@ export default class ImageElement extends Component {
           } else {
             width -= distance;
           }
-          verticalSnap = distance;
+          verticalSnap = true;
         }
 
-        this.props.showGridLine(line, isVertical);
+        if (isVertical || (!verticalSnap && !this.shiftHeld)) {
+          this.props.showGridLine(line, isVertical);
+        }
       }
     };
 
@@ -237,21 +239,21 @@ export default class ImageElement extends Component {
       );
     }
 
-    if (this.shiftHeld && typeof horizontalSnap === "number" && typeof verticalSnap === "number") {
-      verticalSnap = true;
-      horizontalSnap = false;
+    // if (this.shiftHeld && typeof horizontalSnap === "number" && typeof verticalSnap === "number") {
+    //   verticalSnap = true;
+    //   horizontalSnap = false;
 
-      this.props.hideGridLine();
-    } else {
-      verticalSnap = verticalSnap !== false && true;
-      horizontalSnap = horizontalSnap !== false && true;
-    }
+    //   this.props.hideGridLine();
+    // } else {
+    //   verticalSnap = verticalSnap !== false && true;
+    //   horizontalSnap = horizontalSnap !== false && true;
+    // }
 
     const delta = [];
 
     if (isLeftSideDrag) {
       delta[0] = resizeLastX - pageX;
-      left = verticalSnap ? left : left - delta[0];
+      left = verticalSnap || (horizontalSnap && this.shiftHeld) ? left : left - delta[0];
     } else {
       delta[0] = pageX - resizeLastX;
     }
@@ -259,7 +261,7 @@ export default class ImageElement extends Component {
     let nextState = {};
     let newWidth = delta[0] + width;
 
-    newWidth = verticalSnap ? width : newWidth;
+    newWidth = verticalSnap || (horizontalSnap && this.shiftHeld) ? width : newWidth;
 
     if (newWidth >= 0) {
       nextState = {
@@ -275,9 +277,9 @@ export default class ImageElement extends Component {
       if (isTopDrag) {
         delta[1] = resizeLastY - pageY;
 
-        if (!horizontalSnap) {
+        if (!horizontalSnap && (!this.shiftHeld || !verticalSnap)) {
           top = this.shiftHeld ?
-            top - ((delta[0] + (props.height * newWidth) / props.width) - height)
+            top - ((delta[1] + (props.height * newWidth) / props.width) - height)
             :
             top - delta[1];
         }
@@ -286,18 +288,18 @@ export default class ImageElement extends Component {
       }
 
       let newHeight = this.shiftHeld ?
-        (delta[0] + (props.height * newWidth) / props.width)
+        (delta[1] + (props.height * newWidth) / props.width)
         :
         (delta[1] + height);
 
-      newHeight = horizontalSnap ? height : newHeight;
+      newHeight = horizontalSnap || (this.shiftHeld && verticalSnap) ? height : newHeight;
 
       if (newHeight >= 0) {
         nextState = {
           ...nextState,
           top,
           height: newHeight,
-          resizeLastY: horizontalSnap ? resizeLastY : pageY
+          resizeLastY: horizontalSnap || (this.shiftHeld && verticalSnap) ? resizeLastY : pageY
         };
       }
     }
@@ -439,6 +441,7 @@ export default class ImageElement extends Component {
 
       // Make the cursor dragging everywhere
       document.body.style.cursor = "-webkit-grabbing";
+      this.currentElementComponent.style.cursor = "-webkit-grabbing";
 
       // TODO: handle elements that aren't absolutely positioned?
       this.setState({
@@ -539,14 +542,15 @@ export default class ImageElement extends Component {
       window.removeEventListener("keyup", this.handleKeyUp);
     }
 
-    if (isDragging) {
-      wrapperStyle.pointerEvents = "none";
-    }
 
     if (isResizing) {
       this.currentElementComponent.style.cursor = cursorType;
-    } else if (this.currentElementComponent) {
-      this.currentElementComponent.style.cursor = "auto";
+    } else if (this.currentElementComponent && !isDragging) {
+      this.currentElementComponent.style.cursor = "move";
+    }
+
+    if (isDragging) {
+      wrapperStyle.pointerEvents = "none";
     }
 
     if (mousePosition || props.style && props.style.position === "absolute") {
