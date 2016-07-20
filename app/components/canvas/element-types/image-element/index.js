@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from "react";
-import ReactDOM from "react-dom";
+import { findDOMNode } from "react-dom";
 import { Motion, spring } from "react-motion";
 import { omit, defer } from "lodash";
 
@@ -463,7 +463,7 @@ export default class ImageElement extends Component {
                 }
                 {currentlySelected &&
                   <ResizeNode
-                    ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
+                    ref={component => {this.leftResizeNode = findDOMNode(component);}}
                     alignLeft
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
@@ -482,6 +482,7 @@ export default class ImageElement extends Component {
                   <Arrange />
                 }
                   <ComponentClass
+                    ref={component => {this.image = findDOMNode(component);}}
                     {...props}
                     className={styles.image}
                     style={{ ...elementStyle, ...computedResizeStyles }}

@@ -1,4 +1,5 @@
-import { app, BrowserWindow, Menu, crashReporter, shell } from "electron";
+import { app, BrowserWindow, Menu, crashReporter, shell, ipcMain } from "electron";
+import fs from "fs";
 
 let menu;
 let template;
@@ -32,6 +33,18 @@ app.on("ready", () => {
 
   mainWindow.on("closed", () => {
     mainWindow = null;
+  });
+
+  ipcMain.on("encode-image", (event, imagePath) => {
+    fs.readFile(imagePath, (err, imageData) => {
+      if (err) {
+        mainWindow.webContents.send("image-encoded", null);
+
+        return;
+      }
+
+      mainWindow.webContents.send("image-encoded", new Buffer(imageData).toString("base64"));
+    });
   });
 
   if (process.env.NODE_ENV === "development") {
