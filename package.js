@@ -127,7 +127,9 @@ function pack(plat, arch, cb) {
         out: paths[0],
         name: "Spectacle Editor"
       }, (err) => {
-        err && console.log(err);
+        if (err) {
+          console.log(err);
+        }
       });
     }
     cb();
