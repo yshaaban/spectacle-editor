@@ -89,50 +89,52 @@ class PlotlyForm extends Component {
             {this.state.errorMessage}
           </div>
         }
-        <form
-          onSubmit={this.handleSubmit}
-          className={commonStyles.form}
-        >
-          <label className={commonStyles.label}>
-            Username
-            <input
-              className={commonStyles.input}
-              type="text"
-              name="username"
-              value={this.state.username}
-              onChange={this.handleUserChange}
-            />
-          </label>
-          <label className={commonStyles.label}>
-            Password
-            <input
-              className={commonStyles.input}
-              type="password"
-              name="password"
-              value={this.state.password}
-              onChange={this.handlePasswordChange}
-            />
-          </label>
-          <button
-            className={commonStyles.button}
-            type="submit"
+        <div className={commonStyles.grid}>
+          <form
+            onSubmit={this.handleSubmit}
+            className={commonStyles.form}
           >
-            Sign in
-          </button>
-          <a
-            className={commonStyles.formLink}
-            href="https://plot.ly/accounts/password/reset/"
-            onClick={this.onClickForgotPassword}
-          >
-            Forgot password?
-          </a>
-        </form>
-        <SocialAuthLinks
-          domain={"https://plot.ly/login"}
-          apiUrl={domainUrl}
-          onLoginSuccess={this.onLoginSuccess}
-          onLoginError={this.onSocialLoginError}
-        />
+            <label className={commonStyles.label}>
+              Username
+              <input
+                className={commonStyles.input}
+                type="text"
+                name="username"
+                value={this.state.username}
+                onChange={this.handleUserChange}
+              />
+            </label>
+            <label className={commonStyles.label}>
+              Password
+              <input
+                className={commonStyles.input}
+                type="password"
+                name="password"
+                value={this.state.password}
+                onChange={this.handlePasswordChange}
+              />
+            </label>
+            <button
+              className={commonStyles.button}
+              type="submit"
+            >
+              Sign in
+            </button>
+            <a
+              className={commonStyles.formLink}
+              href="https://plot.ly/accounts/password/reset/"
+              onClick={this.onClickForgotPassword}
+            >
+              Forgot password?
+            </a>
+          </form>
+          <SocialAuthLinks
+            domain={"https://plot.ly/login"}
+            apiUrl={domainUrl}
+            onLoginSuccess={this.onLoginSuccess}
+            onLoginError={this.onSocialLoginError}
+          />
+        </div>
         <div className={commonStyles.signUp}>
           <p className={commonStyles.signUpHeading}>
             Don’t have a plot.ly account?

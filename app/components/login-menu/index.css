@@ -42,10 +42,21 @@
   text-align: center;
 }
 
+.grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  justify-content: center;
+
+  padding: 20px 0 60px;
+}
 
 .form {
-  border: 1px solid blue;
-  padding: 0 20px;
+  flex-basis: 240px;
+  flex-shrink: 0;
+  padding: 0 40px 0 20px;
+
   color: var(--primary-font-color);
 }
 

@@ -1,32 +1,85 @@
 .socialAuthLinks {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+
+  flex-basis: 260px;
+  flex-shrink: 0;
+  padding: 0 20px 0 40px;
 }
 
-.socialAuthLinks h3 {
-  border-top: 1px solid #e7e8e9;
-  width: 150px;
-  margin: 20px auto 10px;
-  padding-top: 10px;
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 1.75;
-  letter-spacing: 0.2px;
+.socialAuthHeading {
+  margin: 20px 0 0;
+  display: block;
+
+  background-color: #fff;
+  color: #69738a;
+  font-size: 12px;
+  line-height: 2;
+  letter-spacing: 0.03em;
   text-align: center;
-  color: #32393d;
+  overflow: hidden;
+}
+
+.fancy {
+  position: relative;
+}
+
+.fancy::before,
+.fancy::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  width: 75px;
+
+  border-top: 1px solid var(--primary-border-color);
+}
+
+.fancy::before {
+  right: 100%;
+  margin-right: 15px;
+}
+
+.fancy::after {
+  left: 100%;
+  margin-left: 15px;
 }
 
 .socialAuthButtonGroup {
-  margin: auto;
-  width: 240px;
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex-grow: 1;
+
+  margin: 0;
 }
 
 .socialAuthButton {
+  display: block;
+  margin: 12px 0 0;
+  padding: 0;
+
   border: none;
-  background-color: transparent;
-  background-size: 100%;
-  width: 32px;
-  height: 23px;
-  overflow: hidden;
-  margin: 0 14px;
-  cursor: pointer;
+  background: none;
+  color: var(--plotly-blue);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-align: left;
+}
+
+.socialAuthIcon {
+  display: inline-block;
+  width: 40px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.socialAuthIcon svg {
+  height: 22px;
+  margin: 0 auto;
+  vertical-align: baseline;
+
+  fill: var(--plotly-blue);
 }
