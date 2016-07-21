@@ -12,6 +12,10 @@ class PlotlyForm extends Component {
     store: React.PropTypes.object
   };
 
+  static propTypes = {
+    onClose: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
 
@@ -64,7 +68,10 @@ class PlotlyForm extends Component {
 
   handleDomainBlur = () => {
     if (!this.state.domain) {
-      // TODO: Set error case
+      this.setState({
+        validDomain: false
+      });
+
       return;
     }
 
@@ -74,7 +81,7 @@ class PlotlyForm extends Component {
       .then(() => {
         this.setState({ loadingDomain: false, validDomain: true });
       })
-      .catch((err) => {
+      .catch(() => {
         this.setState({ loadingDomain: false });
       });
   }

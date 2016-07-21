@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from "react";
 import { ipcRenderer } from "electron";
-import { find } from "lodash";
 
 import { FACEBOOK, GITHUB, GOOGLEPLUS, TWITTER } from "../../assets/icons";
 import styles from "./social-auth-links.css";
@@ -15,10 +14,15 @@ const socialAuthProviders = {
 };
 
 class SocialAuthenticationLinks extends Component {
-  authenticate(provider, onSuccess, onError) {
-    ipcRenderer.once("social-login", (event, cookies) => {
-      const csrfToken = find(cookies, { name: "plotly_csrf_pr" }).value;
+  static propTypes = {
+    apiUrl: PropTypes.string,
+    onLoginSuccess: PropTypes.func,
+    onLoginError: PropTypes.func,
+    domain: PropTypes.string
+  };
 
+  authenticate(provider) {
+    ipcRenderer.once("social-login", () => {
       getCurrentUser(this.props.apiUrl)
         .then((user) => {
           if (!user || !user.username) {

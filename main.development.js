@@ -29,8 +29,6 @@ const handleSocialAuth = (socialUrl) => {
       // name: "csrftoken",
       domain: "plot.ly"
     }, (err, cookies) => {
-      console.log("END COOKIES", cookies);
-
       // TODO: For some reason, this is always set, even on fail, wtf?
       if (Array.isArray(cookies) && cookies[0] && cookies[0].value) {
         mainWindow.webContents.send("social-login", cookies);
@@ -70,16 +68,9 @@ app.on("ready", () => {
   });
 
   ipcMain.on("social-login", (event, socialUrl) => {
-    mainWindow.webContents.session.clearStorageData(()=>{});
+    mainWindow.webContents.session.clearStorageData(() => {});
     // Reset the csrftoken cookie if there is one
     mainWindow.webContents.session.cookies.remove("https://plot.ly", "csrftoken", () => {
-      mainWindow.webContents.session.cookies.get({
-        name: "csrftoken",
-        domain: "plot.ly"
-      }, (err, cookies) => {
-        console.log("START COOKIES", cookies);
-      });
-
       handleSocialAuth(socialUrl);
     });
   });

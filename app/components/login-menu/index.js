@@ -8,7 +8,7 @@ import styles from "./index.css";
 @observer
 class LoginMenu extends Component {
   static contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
   };
 
   constructor(props) {

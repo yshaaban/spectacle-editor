@@ -1,11 +1,13 @@
-import { observable, computed } from "mobx";
+import { observable } from "mobx";
 
 const defaultDomain = "https://api.plot.ly";
 
 const normalizeDomain = (domain) => {
   // Remove trailing slash
   if (domain.slice(-1) === "/") {
+    /* eslint-disable  no-param-reassign */
     domain = domain.slice(0, domain.length - 1);
+    /* eslint-enable  no-param-reassign */
   }
 
   if (domain.indexOf("http://") === 0 || domain.indexOf("https://") === 0) {
@@ -41,7 +43,9 @@ export default class FileStore {
   setUser(userInfo) {
     // Change relative urls to absolute
     if (userInfo.avatar_url && userInfo.avatar_url.indexOf("/") === 0) {
+      /* eslint-disable  no-param-reassign */
       userInfo.avatar_url = `${this.domainUrl}${userInfo.avatar_url}`;
+      /* eslint-enable  no-param-reassign */
     }
 
     localStorage.setItem("user", JSON.stringify(userInfo));

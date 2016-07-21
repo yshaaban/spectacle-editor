@@ -12,6 +12,10 @@ class PlotlyForm extends Component {
     store: React.PropTypes.object
   };
 
+  static propTypes = {
+    onClose: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
 

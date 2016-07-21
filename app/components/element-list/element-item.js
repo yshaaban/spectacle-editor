@@ -3,7 +3,6 @@ import { Motion, spring } from "react-motion";
 
 import {
   SpringSettings,
-  IconTypes,
   BLACKLIST_CURRENT_ELEMENT_DESELECT
 } from "../../constants";
 import Icon from "../icon";

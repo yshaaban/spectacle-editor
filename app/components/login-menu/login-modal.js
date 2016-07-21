@@ -5,6 +5,10 @@ import OnPremiseForm from "./on-premise-form";
 import styles from "./login-modal.css";
 
 class LoginMenu extends Component {
+  static propTypes = {
+    onClose: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
 
