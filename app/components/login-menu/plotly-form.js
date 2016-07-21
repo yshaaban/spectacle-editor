@@ -38,7 +38,7 @@ class PlotlyForm extends Component {
 
     if (!username || !password) {
       this.setState({
-        errorMessage: "Oops! We do not understand that username/password combination. Please try again."
+        errorMessage: "Oops! The username or password was invalid."
       });
 
       return;

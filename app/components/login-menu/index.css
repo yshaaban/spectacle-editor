@@ -63,24 +63,28 @@
 .input {
   display: block;
   margin: 0;
-  padding: 10px;
+  padding: 7px 10px;
 
   border-radius: 4px;
   border: 1px solid var(--secondary-border-color);
   color: #000;
   font-family: inherit;
   font-size: 12px;
-  line-height: 1;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
   width: 100%;
+  transition: border-color ease 200ms;
 }
 
 .input:focus {
-  border-color: var(--plotly-blue);
+  border-color: #9ea4b0;
+  transition: border-color ease 200ms;
 }
 
 .label {
   display: block;
   margin: 20px auto 0;
+  position: relative;
 
   color: var(--primary-font-color);
   font-size: 12px;
@@ -91,16 +95,30 @@
 
 .button {
   display: block;
-  margin: 20px auto 0;
+  margin: 30px auto 0;
   padding: 5px;
 
   background-color: var(--plotly-blue);
-  border: none;
+  border: 1px solid transparent;
   border-radius: 100px;
   color: #fff;
-  font-size: 14px;
+  font-size: 12px;
+  letter-spacing: 0.03em;
   line-height: 1.5;
   width: 100%;
+  transition: background-color ease 200ms;
+}
+
+.button:focus {
+  background-color: var(--dark-plotly-blue);
+  transition: background-color ease 200ms;
+}
+
+.button:disabled {
+  background-color: #fff;
+  border: 1px solid #dce1e4;
+  color: #a0aab1;
+  cursor: default;
 }
 
 .formLink {
@@ -108,7 +126,6 @@
   display: block;
   text-align: center;
 }
-
 
 .signUp {
   padding: 30px;
