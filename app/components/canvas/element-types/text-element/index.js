@@ -482,6 +482,8 @@ export default class TextElement extends Component {
       motionStyles.width = spring(width, SpringSettings.RESIZE);
     }
 
+    const paragraphClass = this.props.component.props.isQuote ? styles.quote : "";
+
     return (
         <Motion
           style={motionStyles}
@@ -525,7 +527,7 @@ export default class TextElement extends Component {
                       this.editable = ReactDOM.findDOMNode(component);
                     }}
                     stopEditing={this.stopEditing}
-                    classNames={{ ...styles }}
+                    classNames={{ ...styles, paragraph: paragraphClass }}
                     isEditing={editing}
                     placeholderText={defaultText}
                     componentProps={{ ...props }}
