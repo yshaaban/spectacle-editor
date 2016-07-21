@@ -7,6 +7,7 @@ const webpack = require("webpack");
 const electronCfg = require("./webpack.config.electron.js");
 const cfg = require("./webpack.config.production.js");
 const packager = require("electron-packager");
+const createDMG = require("electron-installer-dmg");
 const del = require("del");
 const exec = require("child_process").exec;
 const argv = require("minimist")(process.argv.slice(2));
@@ -119,7 +120,18 @@ function pack(plat, arch, cb) {
     out: `release/${plat}-${arch}`
   });
 
-  packager(opts, cb);
+  packager(opts, (err, paths) => {
+    if (plat === "darwin") {
+      createDMG({
+        appPath: `${paths[0]}/spectacle-editor.app`,
+        out: paths[0],
+        name: "Spectacle Editor"
+      }, (err) => {
+        err && console.log(err);
+      });
+    }
+    cb();
+  });
 }
 
 
