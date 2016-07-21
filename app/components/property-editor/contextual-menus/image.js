@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { ipcRenderer } from "electron";
+import { autorun } from "mobx";
 
+import { ElementTypes } from "../../../constants";
 import commonStyles from "../index.css";
 import styles from "./image.css";
 
+const defaultImageSource = "http://placehold.it/400x200&text=sliding_yeah";
 
 export default class ImageMenu extends Component {
   static contextTypes = {
@@ -14,14 +17,33 @@ export default class ImageMenu extends Component {
     super(props);
 
     this.state = {
-      image: null
+      currentElement: null
     };
+  }
+
+  componentDidMount() {
+    autorun(() => {
+      const { currentElement } = this.context.store;
+
+      window.clearTimeout(this.stateTimeout);
+
+      if (!currentElement) {
+        this.stateTimeout = window.setTimeout(() => {
+          this.setState({ currentElement });
+        }, 400);
+
+        return;
+      }
+
+      if (currentElement.type === ElementTypes.IMAGE) {
+        this.setState({ currentElement });
+      }
+    });
   }
 
   onImageUpload = (ev) => {
     const imageObj = ev.target.files && ev.target.files[0];
 
-    console.log(imageObj);
     if (imageObj) {
       const { path, type, name } = imageObj;
 
@@ -44,7 +66,6 @@ export default class ImageMenu extends Component {
     const imageSrc = ev.target.value;
 
     if (imageSrc) {
-      console.log(imageSrc);
       this.context.store.updateElementProps({
         src: imageSrc,
         imageName: null
@@ -54,20 +75,43 @@ export default class ImageMenu extends Component {
 
 
   render() {
+    const { currentElement } = this.state;
+
+    let srcValue = "";
+    let fileName = "";
+
+    if (currentElement) {
+      const { src, imageName } = currentElement.props;
+
+      // If not the default source or we don't have an imageName show src
+      if (src !== defaultImageSource && !imageName) {
+        srcValue = src;
+      }
+
+      if (imageName) {
+        fileName = imageName;
+      }
+    }
+
     return (
       <div className={commonStyles.wrapper}>
         <h3 className={commonStyles.heading}>Image</h3>
-        <label className={styles.imageSource}>
+        <h4 className={styles.imageSource}>
           Image source
-          <input
-            className={styles.imageSourceInput}
-            type="text"
-            name="imagesSource"
-            onChange={this.onSourceChange}
-          />
-        </label>
-        <label className={styles.fileUploadLabel}>
-          Choose a file to upload
+        </h4>
+        <input
+          className={styles.imageSourceInput}
+          type="text"
+          name="imagesSource"
+          onChange={this.onSourceChange}
+          value={srcValue}
+        />
+        <h4 className={styles.fileUploadLabel}>
+          File upload
+        </h4>
+        <h5>{fileName}</h5>
+        <label>
+          Choose a file to upload {/* TODO: Should this change if there's already a file? */}
           <input
             className={styles.fileUploadInput}
             type="file"
@@ -76,7 +120,6 @@ export default class ImageMenu extends Component {
             onChange={this.onImageUpload}
           />
         </label>
-        {this.state.image && <img src={this.state.image} /> }
       </div>
     );
   }
