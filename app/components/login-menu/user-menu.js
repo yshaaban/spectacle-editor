@@ -15,10 +15,7 @@ class UserMenu extends Component {
   onClickSignOut = (ev) => {
     ev.preventDefault();
 
-    fetch(`${this.context.store.api.domainUrl}/signout/`)
-      .then(() => {
-        this.context.store.api.signOut();
-      });
+    this.context.store.api.signOut();
   }
 
   render() {

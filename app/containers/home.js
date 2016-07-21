@@ -7,6 +7,7 @@ import SlidesStore from "../stores/slides-store";
 import FileStore from "../stores/file-store";
 import Provider from "../components/utils/provider";
 import PropertyEditor from "../components/property-editor";
+import Upload from "../components/upload";
 import MenuBar from "../components/menu-bar";
 import SlideList from "../components/slide-list";
 import Canvas from "../components/canvas";
@@ -90,6 +91,7 @@ class Home extends Component {
         <div className={styles.home} style={wrapperStyles}>
           <MenuBar />
           <LoginMenu />
+          <Upload />
           <div className={styles.container}>
             <SlideList />
             <PropertyEditor />

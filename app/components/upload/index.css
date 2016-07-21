@@ -1,0 +1,137 @@
+@import '../../variables.css';
+
+.uploadBtn:hover,
+.flyoutRadio:hover,
+.flyoutBtnPublish:hover,
+.flyoutClose:hover {
+  cursor: pointer;
+}
+
+.upload {
+  position: absolute;
+  top: 7px;
+  left: 20px;
+  z-index: 2000;
+}
+
+.uploadBtn {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  color: #a0aab1;
+  font-size: 10px;
+  font-weight: normal;
+  letter-spacing: 0.2em;
+  line-height: 1.9;
+  outline: 0;
+  text-transform: uppercase;
+}
+
+.uploadIcon {
+  display: block;
+  font-size: 24px;
+  margin: 0 auto;
+}
+
+.flyout {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: var(--secondary-background-color);
+  border: 1px solid var(--primary-border-color);
+  border-radius: 4px;
+  box-shadow: var(--select-list-shadow);
+  color: var(--primary-font-color);
+  font-size: 12px;
+  line-height: 1.8;
+  min-width: 280px;
+  padding: 20px;
+
+  display: none;
+  visibility: hidden;
+}
+
+.flyout.visible {
+  display: block;
+  visibility: visible;
+}
+
+.flyoutHeading {
+  color: #000;
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+.flyoutLabel {
+  color: var(--primary-font-color);
+  display: block;
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.flyoutRadioHeading {
+  color: var(--primary-font-color);
+  display: block;
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 4px;
+}
+
+.flyoutRadio {
+  color: var(--secondary-font-color);
+  display: block;
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+.flyoutInput {
+  background-color: var(--secondary-background-color);
+  border: 1px solid var(--secondary-border-color);
+  border-radius: 4px;
+  color: var(--primary-font-color);
+  display: block;
+  font-family: "openSans", "Open Sans", sans-serif;
+  font-size: 14px;
+  height: 30px;
+  line-height: 1;
+  margin: 0;
+  padding: 0 8px;
+  width: 200px;
+}
+
+.flyoutBtnPublish {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  border-radius: 15px;
+  background-color: var(--plotly-blue);
+  color: #fff;
+  display: inline-block;
+  font-family: "openSans", "Open Sans", sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  height: 30px;
+  outline: 0;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  margin: 20px 0 0;
+  padding: 0 32px;
+}
+
+.flyoutClose {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  color: var(--plotly-blue);
+  display: inline-block;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  outline: none;
+  margin: 0 0 0 24px;
+  padding: 0;
+}

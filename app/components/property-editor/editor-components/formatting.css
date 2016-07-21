@@ -1,24 +1,38 @@
 @import '../../../variables.css';
 
 .formattingWrapper {
-  border: 1px solid var(--primary-border-color);
+  border: 1px solid var(--secondary-border-color);
   border-radius: 5px;
   display: flex;
   height: 30px;
   margin-top: 7px;
   overflow: hidden;
-  width: 160px;
 }
 
-.formattingWrapper > .formattingBox {
-  height: 100%;
-  padding-top: 5px;
+.formattingButton {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+  height: 30px;
+  outline: none;
   text-align: center;
-  width: 25%;
+  width: 40px;
 }
 
-.formattingBox svg {
+.formattingButtonSelected {
+  background-color: var(--primary-border-color);
+  box-shadow: var(--selected-editor-component-shadow);
+}
+
+.borderRight {
+  border-right: 1px solid var(--secondary-border-color);
+}
+
+.formattingButton svg {
   color: #000;
-  height: 14px;
-  width: 15px;
+  height: auto;
+  width: 22px;
+  vertical-align: bottom;
 }

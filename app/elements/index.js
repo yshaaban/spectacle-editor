@@ -35,11 +35,13 @@ elements[ElementTypes.TEXT] = {
   // TODO: Figure out defaults for text element
   type: ElementTypes.TEXT,
   ComponentClass: Heading,
-  defaultWidth: 222,
+  defaultWidth: 90,
   defaultHeight: 63,
-  defaultText: "totally text",
+  defaultText: ["Text"],
   props: {
+    isQuote: false,
     size: 4,
+    listType: null,
     style: {
       color: "#3d3d3d",
       fontFamily: "openSans",

@@ -2,34 +2,25 @@
   /* Colors */
   --primary-background-color: #f8f8f9;
   --secondary-background-color: #fff;
+
   --primary-border-color: #e7e8e9;
   --secondary-border-color: #ccc;
-  --primary-font-color: #3d3d3d;
+  --disabled-border-color: #dce1e4;
+
+  --primary-font-color: #32393d;
   --secondary-font-color: #757575;
-  --select-hover-color: #e6f2ff;
   --tertiary-font-color: #999;
+
+  --select-hover-color: #e6f2ff;
 
   --plotly-blue: #447bdc;
   --dark-plotly-blue: #2d56aa;
   --darker-plotly-blue: #152f5e;
 
   --warning: #ff4545;
-  /*
-  --pale-grey: #f8f8f9;
-  --very-light-blue: #ebf5ff;
-  --charcoal: #4b4b4b;
-  --dark-charcoal: #3d3d3d;
-  --darker-charcoal: #32393d;
-  --warm-grey: #999;
-  --dark-warm-grey: #757575;
-  --almost-black: #020303;
-  --thin-border-color: #e7e8e9;
-  --cool-grey: #9ea4b0;
-  --warning: #ff4545;
-  --grey-blue: #69738a;
-  --disabled-color: #a0aab1;
-  --disabled-border-color: #dce1e4;
-  */
+
+  /* Resize Node Border */
+  --selected-border: 1px dashed #000;
 
   /* Drop Shadows */
   --drag-shadow: 0 1px 3px 0 rgba(204, 204, 204, 0.6);
@@ -39,4 +30,12 @@
   /* Z-Index */
   --z-index-modal: 999999999;
   --z-index-modal-negative: 999999998;
+
+  --selected-editor-component-shadow: inset 0 0 5px #ccc;
+
+  /* Z-Index */
+  --negative: -1;
+  --none: 0;
+  --basic: 1;
+  --basic-increment: 2;
 }

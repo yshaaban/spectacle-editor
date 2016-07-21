@@ -10,6 +10,7 @@ import {
 import { getElementDimensions, getPointsToSnap, snap } from "../../../../utils";
 import styles from "./index.css";
 import ResizeNode from "../../resize-node";
+import Arrange from "../arrange";
 
 export default class PlotlyElment extends Component {
   static propTypes = {
@@ -412,7 +413,7 @@ export default class PlotlyElment extends Component {
       }
     }
 
-    elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
+    elementStyle = { ...elementStyle, position: "relative", top: 0, left: 0 };
 
     if (isPressed) {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
@@ -454,6 +455,14 @@ export default class PlotlyElment extends Component {
               >
                 {currentlySelected &&
                   <ResizeNode
+                    cornerTopLeft
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
                     ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
                     alignLeft
                     handleMouseDownResize={this.handleMouseDownResize}
@@ -461,12 +470,41 @@ export default class PlotlyElment extends Component {
                     component={this.props.component}
                   />
                 }
+                {currentlySelected &&
+                  <ResizeNode
+                    cornerBottomLeft
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <Arrange />
+                }
                   <ComponentClass
                     {...props}
+                    className={styles.iframe}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   />
                 {currentlySelected &&
                   <ResizeNode
+                    cornerTopRight
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
+                    alignRight
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
+                    cornerBottomRight
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}

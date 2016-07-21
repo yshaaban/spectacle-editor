@@ -4,19 +4,21 @@
   border: 1px solid var(--secondary-border-color);
   border-radius: 20px;
   display: flex;
-  height: 25px;
+  height: 30px;
   overflow: hidden;
   width: 180px;
 }
 
 .alignmentWrapper .selectedAlignment {
   background: var(--primary-border-color);
+  box-shadow: var(--selected-editor-component-shadow);
 }
 
 .alignmentWrapper > .alignmentBox {
-  height: 100%;
-  padding-top: 5px;
+  cursor: pointer;
+  height: inherit;
   text-align: center;
+  vertical-align: middle;
   width: 33%;
 }
 
@@ -25,12 +27,13 @@
 }
 
 .alignmentBox:last-child > svg {
-  left: -4px;
   position: relative;
+  left: -4px;
 }
 
 .alignmentBox > svg {
   color: #000;
   height: 16px;
   width: 16px;
+  vertical-align: -6px;
 }

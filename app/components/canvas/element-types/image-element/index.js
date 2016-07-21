@@ -10,6 +10,7 @@ import {
 import { getElementDimensions, getPointsToSnap, snap } from "../../../../utils";
 import styles from "./index.css";
 import ResizeNode from "../../resize-node";
+import Arrange from "../arrange";
 
 export default class ImageElement extends Component {
   static propTypes = {
@@ -454,6 +455,14 @@ export default class ImageElement extends Component {
               >
                 {currentlySelected &&
                   <ResizeNode
+                    cornerTopLeft
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
                     ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
                     alignLeft
                     handleMouseDownResize={this.handleMouseDownResize}
@@ -461,12 +470,41 @@ export default class ImageElement extends Component {
                     component={this.props.component}
                   />
                 }
+                {currentlySelected &&
+                  <ResizeNode
+                    cornerBottomLeft
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <Arrange />
+                }
                   <ComponentClass
                     {...props}
+                    className={styles.image}
                     style={{ ...elementStyle, ...computedResizeStyles }}
                   />
                 {currentlySelected &&
                   <ResizeNode
+                    cornerTopRight
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
+                    alignRight
+                    handleMouseDownResize={this.handleMouseDownResize}
+                    onTouch={this.handleTouchStartResize}
+                    component={this.props.component}
+                  />
+                }
+                {currentlySelected &&
+                  <ResizeNode
+                    cornerBottomRight
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
