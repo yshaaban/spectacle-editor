@@ -209,8 +209,6 @@ export default class ImageElement extends Component {
       }
 
       const distance = pointToAlignWithLine - line;
-      // console.log(index, line);
-      // console.log(pointToAlignWithLine);
 
       if (isVertical) {
         lineX = line;
