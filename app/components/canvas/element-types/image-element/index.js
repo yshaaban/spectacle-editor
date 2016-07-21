@@ -129,7 +129,6 @@ export default class ImageElement extends Component {
     this.context.store.updateElementResizeState(true, this.getCursorTypes(currentTarget));
 
     this.setState({
-      currentHandle: currentTarget,
       verticalResize,
       isTopDrag,
       isLeftSideDrag,
@@ -155,10 +154,8 @@ export default class ImageElement extends Component {
 
   handleMouseMoveResize = (ev) => {
     ev.preventDefault();
-
     const { pageX, pageY } = ev;
     const {
-      currentHandle,
       isLeftSideDrag,
       resizeLastX,
       resizeLastY,
@@ -173,13 +170,16 @@ export default class ImageElement extends Component {
     let lineX;
     let lineY;
 
+
     const createSnapCallback = (isVertical, length, offset) => (line, index) => {
       if (line === null) {
         this.props.hideGridLine(isVertical);
 
         if (isVertical) {
+          lineX = null;
           verticalSnap = false;
         } else {
+          lineY = null;
           horizontalSnap = false;
         }
 
@@ -188,33 +188,37 @@ export default class ImageElement extends Component {
 
       let pointToAlignWithLine;
 
-      if (
-        index === 0 &&
-        currentHandle !== this.bottomRightNode &&
-        (currentHandle !== this.bottomResizeNode || !this.shiftHeld) &&
-        (currentHandle !== this.topResizeNode || !this.shiftHeld || !isVertical) &&
-        (currentHandle !== this.topRightNode || !isVertical) &&
-        (currentHandle !== this.bottomLeftNode || isVertical)
-      ) {
+      if (index === 0) {
         pointToAlignWithLine = offset;
       }
 
-      if (index === 1) {
+      if (
+        index === 1 ||
+        (!isLeftSideDrag && index === 0 && isVertical) ||
+        (!isTopDrag && index === 0 && !isVertical)
+      ) {
         pointToAlignWithLine = Math.ceil(offset + length / 2);
       }
+
       if (
-        index === 2 &&
-        currentHandle !== this.topLeftNode &&
-        (currentHandle !== this.topRightNode || isVertical) &&
-        (currentHandle !== this.topResizeNode || !this.shiftHeld || isVertical) &&
-        (currentHandle !== this.bottomLeftNode || !isVertical)
+        index === 2 ||
+        (!isLeftSideDrag && index === 1 && isVertical) ||
+        (!isTopDrag && index === 1 && !isVertical)
       ) {
         pointToAlignWithLine = Math.ceil(offset + length);
       }
 
       const distance = pointToAlignWithLine - line;
+      // console.log(index, line);
+      // console.log(pointToAlignWithLine);
 
-      if (Math.abs(distance) <= 7) {
+      if (isVertical) {
+        lineX = line;
+      } else {
+        lineY = line;
+      }
+
+      if (Math.abs(distance) < 15) {
         if (!isVertical) {
           if (isTopDrag) {
             top -= distance;
@@ -223,7 +227,6 @@ export default class ImageElement extends Component {
             height -= distance;
           }
           horizontalSnap = distance;
-          lineY = line;
         }
 
         if (isVertical) {
@@ -234,31 +237,46 @@ export default class ImageElement extends Component {
             width -= distance;
           }
           verticalSnap = distance;
-          lineX = line;
         }
       }
     };
 
     if (verticalResize || this.shiftHeld) {
+      const snapPoints = getPointsToSnap(
+        left,
+        width,
+        (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
+      );
+
+      if (isLeftSideDrag) {
+        snapPoints.pop();
+      } else {
+        snapPoints.shift();
+      }
+
       snap(
         this.gridLines.vertical,
-        getPointsToSnap(
-          left,
-          width,
-          (Math.max(pageX, resizeLastX) - Math.min(pageX, resizeLastX)) / 2
-        ),
+        snapPoints,
         createSnapCallback(true, width, left)
       );
     }
 
     if (horizontalResize || this.shiftHeld) {
+      const snapPoints = getPointsToSnap(
+        top,
+        height,
+        (Math.max(pageY, resizeLastY) - Math.min(pageY, resizeLastY)) / 2
+      );
+
+      if (isTopDrag) {
+        snapPoints.pop();
+      } else {
+        snapPoints.shift();
+      }
+
       snap(
         this.gridLines.horizontal,
-        getPointsToSnap(
-          top,
-          height,
-          (Math.max(pageY, resizeLastY) - Math.min(pageY, resizeLastY)) / 2
-        ),
+        snapPoints,
         createSnapCallback(false, height, top)
       );
     }
@@ -280,13 +298,8 @@ export default class ImageElement extends Component {
       verticalSnap = verticalSnap !== false && true;
       horizontalSnap = horizontalSnap !== false && true;
 
-      if (verticalSnap) {
-        this.props.showGridLine(lineX, true);
-      }
-
-      if (horizontalSnap) {
-        this.props.showGridLine(lineY);
-      }
+      this.props.showGridLine(lineX, true);
+      this.props.showGridLine(lineY);
     }
 
     const delta = [];
