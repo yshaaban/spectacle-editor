@@ -19,38 +19,59 @@ export default class ImageMenu extends Component {
   }
 
   onImageUpload = (ev) => {
-    const imagePath = ev.target.files && ev.target.files[0] && ev.target.files[0].path;
+    const imageObj = ev.target.files && ev.target.files[0];
 
-    console.log(ev.target.files[0])
-    if (imagePath) {
-      const imageType = ev.target.files[0].type;
+    console.log(imageObj);
+    if (imageObj) {
+      const { path, type, name } = imageObj;
 
       ipcRenderer.once("image-encoded", (event, encodedImageString) => {
         if (!encodedImageString) {
           this.setState({ uploadError: true });
         }
 
-        console.log(encodedImageString);
-
         this.context.store.updateElementProps({
-          src: `data:${imageType};base64, ${encodedImageString}`
+          src: `data:${type};base64, ${encodedImageString}`,
+          imageName: name
         });
       });
 
-      ipcRenderer.send("encode-image", imagePath);
+      ipcRenderer.send("encode-image", path);
     }
   }
+
+  onSourceChange = (ev) => {
+    const imageSrc = ev.target.value;
+
+    if (imageSrc) {
+      console.log(imageSrc);
+      this.context.store.updateElementProps({
+        src: imageSrc,
+        imageName: null
+      });
+    }
+  }
+
 
   render() {
     return (
       <div className={commonStyles.wrapper}>
         <h3 className={commonStyles.heading}>Image</h3>
+        <label className={styles.imageSource}>
+          Image source
+          <input
+            className={styles.imageSourceInput}
+            type="text"
+            name="imagesSource"
+            onChange={this.onSourceChange}
+          />
+        </label>
         <label className={styles.fileUploadLabel}>
           Choose a file to upload
           <input
             className={styles.fileUploadInput}
             type="file"
-            name="myImage"
+            name="imageFile"
             accept="image/x-png, image/gif, image/jpeg"
             onChange={this.onImageUpload}
           />
