@@ -12,6 +12,10 @@ import ITALICICON from "./italic.svg";
 import QUOTEICON from "./double-quote-serif-left.svg";
 import TEXTICON from "./text.svg";
 import UNDERLINEICON from "./underline.svg";
+import FACEBOOKICON from "./social-facebook.svg";
+import GITHUBICON from "./social-github.svg";
+import GOOGLEPLUSICON from "./social-googleplus.svg";
+import TWITTERICON from "./social-twitter.svg";
 
 export const ALIGNCENTER = ALIGNCENTERICON;
 export const ALIGNLEFT = ALIGNLEFTICON;
@@ -27,3 +31,7 @@ export const ITALIC = ITALICICON;
 export const QUOTE = QUOTEICON;
 export const TEXT = TEXTICON;
 export const UNDERLINE = UNDERLINEICON;
+export const FACEBOOK = FACEBOOKICON;
+export const GITHUB = GITHUBICON;
+export const GOOGLEPLUS = GOOGLEPLUSICON;
+export const TWITTER = TWITTERICON;
