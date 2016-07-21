@@ -1,13 +1,17 @@
 @import '../../../variables.css';
 
-.inputBox {
-  border: 1px solid var(--secondary-border-color);
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 12px;
-  height: 30px;
-  letter-spacing: 0.3px;
-  line-height: 1.8;
-  padding-left: 7px;
-  width: 180px;
+.input {
+  padding-left: 24px;
+}
+
+.input::before {
+  content: "l";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+
+  color: var(--plotly-blue);
+  font-size: 24px;
+  line-height: 1.5;
 }
