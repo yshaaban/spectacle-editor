@@ -94,6 +94,12 @@ export default class TextElement extends Component {
     const componentLeft = componentProps.style && componentProps.style.left;
     const left = componentLeft || 0;
 
+    if (isLeftSideDrag) {
+      this.rightResizeNode.style.visibility = "hidden";
+    } else {
+      this.leftResizeNode.style.visibility = "hidden";
+    }
+
     this.gridLines = this.context.store.gridLines;
 
     this.setState({
@@ -119,8 +125,8 @@ export default class TextElement extends Component {
   handleMouseMoveResize = (ev) => {
     ev.preventDefault();
     const { pageX } = ev;
-    const { isLeftSideDrag, resizeLastX, width, canvasElementWidth } = this.state;
-    let { left } = this.state;
+    const { isLeftSideDrag, resizeLastX } = this.state;
+    let { left, width, canvasElementWidth } = this.state;
     let change;
     let isSnapped;
 
@@ -128,8 +134,11 @@ export default class TextElement extends Component {
       if (line === null) {
         this.props.hideGridLine(true);
         isSnapped = false;
+
         return;
       }
+
+      this.props.showGridLine(line, true);
 
       let pointToAlignWithLine;
 
@@ -145,11 +154,19 @@ export default class TextElement extends Component {
         pointToAlignWithLine = Math.ceil(left + canvasElementWidth);
       }
 
-      const distance = Math.abs(pointToAlignWithLine - line);
+      const distance = pointToAlignWithLine - line;
 
-      if (distance <= 3) {
+      if (Math.abs(distance) < 15) {
+        if (isLeftSideDrag) {
+          left -= distance;
+          canvasElementWidth += distance;
+          width += distance;
+        } else {
+          canvasElementWidth -= distance;
+          width -= distance;
+        }
+
         isSnapped = true;
-        this.props.showGridLine(line, true);
       }
     };
 
@@ -163,25 +180,22 @@ export default class TextElement extends Component {
       snapCallback
     );
 
-    if (isSnapped) {
-      return;
-    }
-
     if (isLeftSideDrag) {
       change = resizeLastX - pageX;
-      left -= change;
+      left = isSnapped ? left : left - change;
     } else {
       change = pageX - resizeLastX;
     }
 
-    const newCanvasElementWidth = change + canvasElementWidth;
+    const newCanvasElementWidth = isSnapped ? canvasElementWidth : change + canvasElementWidth;
+    const newWidth = isSnapped ? width : change + width;
 
     if (newCanvasElementWidth >= 0) {
       this.setState({
         left,
-        width: (change + width),
+        width: newWidth,
         canvasElementWidth: newCanvasElementWidth,
-        resizeLastX: pageX
+        resizeLastX: isSnapped ? resizeLastX : pageX
       });
     }
   }
@@ -198,7 +212,8 @@ export default class TextElement extends Component {
     window.removeEventListener("touchmove", this.handleTouchMoveResize);
     window.removeEventListener("touchend", this.handleTouchEndResize);
 
-
+    this.rightResizeNode.style.visibility = "visible";
+    this.leftResizeNode.style.visibility = "visible";
     this.props.hideGridLine(true);
 
     this.context.store.updateElementResizeState(false);
@@ -522,6 +537,7 @@ export default class TextElement extends Component {
                 }
                 {currentlySelected &&
                   <ResizeNode
+                    ref={component => {this.rightResizeNode = ReactDOM.findDOMNode(component);}}
                     alignRight
                     handleMouseDownResize={this.handleMouseDownResize}
                     handleTouchResize={this.handleTouchStartResize}
