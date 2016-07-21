@@ -129,6 +129,7 @@ export default class ImageElement extends Component {
     this.context.store.updateElementResizeState(true, this.getCursorTypes(currentTarget));
 
     this.setState({
+      currentHandle: currentTarget,
       verticalResize,
       isTopDrag,
       isLeftSideDrag,
@@ -157,6 +158,7 @@ export default class ImageElement extends Component {
 
     const { pageX, pageY } = ev;
     const {
+      currentHandle,
       isLeftSideDrag,
       resizeLastX,
       resizeLastY,
@@ -186,15 +188,27 @@ export default class ImageElement extends Component {
 
       let pointToAlignWithLine;
 
-      if (index === 0) {
+      if (
+        index === 0 &&
+        currentHandle !== this.bottomRightNode &&
+        (currentHandle !== this.bottomResizeNode || !this.shiftHeld) &&
+        (currentHandle !== this.topResizeNode || !this.shiftHeld || !isVertical) &&
+        (currentHandle !== this.topRightNode || !isVertical) &&
+        (currentHandle !== this.bottomLeftNode || isVertical)
+      ) {
         pointToAlignWithLine = offset;
       }
 
       if (index === 1) {
         pointToAlignWithLine = Math.ceil(offset + length / 2);
       }
-
-      if (index === 2) {
+      if (
+        index === 2 &&
+        currentHandle !== this.topLeftNode &&
+        (currentHandle !== this.topRightNode || isVertical) &&
+        (currentHandle !== this.topResizeNode || !this.shiftHeld || isVertical) &&
+        (currentHandle !== this.bottomLeftNode || !isVertical)
+      ) {
         pointToAlignWithLine = Math.ceil(offset + length);
       }
 
