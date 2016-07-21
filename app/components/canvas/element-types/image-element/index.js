@@ -176,6 +176,7 @@ export default class ImageElement extends Component {
 
   handleMouseMoveResize = (ev) => {
     ev.preventDefault();
+
     const { pageX, pageY } = ev;
     const {
       isLeftSideDrag,
@@ -191,7 +192,6 @@ export default class ImageElement extends Component {
     let horizontalSnap = false;
     let lineX;
     let lineY;
-
 
     const createSnapCallback = (isVertical, length, offset) => (line, index) => {
       if (line === null) {
@@ -489,10 +489,6 @@ export default class ImageElement extends Component {
   handleMouseDown = (ev) => {
     ev.preventDefault();
 
-    if (this.context.store.currentElementIndex === this.props.elementIndex) {
-      this.clickStart = new Date().getTime();
-    }
-
     this.context.store.setCurrentElementIndex(this.props.elementIndex);
 
     const { pageX, pageY } = ev;
@@ -510,52 +506,28 @@ export default class ImageElement extends Component {
     // Do this preemptively so that dragging doesn't take the performance hit
     this.gridLines = this.context.store.gridLines;
 
-    // Only do drag if we hold the mouse down for a bit
-    this.mouseClickTimeout = setTimeout(() => {
-      this.clickStart = null;
-      this.mouseClickTimeout = null;
+    this.context.store.updateElementDraggingState(true, true);
 
-      this.context.store.updateElementDraggingState(true, true);
+    // Make the cursor dragging everywhere
+    document.body.style.cursor = "-webkit-grabbing";
+    this.currentElementComponent.style.cursor = "-webkit-grabbing";
 
-      // Make the cursor dragging everywhere
-      document.body.style.cursor = "-webkit-grabbing";
-      this.currentElementComponent.style.cursor = "-webkit-grabbing";
+    // TODO: handle elements that aren't absolutely positioned?
+    this.setState({
+      delta: [0, 0],
+      mouseStart: [pageX, pageY],
+      isPressed: true,
+      mouseOffset,
+      originalPosition,
+      width,
+      height
+    });
 
-      // TODO: handle elements that aren't absolutely positioned?
-      this.setState({
-        delta: [0, 0],
-        mouseStart: [pageX, pageY],
-        isPressed: true,
-        mouseOffset,
-        originalPosition,
-        width,
-        height
-      });
-
-      window.addEventListener("touchmove", this.handleTouchMove);
-      window.addEventListener("mousemove", this.handleMouseMove);
-    }, 150);
+    window.addEventListener("touchmove", this.handleTouchMove);
+    window.addEventListener("mousemove", this.handleMouseMove);
   }
 
   handleMouseUp = () => {
-    if (this.mouseClickTimeout || this.mouseClickTimeout === 0) {
-      clearTimeout(this.mouseClickTimeout);
-      window.removeEventListener("mouseup", this.handleMouseUp);
-      window.removeEventListener("touchend", this.handleMouseUp);
-
-      this.mouseClickTimeout = null;
-
-      // this.props.onDropElement(this.props.elementType);
-      const timeSinceMouseDown = new Date().getTime() - this.clickStart;
-
-      // Give the user the remainder of the 250ms to do a double click
-      setTimeout(() => {
-        this.clickStart = null;
-      }, 250 - timeSinceMouseDown);
-
-      return;
-    }
-
     window.removeEventListener("touchmove", this.handleTouchMove);
     window.removeEventListener("touchend", this.handleMouseUp);
     window.removeEventListener("mousemove", this.handleMouseMove);
@@ -582,10 +554,6 @@ export default class ImageElement extends Component {
     });
   }
 
-  handleDoubleClick = () => {
-    // double click
-  }
-
   render() {
     const {
       elementIndex,
@@ -605,13 +573,6 @@ export default class ImageElement extends Component {
     } = this.state;
 
     const currentlySelected = selected || elementIndex === this.context.store.currentElementIndex;
-    const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
-
-    const wrapperStyle = {};
-    const motionStyles = {};
-    let elementStyle = props.style ? { ...props.style } : {};
-
-    const { isDragging, isResizing, cursorType } = this.context.store;
 
     if (currentlySelected) {
       window.addEventListener("keydown", this.handleKeyDown);
@@ -620,6 +581,11 @@ export default class ImageElement extends Component {
       window.removeEventListener("keyup", this.handleKeyUp);
     }
 
+    const extraClasses = currentlySelected ? ` ${styles.selected}` : "";
+    const wrapperStyle = {};
+    const motionStyles = {};
+    let elementStyle = props.style ? { ...props.style } : {};
+    const { isDragging, isResizing, cursorType } = this.context.store;
 
     if (isResizing) {
       this.currentElementComponent.style.cursor = cursorType;
@@ -663,7 +629,6 @@ export default class ImageElement extends Component {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
       motionStyles.top = spring((props.style && props.style.top || 0) + y, SpringSettings.DRAG);
     }
-
 
     if (isResizing) {
       const componentStylesLeft = props.style && props.style.left || 0;
