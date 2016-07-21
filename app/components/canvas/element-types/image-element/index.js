@@ -239,16 +239,6 @@ export default class ImageElement extends Component {
       }
 
       if (Math.abs(distance) < 15) {
-        if (!isVertical) {
-          if (isTopDrag) {
-            top -= distance;
-            height += distance;
-          } else {
-            height -= distance;
-          }
-          horizontalSnap = distance;
-        }
-
         if (isVertical) {
           if (isLeftSideDrag) {
             left -= distance;
@@ -257,6 +247,14 @@ export default class ImageElement extends Component {
             width -= distance;
           }
           verticalSnap = distance;
+        } else {
+          if (isTopDrag) {
+            top -= distance;
+            height += distance;
+          } else {
+            height -= distance;
+          }
+          horizontalSnap = distance;
         }
       }
     };
@@ -334,9 +332,7 @@ export default class ImageElement extends Component {
         delta[0] = pageX - resizeLastX;
       }
 
-      newWidth = delta[0] + width;
-
-      newWidth = verticalSnap || (horizontalSnap && this.shiftHeld) ? width : newWidth;
+      newWidth = verticalSnap || (horizontalSnap && this.shiftHeld) ? width : delta[0] + width;
 
       if (newWidth >= 0) {
         nextState = {
@@ -402,7 +398,6 @@ export default class ImageElement extends Component {
 
     this.context.store.updateElementResizeState(false);
     this.changeNodeVisibility();
-
 
     const { width, left, top, height } = this.state;
     const propStyles = { ...this.props.component.props.style, width, left, top, height };
