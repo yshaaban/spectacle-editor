@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from "react";
 import PlotlyForm from "./plotly-form";
 import OnPremiseForm from "./on-premise-form";
 import styles from "./login-modal.css";
+import commonStyles from "./index.css";
 
 class LoginMenu extends Component {
   constructor(props) {
@@ -28,25 +29,27 @@ class LoginMenu extends Component {
       <div className={styles.loginOverlay}>
         <div className={styles.loginModalBackground} onClick={this.closeModal}></div>
         <div className={styles.loginMenu}>
-          <div className={styles.loginCloseButton} onClick={this.closeModal}>
-            <i className={"icon ion-android-close"}></i>
-          </div>
-          <h2>
-            Sign In
-          </h2>
-
-          <div className={styles.loginTabs}>
-            <button onClick={this.onClickTab.bind(this, false)}>Plot.ly</button>
-            <button onClick={this.onClickTab.bind(this, true)}>On Premise</button>
-
-            <div className={`${styles.form} ${!onPremiseActive && styles.visible}`}>
+          <header className={styles.loginMenuHeader}>
+            <div className={styles.loginCloseButton} onClick={this.closeModal}>
+              <i className={"icon ion-android-close"}></i>
+            </div>
+            <h1 className={styles.modalHeading}>
+              Sign in
+            </h1>
+            <div className={styles.loginTabs}>
+              <button onClick={this.onClickTab.bind(this, false)}>Plot.ly</button>
+              <button onClick={this.onClickTab.bind(this, true)}>On Premise</button>
+            </div>
+          </header>
+          <main>
+            <div className={`${styles.panel} ${!onPremiseActive && styles.visible}`}>
               <PlotlyForm onClose={this.props.onClose} />
             </div>
 
-            <div className={`${styles.form} ${onPremiseActive && styles.visible}`}>
+            <div className={`${styles.panel} ${onPremiseActive && styles.visible}`}>
               <OnPremiseForm onClose={this.props.onClose} />
             </div>
-          </div>
+          </main>
         </div>
       </div>
     );

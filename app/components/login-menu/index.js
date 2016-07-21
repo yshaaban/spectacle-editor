@@ -35,10 +35,13 @@ class LoginMenu extends Component {
     return (
       <div>
         {user ? <UserMenu user={user} /> :
-          <div className={styles.loginButton} onClick={this.onClickLogin}>
+          <button
+            className={styles.signInBtn}
+            onClick={this.onClickLogin}
+          >
             <i className={"icon ion-person"}></i>
-            <h4>Sign in to Plot.ly</h4>
-          </div>
+            <p className={styles.signInCopy}>Sign in to Plot.ly</p>
+          </button>
         }
         {!user && loginModalVisible && <LoginModal onClose={this.onCloseModal} />}
       </div>

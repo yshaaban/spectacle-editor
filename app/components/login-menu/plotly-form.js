@@ -4,6 +4,7 @@ import { ipcRenderer } from "electron";
 import { login } from "../../api/user";
 import SocialAuthLinks from "./social-auth-links";
 import styles from "./plotly-form.css";
+import commonStyles from "./index.css";
 
 const domainUrl = "https://api.plot.ly";
 
@@ -35,17 +36,9 @@ class PlotlyForm extends Component {
 
     const { username, password } = this.state;
 
-    if (!username) {
+    if (!username || !password) {
       this.setState({
-        errorMessage: "Please enter a valid username"
-      });
-
-      return;
-    }
-
-    if (!password) {
-      this.setState({
-        errorMessage: "Please enter a valid password"
+        errorMessage: "Oops! We do not understand that username/password combination. Please try again."
       });
 
       return;
@@ -67,7 +60,7 @@ class PlotlyForm extends Component {
 
   onSocialLoginError = (provider) => {
     this.setState({
-      errorMessage: `${provider} login failed, please try again`
+      errorMessage: `Uh oh! Sign in failed with ${provider}. Please try again.`
     });
   }
 
@@ -90,48 +83,65 @@ class PlotlyForm extends Component {
 
   render() {
     return (
-      <form
-        onSubmit={this.handleSubmit}
-        className={styles.loginForm}
-      >
+      <div>
         {this.state.errorMessage &&
-          <h4 className={styles.errorMessage}>
+          <div className={commonStyles.errorMessage}>
             {this.state.errorMessage}
-          </h4>
+          </div>
         }
-        <label>plot.ly username
-          <input
-            type="text"
-            name="username"
-            value={this.state.username}
-            onChange={this.handleUserChange}
-          />
-        </label>
-        <label>plot.ly password
-          <input
-            type="password"
-            name="password"
-            value={this.state.password}
-            onChange={this.handlePasswordChange}
-          />
-        </label>
-        <button type="submit">Sign in</button>
-        <a href="https://plot.ly/accounts/password/reset/" onClick={this.onClickForgotPassword}>
-          Forgot password?
-        </a>
+        <form
+          onSubmit={this.handleSubmit}
+          className={commonStyles.form}
+        >
+          <label className={commonStyles.label}>
+            Username
+            <input
+              className={commonStyles.input}
+              type="text"
+              name="username"
+              value={this.state.username}
+              onChange={this.handleUserChange}
+            />
+          </label>
+          <label className={commonStyles.label}>
+            Password
+            <input
+              className={commonStyles.input}
+              type="password"
+              name="password"
+              value={this.state.password}
+              onChange={this.handlePasswordChange}
+            />
+          </label>
+          <button
+            className={commonStyles.button}
+            type="submit"
+          >
+            Sign in
+          </button>
+          <a
+            className={commonStyles.formLink}
+            href="https://plot.ly/accounts/password/reset/"
+            onClick={this.onClickForgotPassword}
+          >
+            Forgot password?
+          </a>
+        </form>
         <SocialAuthLinks
           domain={"https://plot.ly/login"}
           apiUrl={domainUrl}
           onLoginSuccess={this.onLoginSuccess}
           onLoginError={this.onSocialLoginError}
         />
-        <div className={styles.signUp}>
-          <h3>Don't have a plot.ly account?</h3>
+        <div className={commonStyles.signUp}>
+          <p className={commonStyles.signUpHeading}>
+            Don’t have a plot.ly account?
+          </p>
           <a href="http://plot.ly" onClick={this.onClickCreateAccount}>
             Create an account on plot.ly
           </a>
         </div>
-      </form>
+      </div>
     );
   }
 }

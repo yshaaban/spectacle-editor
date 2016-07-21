@@ -9,8 +9,9 @@
   --select-hover-color: #e6f2ff;
   --tertiary-font-color: #999;
 
-  /*
   --plotly-blue: #447bdc;
+  --warning: #ff4545;
+  /*
   --pale-grey: #f8f8f9;
   --very-light-blue: #ebf5ff;
   --charcoal: #4b4b4b;
@@ -31,4 +32,8 @@
   --drag-shadow: 0 1px 3px 0 rgba(204, 204, 204, 0.6);
   --slide-stage-shadow: 0 0 3px 0 rgba(204, 204, 204, 0.6);
   --select-list-shadow: 0 0 8px 4px rgba(204, 204, 204, 0.3);
+
+  /* Z-Index */
+  --z-index-modal: 999999999;
+  --z-index-modal-negative: 999999998;
 }

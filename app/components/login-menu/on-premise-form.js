@@ -5,7 +5,7 @@ import { login } from "../../api/user";
 import { testApiUrl } from "../../api/on-premise";
 import SocialAuthLinks from "./social-auth-links";
 import spinner from "../../assets/images/spinner.svg";
-import styles from "./plotly-form.css";
+import styles from "./on-premise-form.css";
 
 class PlotlyForm extends Component {
   static contextTypes = {
@@ -167,12 +167,6 @@ class PlotlyForm extends Component {
         >
           Forgot password?
         </a>
-        <SocialAuthLinks
-          domain={this.state.domain}
-          apiUrl={this.state.domain}
-          onLoginSuccess={this.onLoginSuccess}
-          onLoginError={this.onSocialLoginError}
-        />
         <div className={styles.signUp}>
           <h3>Don't have a plot.ly account?</h3>
           <a href="http://plot.ly" onClick={this.onClickCreateAccount}>
