@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from "react";
 import ReactDOM from "react-dom";
 import { Motion, spring } from "react-motion";
-import { omit, defer } from "lodash";
+import { omit, defer, forEach } from "lodash";
 
 import {
   SpringSettings,
@@ -91,6 +91,27 @@ export default class ImageElement extends Component {
     }
   }
 
+  changeNodeVisibility = (visibilityType = "visible", currentNode) => {
+    const dragNodes = [
+      this.leftResizeNode,
+      this.rightResizeNode,
+      this.topLeftNode,
+      this.bottomRightNode,
+      this.topRightNode,
+      this.bottomLeftNode,
+      this.topResizeNode,
+      this.bottomResizeNode
+    ];
+
+    forEach(dragNodes, (node) => {
+      if (node !== currentNode) {
+        const { style } = node;
+
+        style.visibility = visibilityType;
+      }
+    });
+  }
+
   handleTouchStartResize = (ev) => {
     ev.preventDefault();
     this.handleMouseDownResize(ev.touches[0]);
@@ -126,6 +147,7 @@ export default class ImageElement extends Component {
 
     this.gridLines = this.context.store.gridLines;
 
+    this.changeNodeVisibility("hidden", currentTarget);
     this.context.store.updateElementResizeState(true, this.getCursorTypes(currentTarget));
 
     this.setState({
@@ -379,6 +401,8 @@ export default class ImageElement extends Component {
     this.props.hideGridLine(false);
 
     this.context.store.updateElementResizeState(false);
+    this.changeNodeVisibility();
+
 
     const { width, left, top, height } = this.state;
     const propStyles = { ...this.props.component.props.style, width, left, top, height };
