@@ -134,6 +134,7 @@ export default class TextElement extends Component {
       if (line === null) {
         this.props.hideGridLine(true);
         isSnapped = false;
+
         return;
       }
 
