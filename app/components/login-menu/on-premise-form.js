@@ -3,8 +3,6 @@ import { ipcRenderer } from "electron";
 
 import { login } from "../../api/user";
 import { testApiUrl } from "../../api/on-premise";
-import SocialAuthLinks from "./social-auth-links";
-import spinner from "../../assets/images/spinner.svg";
 import styles from "./on-premise-form.css";
 import commonStyles from "./index.css";
 import Spinner from "../../assets/icons/spinner.js";
@@ -25,6 +23,31 @@ class PlotlyForm extends Component {
       errorMessage: null,
       loadingDomain: false
     };
+  }
+
+  onLoginSuccess = (userInfo) => {
+    this.context.store.api.setDomainUrl(this.state.domain);
+    this.context.store.api.setUser(userInfo);
+    this.closeModal();
+    this.setState({ errorMessage: null });
+  }
+
+  onSocialLoginError = (provider) => {
+    this.setState({
+      errorMessage: `${provider} login failed, please try again`
+    });
+  }
+
+  onClickForgotPassword = (ev) => {
+    ev.preventDefault();
+
+    ipcRenderer.send("open-external", `${this.state.domain}/accounts/password/reset/`);
+  }
+
+  onClickCreateAccount = (ev) => {
+    ev.preventDefault();
+
+    ipcRenderer.send("open-external", this.state.domain);
   }
 
   handleDomainChange = (ev) => {
@@ -82,31 +105,6 @@ class PlotlyForm extends Component {
       .catch((errorMessage) => {
         this.setState({ errorMessage });
       });
-  }
-
-  onLoginSuccess = (userInfo) => {
-    this.context.store.api.setDomainUrl(this.state.domain);
-    this.context.store.api.setUser(userInfo);
-    this.closeModal();
-    this.setState({ errorMessage: null });
-  }
-
-  onSocialLoginError = (provider) => {
-    this.setState({
-      errorMessage: `${provider} login failed, please try again`
-    });
-  }
-
-  onClickForgotPassword = (ev) => {
-    ev.preventDefault();
-
-    ipcRenderer.send("open-external", `${this.state.domain}/accounts/password/reset/`);
-  }
-
-  onClickCreateAccount = (ev) => {
-    ev.preventDefault();
-
-    ipcRenderer.send("open-external", this.state.domain);
   }
 
   closeModal = () => {

@@ -3,7 +3,6 @@ import { ipcRenderer } from "electron";
 
 import { login } from "../../api/user";
 import SocialAuthLinks from "./social-auth-links";
-import styles from "./plotly-form.css";
 import commonStyles from "./index.css";
 
 const domainUrl = "https://api.plot.ly";
@@ -21,6 +20,31 @@ class PlotlyForm extends Component {
       password: "",
       errorMessage: null
     };
+  }
+
+  onLoginSuccess = (userInfo) => {
+    this.context.store.api.resetDomainUrl();
+    this.context.store.api.setUser(userInfo);
+    this.closeModal();
+    this.setState({ errorMessage: null });
+  }
+
+  onSocialLoginError = (provider) => {
+    this.setState({
+      errorMessage: `Uh oh! Sign in failed with ${provider}. Please try again.`
+    });
+  }
+
+  onClickForgotPassword = (ev) => {
+    ev.preventDefault();
+
+    ipcRenderer.send("open-external", "https://plot.ly/accounts/password/reset/");
+  }
+
+  onClickCreateAccount = (ev) => {
+    ev.preventDefault();
+
+    ipcRenderer.send("open-external", "https://plot.ly");
   }
 
   handleUserChange = (ev) => {
@@ -49,31 +73,6 @@ class PlotlyForm extends Component {
       .catch((errorMessage) => {
         this.setState({ errorMessage });
       });
-  }
-
-  onLoginSuccess = (userInfo) => {
-    this.context.store.api.resetDomainUrl();
-    this.context.store.api.setUser(userInfo);
-    this.closeModal();
-    this.setState({ errorMessage: null });
-  }
-
-  onSocialLoginError = (provider) => {
-    this.setState({
-      errorMessage: `Uh oh! Sign in failed with ${provider}. Please try again.`
-    });
-  }
-
-  onClickForgotPassword = (ev) => {
-    ev.preventDefault();
-
-    ipcRenderer.send("open-external", "https://plot.ly/accounts/password/reset/");
-  }
-
-  onClickCreateAccount = (ev) => {
-    ev.preventDefault();
-
-    ipcRenderer.send("open-external", "https://plot.ly");
   }
 
   closeModal = () => {
