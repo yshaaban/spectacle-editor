@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { ipcRenderer } from "electron";
 import { find } from "lodash";
 
-import socialLinkSprite from "../../assets/images/social-link-sprite.png";
+import { FACEBOOK, GITHUB, GOOGLEPLUS, TWITTER } from "../../assets/icons";
 import styles from "./social-auth-links.css";
 
 import { getCurrentUser } from "../../api/user";
@@ -38,43 +38,58 @@ class SocialAuthenticationLinks extends Component {
   render() {
     return (
       <div className={styles.socialAuthLinks}>
-        <h3>Sign in with</h3>
+        <p className={styles.socialAuthHeading}>
+          <span className={styles.fancy}>Sign in with</span>
+        </p>
         <div className={styles.socialAuthButtonGroup}>
-          <button
-            type="button"
-            onClick={this.authenticate.bind(this, "Facebook")}
-            className={styles.socialAuthButton}
-            style={{
-              backgroundImage: `url(${socialLinkSprite})`
-            }}
-          ></button>
           <button
             type="button"
             onClick={this.authenticate.bind(this, "Twitter")}
             className={styles.socialAuthButton}
-            style={{
-              backgroundImage: `url(${socialLinkSprite})`,
-              backgroundPosition: "0 -24px"
-            }}
-          ></button>
+          >
+            <i
+              className={styles.socialAuthIcon}
+              dangerouslySetInnerHTML={{ __html: TWITTER }}
+            />
+            Sign in with Twitter
+          </button>
+          <button
+            type="button"
+            onClick={this.authenticate.bind(this, "Facebook")}
+            className={styles.socialAuthButton}
+          >
+            <i
+              className={styles.socialAuthIcon}
+              dangerouslySetInnerHTML={{ __html: FACEBOOK }}
+            />
+            Sign in with Facebook
+          </button>
           <button
             type="button"
             onClick={this.authenticate.bind(this, "GitHub")}
             className={styles.socialAuthButton}
-            style={{
-              backgroundImage: `url(${socialLinkSprite})`,
-              backgroundPosition: "0 -48px"
-            }}
-          ></button>
+          >
+            <i
+              className={styles.socialAuthIcon}
+              dangerouslySetInnerHTML={{ __html: GITHUB }}
+            />
+            Sign in with GitHub
+          </button>
           <button
             type="button"
             onClick={this.authenticate.bind(this, "Google")}
             className={styles.socialAuthButton}
-            style={{
-              backgroundImage: `url(${socialLinkSprite})`,
-              backgroundPosition: "0 -70px"
-            }}
-          ></button>
+          >
+            <i
+              className={styles.socialAuthIcon}
+              style={{
+                marginLeft: "5px",
+                marginRight: "-5px"
+              }}
+              dangerouslySetInnerHTML={{ __html: GOOGLEPLUS }}
+            />
+            Sign in with Google Plus
+          </button>
         </div>
       </div>
     );

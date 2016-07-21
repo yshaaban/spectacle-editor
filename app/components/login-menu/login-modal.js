@@ -24,29 +24,49 @@ class LoginMenu extends Component {
   render() {
     const { onPremiseActive } = this.state;
 
+    const plotlyClass = !onPremiseActive ?
+      `${styles.loginTab} ${styles.active}` :
+      styles.loginTab;
+
+    const onPremiseClass = onPremiseActive ?
+      `${styles.loginTab} ${styles.active}` :
+      styles.loginTab;
+
     return (
       <div className={styles.loginOverlay}>
         <div className={styles.loginModalBackground} onClick={this.closeModal}></div>
         <div className={styles.loginMenu}>
-          <div className={styles.loginCloseButton} onClick={this.closeModal}>
-            <i className={"icon ion-android-close"}></i>
-          </div>
-          <h2>
-            Sign In
-          </h2>
-
-          <div className={styles.loginTabs}>
-            <button onClick={this.onClickTab.bind(this, false)}>Plot.ly</button>
-            <button onClick={this.onClickTab.bind(this, true)}>On Premise</button>
-
-            <div className={`${styles.form} ${!onPremiseActive && styles.visible}`}>
+          <header className={styles.loginMenuHeader}>
+            <div className={styles.loginCloseButton} onClick={this.closeModal}>
+              <i className={"icon ion-android-close"}></i>
+            </div>
+            <h1 className={styles.modalHeading}>
+              Sign in
+            </h1>
+            <div className={styles.loginTabs}>
+              <button
+                className={plotlyClass}
+                onClick={this.onClickTab.bind(this, false)}
+              >
+                Plot.ly
+              </button>
+              <button
+                className={onPremiseClass}
+                onClick={this.onClickTab.bind(this, true)}
+              >
+                On-Premise
+              </button>
+            </div>
+          </header>
+          <main>
+            <div className={`${styles.panel} ${!onPremiseActive && styles.visible}`}>
               <PlotlyForm onClose={this.props.onClose} />
             </div>
 
-            <div className={`${styles.form} ${onPremiseActive && styles.visible}`}>
+            <div className={`${styles.panel} ${onPremiseActive && styles.visible}`}>
               <OnPremiseForm onClose={this.props.onClose} />
             </div>
-          </div>
+          </main>
         </div>
       </div>
     );

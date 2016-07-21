@@ -13,7 +13,7 @@
   bottom: 0;
   right: 0;
   background-color: rgba(7, 24, 48, 0.7);
-  z-index: 999999998;
+  z-index: var(--z-index-modal-negative);
 }
 
 .loginBrandingBackground {
@@ -45,7 +45,7 @@
 
 .loginCloseButton i {
   font-size: 24px;
-  color: #447bdc;
+  color: var(--plotly-blue);
   line-height: 16px;
 }
 
@@ -54,21 +54,77 @@
   left: calc(50% - 300px);
   top: 59px;
   width: 600px;
-  height: 480px;
+  padding: 0;
+
   border-radius: 4px;
   background-color: #fff;
-  border: solid 1px #ccc;
-  z-index: 999999999;
+  box-shadow: 0 0 8px 4px rgba(50, 57, 61, 0.3);
+
+  z-index: var(--z-index-modal);
 }
 
-.loginMenu h2 {
-  color: #666;
+.loginMenuHeader {
+  margin: 0;
+  padding: 50px 20px 0;
+
+  border-radius: 4px 4px 0 0;
+  background: url("../../assets/images/plotly-bg.png") center center repeat-x;
 }
 
-.form {
+.modalHeading {
+  margin: 0 auto;
+
+  font-size: 24px;
+  font-weight: 600;
+	letter-spacing: 0.03em;
+	line-height: 1.3;
+  text-align: center;
+}
+
+.loginTabs {
+  display: flex;
+  flex-direction: row;
+
+  margin: 0;
+}
+
+.loginTab {
+  flex-basis: 50%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 20px 0 0;
+  padding: 10px 10px 20px;
+  position: relative;
+
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  color: #fff;
+  line-height: 1.2;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.active:after {
+  content: " ";
+
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+
+  border: solid transparent;
+  border-color: transparent;
+  border-bottom-color: #fff;
+  border-width: 12px;
+  margin-left: -12px;
+}
+
+.panel {
   display: none;
+  visibility: hidden;
 }
 
 .visible {
   display: block;
+  visibility: visible;
 }

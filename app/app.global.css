@@ -425,11 +425,17 @@
   font-style: italic;
 }
 
+* {
+  box-sizing: inherit;
+}
+
 body {
+  box-sizing: border-box;
+
   background-color: #fff;
   color: white;
-  font-family: "open-sans", sans-serif;
-  -webkit-font-smoothing: antialiased;
+  font-family: "openSans", "Open Sans", sans-serif;
+  font-weight: 400;
   height: 100vh;
   margin: 0;
   overflow-y: hidden;
@@ -451,6 +457,11 @@ p {
 
 li {
   list-style: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
 }
 
 input:focus,
