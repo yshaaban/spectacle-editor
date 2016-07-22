@@ -1,10 +1,10 @@
 import { observable, computed, transaction, asReference } from "mobx";
 import Immutable from "seamless-immutable";
 import { generate } from "shortid";
-import { merge } from "lodash";
+import { merge, omit } from "lodash";
 
 import elementMap from "../elements";
-import { getGridLinesObj, getGridLineHashes } from "../utils";
+import { getParagraphStyles, getGridLinesObj, getGridLineHashes } from "../utils";
 
 // TODO: REMOVE. Useful for testing
 const allColors = [
@@ -46,6 +46,15 @@ export default class SlidesStore {
       color: allColors[4]
     }
   ] }]));
+
+  @observable paragraphStyles = asReference(Immutable.from({
+    "Heading 1": getParagraphStyles({ fontSize: 26 }),
+    "Heading 2": getParagraphStyles({ fontSize: 20 }),
+    "Heading 3": getParagraphStyles({ fontSize: 11, fontWeight: 700 }),
+    Body: getParagraphStyles({ fontSize: 11 }),
+    "Body Small": getParagraphStyles({ fontSize: 11 }),
+    Caption: getParagraphStyles({ fontSize: 11, fontStyle: "italic" })
+  }));
 
   @observable historyIndex = 0;
 
@@ -254,7 +263,15 @@ export default class SlidesStore {
       return;
     }
 
+    const { paragraphStyle } = this.currentElement.props;
     const newProps = merge(this.currentElement.props, props);
+
+    if (paragraphStyle !== props.paragraphStyle && !Object.keys(props.style).length) {
+      // if paragraph style changes, remove all added styles, but not any other ones affecting
+      // position and word wrap
+      newProps.style = omit(newProps.style, Object.keys(this.paragraphStyles[paragraphStyle]));
+    }
+
     const newState = this.currentState;
     newState.slides[this.currentSlideIndex].children[this.currentElementIndex].props = newProps;
     this._addToHistory(newState);

@@ -39,18 +39,11 @@ elements[ElementTypes.TEXT] = {
   defaultHeight: 63,
   defaultText: ["Text"],
   props: {
+    paragraphStyle: "Heading 1",
     isQuote: false,
     size: 4,
     listType: null,
-    style: {
-      color: "#3d3d3d",
-      fontFamily: "openSans",
-      fontSize: 45,
-      fontWeight: 400,
-      minWidth: 20,
-      fontStyle: "normal",
-      textAlign: "center"
-    }
+    style: {}
   },
   children: null
 };

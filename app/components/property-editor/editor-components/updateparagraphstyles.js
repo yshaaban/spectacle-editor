@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import styles from "./updateheading.css";
+import styles from "./updateparagraphstyles.css";
 
-export default class UpdateHeading extends Component {
+export default class UpdateParagraphStyles extends Component {
+  static propTypes = {
+    currentParagraphStyle: React.PropTypes.string
+  }
+
   constructor(props) {
     super(props);
 
@@ -21,7 +25,7 @@ export default class UpdateHeading extends Component {
            ${(this.state.active ? styles.active : "")}`
         }
       >
-        Update Heading 1 Style
+        Update {this.props.currentParagraphStyle} Style
       </div>
     );
   }
