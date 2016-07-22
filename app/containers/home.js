@@ -6,14 +6,14 @@ import { observer } from "mobx-react";
 import SlidesStore from "../stores/slides-store";
 import FileStore from "../stores/file-store";
 import Provider from "../components/utils/provider";
-import HistoryMenu from "../components/history-menu";
 import PropertyEditor from "../components/property-editor";
 import Upload from "../components/upload";
 import MenuBar from "../components/menu-bar";
 import SlideList from "../components/slide-list";
 import Canvas from "../components/canvas";
+import LoginMenu from "../components/login-menu";
 import defaultTheme from "../themes/default";
-import { fileActions } from "../menu-actions";
+import { fileActions, editActions } from "../menu-actions";
 import styles from "./home.css";
 import { BLACKLIST_CURRENT_ELEMENT_DESELECT } from "../constants";
 
@@ -22,6 +22,10 @@ const slideStore = new SlidesStore(fileStore);
 
 ipcRenderer.on("file", (event, message) => {
   fileActions[message](slideStore, fileStore);
+});
+
+ipcRenderer.on("edit", (event, message) => {
+  editActions[message](slideStore, fileStore);
 });
 
 @observer
@@ -86,8 +90,8 @@ class Home extends Component {
       <Provider store={slideStore}>
         <div className={styles.home} style={wrapperStyles}>
           <MenuBar />
+          <LoginMenu />
           <Upload />
-          <HistoryMenu />
           <div className={styles.container}>
             <SlideList />
             <PropertyEditor />

@@ -1,0 +1,21 @@
+.spinner {
+  position: absolute;
+  bottom: 2px;
+  left: 100%;
+
+  margin: 0 0 0 5px;
+  width: 40px;
+  height: 36px;
+}
+
+.valid {
+  position: absolute;
+  bottom: 2px;
+  left: 100%;
+
+  margin: 0 0 0 10px;
+
+  font-size: 30px;
+  color: #45a9ff;
+  line-height: 1;
+}

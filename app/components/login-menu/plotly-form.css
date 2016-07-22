@@ -1,0 +1,47 @@
+.loginForm h2 {
+  color: #3d3d3d;
+  font-size: 24px;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.loginForm button[type=submit] {
+  outline: none;
+  width: 180px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #447bdc;
+  border: solid 1px #dce1e4;
+  color: #fff;
+  font-size: 14px;
+  margin: auto;
+  margin-top: 20px;
+  display: block;
+  cursor: pointer;
+}
+
+.loginForm a {
+  text-decoration: none;
+  margin: 15px auto;
+  width: 100%;
+  display: block;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: #3d3d3d;
+}
+
+.errorMessage {
+  margin: 10px 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 400;
+  color: red;
+}
+
+.errorMessage + a {
+  margin: 0;
+}

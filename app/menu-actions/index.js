@@ -105,3 +105,12 @@ export const fileActions = {
     });
   }
 };
+
+export const editActions = {
+  undo: (slidesStore) => {
+    slidesStore.undo();
+  },
+  redo: (slidesStore) => {
+    slidesStore.redo();
+  }
+};
