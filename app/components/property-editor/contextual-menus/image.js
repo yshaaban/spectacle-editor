@@ -117,15 +117,16 @@ export default class ImageMenu extends Component {
         />
         <p className={commonStyles.subHeading}>File Upload</p>
         { fileName ?
-          <span>
-          <i
-            className={styles.uploadedFileIcon}
-            dangerouslySetInnerHTML={{ __html: IMAGE }}
-          />
-          <p className={styles.uploadedFileName}>
-            {fileName}
+          <p className={styles.uploadedFile}>
+            <span
+              className={styles.uploadedFileIcon}
+              dangerouslySetInnerHTML={{ __html: IMAGE }}
+            >
+            </span>
+            <span className={styles.uploadedFileName}>
+              {fileName}
+            </span>
           </p>
-          </span>
           : ""
         }
         <label className={`${commonStyles.subHeading} ${styles.fileUpload}`}>
