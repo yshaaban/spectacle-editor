@@ -1,0 +1,36 @@
+.fileUpload {
+  background-color: #f2f2f2;
+  display: block;
+  margin: 12px 0 0;
+  padding: 10px;
+  max-width: 100%;
+
+  border: 2px dashed var(--secondary-border-color);
+  border-radius: 4px;
+  color: #69738a;
+}
+
+.fileUploadInput {
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.uploadedFileIcon {
+  display: inline-block;
+  height: 30px;
+  margin: 0 10px 0 0;
+
+  fill: var(--plotly-blue);
+  vertical-align: middle;
+}
+
+.uploadedFileName {
+  display: inline-block;
+  margin-left: 30px;
+
+  color: var(--plotly-blue);
+  font-size: 12px;
+  line-height: 1.2;
+  vertical-align: middle;
+  word-break: break-all;
+}
