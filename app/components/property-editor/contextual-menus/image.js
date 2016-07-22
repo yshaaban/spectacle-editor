@@ -130,7 +130,10 @@ export default class ImageMenu extends Component {
           : ""
         }
         <label className={`${commonStyles.subHeading} ${styles.fileUpload}`}>
-          Select a file to upload {/* TODO: Should this change if there's already a file? */}
+          { fileName ?
+            `Select a file to replace` :
+            `Select a file to upload`
+          }
           <input
             className={styles.fileUploadInput}
             type="file"
