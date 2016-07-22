@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from "react";
 import ReactDOM from "react-dom";
 import { Motion, spring } from "react-motion";
-import { omit, defer, forEach } from "lodash";
+import { omit, defer } from "lodash";
 
 import {
   SpringSettings,
@@ -103,7 +103,7 @@ export default class ImageElement extends Component {
       this.bottomResizeNode
     ];
 
-    forEach(dragNodes, (node) => {
+    dragNodes.forEach((node) => {
       if (node !== currentNode) {
         const { style } = node;
 
