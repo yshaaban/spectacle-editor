@@ -3,10 +3,12 @@ import { ipcRenderer } from "electron";
 import { autorun } from "mobx";
 
 import { ElementTypes } from "../../../constants";
+import elements from "../../../elements";
+import { IMAGE } from "../../../assets/icons";
 import commonStyles from "../index.css";
 import styles from "./image.css";
 
-const defaultImageSource = "http://placehold.it/400x200&text=sliding_yeah";
+const defaultImageSource = elements[ElementTypes.IMAGE].props.src;
 
 export default class ImageMenu extends Component {
   static contextTypes = {
@@ -54,7 +56,10 @@ export default class ImageMenu extends Component {
 
         this.context.store.updateElementProps({
           src: `data:${type};base64, ${encodedImageString}`,
-          imageName: name
+          imageName: name,
+          style: {
+            opacity: 1
+          }
         });
       });
 
@@ -68,7 +73,10 @@ export default class ImageMenu extends Component {
     if (imageSrc) {
       this.context.store.updateElementProps({
         src: imageSrc,
-        imageName: null
+        imageName: null,
+        style: {
+          opacity: 1
+        }
       });
     }
   }
@@ -96,22 +104,32 @@ export default class ImageMenu extends Component {
     return (
       <div className={commonStyles.wrapper}>
         <h3 className={commonStyles.heading}>Image</h3>
-        <h4 className={styles.imageSource}>
+        <hr className={commonStyles.hr} />
+        <p className={commonStyles.subHeading}>
           Image source
-        </h4>
+        </p>
         <input
-          className={styles.imageSourceInput}
+          className={`globalInput`}
           type="text"
           name="imagesSource"
           onChange={this.onSourceChange}
           value={srcValue}
         />
-        <h4 className={styles.fileUploadLabel}>
-          File upload
-        </h4>
-        <h5>{fileName}</h5>
-        <label>
-          Choose a file to upload {/* TODO: Should this change if there's already a file? */}
+        <p className={commonStyles.subHeading}>File Upload</p>
+        { fileName ?
+          <span>
+          <i
+            className={styles.uploadedFileIcon}
+            dangerouslySetInnerHTML={{ __html: IMAGE }}
+          />
+          <p className={styles.uploadedFileName}>
+            {fileName}
+          </p>
+          </span>
+          : ""
+        }
+        <label className={`${commonStyles.subHeading} ${styles.fileUpload}`}>
+          Select a file to upload {/* TODO: Should this change if there's already a file? */}
           <input
             className={styles.fileUploadInput}
             type="file"

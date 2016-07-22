@@ -1,6 +1,7 @@
 import React from "react";
 
-// import plotlyPlaceholder from "../assets/images/plotly-placeholder.png";
+import plotlyPlaceholder from "../assets/images/plotly-placeholder.png";
+import imagePlaceholder from "../assets/icons/image.svg";
 import { ElementTypes } from "../constants";
 import { Image, Heading } from "../spectacle-components";
 
@@ -58,9 +59,12 @@ elements[ElementTypes.IMAGE] = {
   type: ElementTypes.IMAGE,
   ComponentClass: Image,
   props: {
-    src: "http://placehold.it/400x200&text=sliding_yeah",
-    width: 400,
-    height: 200
+    src: `data:image/svg+xml;utf8,${imagePlaceholder}`,
+    width: 281,
+    height: 200,
+    style: {
+      opacity: 0.2
+    }
   },
   children: []
 };
@@ -83,7 +87,7 @@ elements[ElementTypes.PLOTY_PLACEHOLDER_IMAGE] = {
   type: ElementTypes.PLOTY_PLACEHOLDER_IMAGE,
   ComponentClass: Image,
   props: {
-    src: "plotlyPlaceholder",
+    src: plotlyPlaceholder,
     width: 450,
     height: 400
   },
