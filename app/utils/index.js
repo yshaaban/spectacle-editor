@@ -7,9 +7,10 @@ export const getParagraphStyles = (obj) => (
     color: "#3d3d3d",
     fontFamily: "openSans",
     fontSize: 45,
+    fontStyle: "normal",
     fontWeight: 400,
     minWidth: 20,
-    fontStyle: "normal",
+    opacity: 1,
     textAlign: "center",
     ...obj
   }

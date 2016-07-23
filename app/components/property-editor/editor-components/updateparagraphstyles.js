@@ -1,9 +1,14 @@
 import React, { Component } from "react";
 import styles from "./updateparagraphstyles.css";
+import { pick } from "lodash";
 
 export default class UpdateParagraphStyles extends Component {
+  static contextTypes = {
+    store: React.PropTypes.object
+  }
+
   static propTypes = {
-    currentParagraphStyle: React.PropTypes.string
+    currentElement: React.PropTypes.object
   }
 
   constructor(props) {
@@ -13,19 +18,37 @@ export default class UpdateParagraphStyles extends Component {
   }
 
   handleClick = () => {
-    this.setState({ active: !this.state.active });
+    const { currentElement } = this.context.store;
+
+    this.context.store.updateParagraphStyles(
+      this.props.currentElement.props.paragraphStyle,
+      currentElement.props.style
+    );
   }
 
   render() {
+    const { currentElement } = this.props;
+    const { paragraphStyles, currentElement: storeElement } = this.context.store;
+
+    if (!currentElement || !storeElement) {
+      return null;
+    }
+
+    const editedStyles = pick(
+      storeElement.props.style,
+      Object.keys(paragraphStyles[currentElement.props.paragraphStyle])
+    );
+    const stylesLength = Object.keys(editedStyles).length;
+
     return (
       <div
-        onClick={this.handleClick}
+        onClick={stylesLength && this.handleClick}
         className={
           `${styles.updateHeading}
-           ${(this.state.active ? styles.active : "")}`
+           ${(stylesLength ? styles.active : "")}`
         }
       >
-        Update {this.props.currentParagraphStyle} Style
+        Update {currentElement.props.paragraphStyle} Style
       </div>
     );
   }

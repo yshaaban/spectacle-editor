@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styles from "../index.css";
 import { autorun } from "mobx";
-import { map, mapValues, omit, find, merge } from "lodash";
+import { map, omit, find, merge } from "lodash";
 import {
   Alignment,
   ColorPicker,
@@ -102,7 +102,7 @@ export default class TextMenu extends Component {
   }
 
   render() {
-    const { currentElement } = this.state;
+    const currentElement = this.state.currentElement ? merge({}, this.state.currentElement) : null;
     const { paragraphStyles } = this.context.store;
     const styleProps = currentElement && {
       ...paragraphStyles[currentElement.props.paragraphStyle],
@@ -113,7 +113,6 @@ export default class TextMenu extends Component {
 
     if (currentElement) {
       currentElement.props.style = styleProps;
-
       currentStyles = find(FontMap[styleProps.fontFamily].styles, {
         fontWeight: styleProps.fontWeight,
         fontStyle: styleProps.fontStyle
@@ -234,7 +233,7 @@ export default class TextMenu extends Component {
               />
             </div>
             <div className={styles.rowAlt}>
-              <UpdateParagraphStyles currentParagraphStyle={currentElement.props.paragraphStyle} />
+              <UpdateParagraphStyles currentElement={currentElement} />
             </div>
             <hr className={`${styles.hr} ${styles.hrList}`} />
             <div className={styles.row}>
