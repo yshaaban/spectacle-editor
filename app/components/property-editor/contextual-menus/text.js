@@ -233,7 +233,9 @@ export default class TextMenu extends Component {
               />
             </div>
             <div className={styles.rowAlt}>
-              <UpdateParagraphStyles currentElement={currentElement} />
+              <UpdateParagraphStyles
+                currentElement={currentElement}
+              />
             </div>
             <hr className={`${styles.hr} ${styles.hrList}`} />
             <div className={styles.row}>

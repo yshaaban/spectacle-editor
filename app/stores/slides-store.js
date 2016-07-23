@@ -1,7 +1,7 @@
 import { observable, computed, transaction, asReference } from "mobx";
 import Immutable from "seamless-immutable";
 import { generate } from "shortid";
-import { merge, omit } from "lodash";
+import { merge, pick, omit } from "lodash";
 
 import elementMap from "../elements";
 import { getParagraphStyles, getGridLinesObj, getGridLineHashes } from "../utils";
@@ -291,9 +291,16 @@ export default class SlidesStore {
 
   updateParagraphStyles(name, styles) {
     const newParagraphStyles = this.paragraphStyles;
+    const filteredParagraphStyles = pick(styles, Object.keys(newParagraphStyles[name]));
+    const filteredElementStyles = omit(styles, Object.keys(newParagraphStyles[name]));
     const slidesArray = this.slides;
 
-    newParagraphStyles[name] = { ...newParagraphStyles[name], ...styles };
+    slidesArray[this.currentSlideIndex]
+      .children[this.currentElementIndex]
+      .props
+      .style = filteredElementStyles;
+
+    newParagraphStyles[name] = { ...newParagraphStyles[name], ...filteredParagraphStyles };
 
     this._addToHistory({
       paragraphStyles: newParagraphStyles,

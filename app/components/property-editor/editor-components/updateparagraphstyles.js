@@ -8,13 +8,8 @@ export default class UpdateParagraphStyles extends Component {
   }
 
   static propTypes = {
-    currentElement: React.PropTypes.object
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = { active: true };
+    currentElement: React.PropTypes.object,
+    handleParagraphStyle: React.PropTypes.func
   }
 
   handleClick = () => {
