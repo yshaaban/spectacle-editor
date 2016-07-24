@@ -279,7 +279,11 @@ export default class SlidesStore {
     const newProps = merge(this.currentElement.props, props);
     const newState = this.currentState;
 
-    if (paragraphStyle !== props.paragraphStyle && !Object.keys(props.style).length) {
+    if (
+      paragraphStyle !== props.paragraphStyle &&
+      props.style &&
+      !Object.keys(props.style).length
+    ) {
       // if paragraph style changes, remove all added styles, but not any other ones affecting
       // position and word wrap
       newProps.style = omit(newProps.style, Object.keys(newState.paragraphStyles[paragraphStyle]));
