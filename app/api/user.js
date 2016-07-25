@@ -35,14 +35,13 @@ export const login = (domain, username, password) => fetch(`${domain}/v2/users/l
   return json;
 });
 
-export const getCurrentUser = (domain, csrfToken) => fetch(`${domain}/v2/users/current`, {
+export const getCurrentUser = (domain) => fetch(`${domain}/v2/users/current`, {
   method: "get",
   credentials: "include",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
-    "Plotly-Client-Platform": "Python 0.2",
-    "X-CSRFToken": csrfToken
+    "Plotly-Client-Platform": "Python 0.2"
   }
 })
 .then((res) => res.json());

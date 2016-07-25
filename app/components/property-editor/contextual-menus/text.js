@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import styles from "../index.css";
 import { autorun } from "mobx";
 import { map, omit, find } from "lodash";
@@ -74,6 +75,30 @@ export default class TextMenu extends Component {
         this.updateCurrentElementStyles(currentElement, omit(properties.style, "fontFamily"));
       }
     }
+  }
+
+  handleColorChange = (hex, opacity) => {
+    const style = this.context.store.currentElement.props.style;
+    const updatedColor = {};
+
+    if (style.color !== hex) {
+      updatedColor.color = hex;
+    }
+
+    if (style.opacity !== opacity) {
+      updatedColor.opacity = opacity;
+    }
+
+    if (updatedColor.opacity === undefined && updatedColor.color === undefined) {
+      return;
+    }
+
+    const updatedStyles = {
+      ...style,
+      ...updatedColor
+    };
+
+    this.context.store.updateElementProps({ style: updatedStyles });
   }
 
   updateCurrentElementStyles = (currentElement, style) => {
@@ -190,7 +215,7 @@ export default class TextMenu extends Component {
                 <div className={styles.subHeading}>
                   Color
                 </div>
-                <ColorPicker currentElement={this.state.currentElement} />
+                <ColorPicker currentStyles={styleProps} onColorChange={this.handleColorChange} />
               </div>
               <div>
                 <div className={styles.subHeading}>

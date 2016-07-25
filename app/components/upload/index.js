@@ -1,17 +1,33 @@
 import React, { Component } from "react";
+import { observer } from "mobx-react";
+
+import { create } from "../../api/presentation";
+import { getCurrentUser } from "../../api/user";
 
 import styles from "./index.css";
 
+@observer
 class UploadButton extends Component {
+  static contextTypes = {
+    store: React.PropTypes.object
+  };
+
   onClickUpload = () => {
+    const presJSON = this.context.store.serialize();
+    const { domainUrl, csrfToken } = this.context.store.api;
+
+    getCurrentUser(domainUrl).then(res => { console.log(res)});
+    create(domainUrl, csrfToken, presJSON);
     // TODO: Add `visible` class
     console.log(this.refs.flyoutUpload);
   }
 
   render() {
+    const { user } = this.context.store.api;
+
     return (
       <div className={styles.upload}>
-        <button className={styles.uploadBtn} onClick={this.onClickUpload}>
+        <button className={styles.uploadBtn} onClick={this.onClickUpload} disabled={!user} >
           <i className={`ionicons ion-ios-cloud-upload-outline ${styles.uploadIcon}`}></i>
           Upload
         </button>
