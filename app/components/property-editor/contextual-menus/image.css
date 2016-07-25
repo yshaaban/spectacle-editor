@@ -1,18 +1,19 @@
 .fileUpload {
-  background-color: #f2f2f2;
-  display: block;
-  margin: 12px 0 0;
-  padding: 10px;
+  margin: 12px 0 0 !important;
   max-width: 100%;
 
-  border: 2px dashed var(--secondary-border-color);
-  border-radius: 4px;
-  color: #69738a;
+  text-align: center;
+  cursor: pointer;
 }
 
-.fileUploadInput {
-  cursor: pointer;
-  max-width: 100%;
+.visuallyHidden {
+  pointer-events: none;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
 }
 
 .uploadedFile {

@@ -129,13 +129,13 @@ export default class ImageMenu extends Component {
           </p>
           : ""
         }
-        <label className={`${commonStyles.subHeading} ${styles.fileUpload}`}>
-          { fileName ?
-            `Select a file to replace` :
-            `Select a file to upload`
+        <label className={`globalButton ${styles.fileUpload}`}>
+          {fileName ?
+            `Replace this file...` :
+            `Choose a file...`
           }
           <input
-            className={styles.fileUploadInput}
+            className={styles.visuallyHidden}
             type="file"
             name="imageFile"
             accept="image/x-png, image/gif, image/jpeg"
