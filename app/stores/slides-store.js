@@ -23,7 +23,7 @@ export default class SlidesStore {
       "Heading 2": getParagraphStyles({ fontSize: 20 }),
       "Heading 3": getParagraphStyles({ fontSize: 11, fontWeight: 700 }),
       Body: getParagraphStyles({ fontSize: 11 }),
-      "Body Small": getParagraphStyles({ fontSize: 11 }),
+      "Body Small": getParagraphStyles({ fontSize: 10 }),
       Caption: getParagraphStyles({ fontSize: 11, fontStyle: "italic" })
     },
     slides: [{
@@ -54,7 +54,6 @@ export default class SlidesStore {
       color: allColors[4]
     }
   ] }]));
-
 
   @observable historyIndex = 0;
 

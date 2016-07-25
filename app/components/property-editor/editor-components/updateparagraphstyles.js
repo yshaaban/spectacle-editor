@@ -29,12 +29,12 @@ export default class UpdateParagraphStyles extends Component {
       return null;
     }
 
-    const editedStyles = pick(
+    const filteredStyles = pick(
       storeElement.props.style,
       Object.keys(paragraphStyles[currentElement.props.paragraphStyle])
     );
 
-    const stylesLength = Object.keys(editedStyles).length;
+    const stylesLength = Object.keys(filteredStyles).length;
 
     return (
       <div
