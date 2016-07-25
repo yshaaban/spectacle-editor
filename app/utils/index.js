@@ -12,6 +12,7 @@ export const getParagraphStyles = (obj) => (
     minWidth: 20,
     opacity: 1,
     textAlign: "center",
+    textDecoration: "none",
     ...obj
   }
 );

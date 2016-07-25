@@ -28,16 +28,13 @@ export default class UpdateParagraphStyles extends Component {
     if (!currentElement || !storeElement) {
       return null;
     }
+
     const editedStyles = pick(
       storeElement.props.style,
       Object.keys(paragraphStyles[currentElement.props.paragraphStyle])
     );
 
-    const nonStylePropsCount =
-      Number(!!storeElement.props.isQuote) +
-      Number(!!storeElement.props.listType);
-
-    const stylesLength = Object.keys(editedStyles).length + nonStylePropsCount;
+    const stylesLength = Object.keys(editedStyles).length;
 
     return (
       <div

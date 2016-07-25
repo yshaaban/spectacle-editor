@@ -35,8 +35,8 @@ elements[ElementTypes.TEXT] = {
   // TODO: Figure out defaults for text element
   type: ElementTypes.TEXT,
   ComponentClass: Heading,
-  defaultWidth: 90,
-  defaultHeight: 63,
+  defaultWidth: 51,
+  defaultHeight: 36,
   defaultText: ["Text"],
   props: {
     paragraphStyle: "Heading 1",
