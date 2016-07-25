@@ -5,6 +5,39 @@ let menu;
 let template;
 let mainWindow = null;
 
+app.commandLine.appendSwitch("--ignore-certificate-errors");
+
+const handleSocialAuth = (socialUrl) => {
+  const socialLoginWindow = new BrowserWindow({
+    show: true,
+    width: 1000,
+    height: 700,
+    // This is required for FB OAuth
+    webPreferences: {
+      // fails without this because of CommonJS script detection
+      nodeIntegration: false,
+      // required for Facebook active ping thingy
+      webSecurity: false,
+      plugins: true
+    }
+  });
+
+  // socialLoginWindow.openDevTools();
+  socialLoginWindow.loadURL(socialUrl);
+
+  socialLoginWindow.on("close", () => {
+    mainWindow.webContents.session.cookies.get({
+      // name: "csrftoken",
+      domain: "plot.ly"
+    }, (err, cookies) => {
+      // TODO: For some reason, this is always set, even on fail, wtf?
+      if (Array.isArray(cookies) && cookies[0] && cookies[0].value) {
+        mainWindow.webContents.send("social-login", cookies);
+      }
+    });
+  });
+};
+
 crashReporter.start();
 
 if (process.env.NODE_ENV === "development") {
@@ -45,6 +78,18 @@ app.on("ready", () => {
 
       mainWindow.webContents.send("image-encoded", new Buffer(imageData).toString("base64"));
     });
+  });
+
+  ipcMain.on("social-login", (event, socialUrl) => {
+    mainWindow.webContents.session.clearStorageData(() => {});
+    // Reset the csrftoken cookie if there is one
+    mainWindow.webContents.session.cookies.remove("https://plot.ly", "csrftoken", () => {
+      handleSocialAuth(socialUrl);
+    });
+  });
+
+  ipcMain.on("open-external", (event, url) => {
+    shell.openExternal(url);
   });
 
   if (process.env.NODE_ENV === "development") {
@@ -104,11 +149,17 @@ app.on("ready", () => {
       submenu: [{
         label: "Undo",
         accelerator: "Command+Z",
-        selector: "undo:"
+        selector: "undo:",
+        click() {
+          mainWindow.webContents.send("edit", "undo");
+        }
       }, {
         label: "Redo",
-        accelerator: "Shift+Command+Z",
-        selector: "redo:"
+        accelerator: "Command+Y",
+        selector: "redo:",
+        click() {
+          mainWindow.webContents.send("edit", "redo");
+        }
       }, {
         type: "separator"
       }, {

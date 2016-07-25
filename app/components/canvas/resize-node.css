@@ -6,6 +6,8 @@
 }
 
 .handleLeft::before,
+.handleTop::before,
+.handleBottom::before,
 .handleRight::before {
   content: "";
   position: absolute;
@@ -22,6 +24,24 @@
   left: -5px;
 
   cursor: ew-resize;
+  height: 0;
+  width: 7px;
+}
+
+.handleTop {
+  top: -4px;
+  left: calc(50% - 4px);
+
+  cursor: ns-resize;
+  height: 0;
+  width: 7px;
+}
+
+.handleBottom {
+  bottom: 5px;
+  left: calc(50% - 4px);
+
+  cursor: ns-resize;
   height: 0;
   width: 7px;
 }

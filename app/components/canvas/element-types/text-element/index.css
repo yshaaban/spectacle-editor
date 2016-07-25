@@ -54,7 +54,9 @@ ol.content li::before {
 }
 
 .line {
+  border-left-width: 0;
   margin: 0;
+  padding-left: initial;
   position: relative;
 }
 
@@ -81,6 +83,13 @@ li.line {
 
 .editor {
   cursor: text;
+}
+
+.quote {
+  border-left-width: 0.05em;
+  border-left-style: solid;
+  border-left-color: inherit;
+  padding-left: 0.5em;
 }
 
 .selected::before {

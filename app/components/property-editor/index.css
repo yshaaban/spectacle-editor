@@ -41,6 +41,10 @@
   margin-bottom: 28px;
 }
 
+.flexspacebetween {
+  justify-content: space-between;
+}
+
 .heading {
   color: #000;
   font-size: 20px;

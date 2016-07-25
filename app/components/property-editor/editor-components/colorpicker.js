@@ -100,12 +100,12 @@ export default class ColorPicker extends Component {
           style={{ background: currentElement.props.style.color }}
         >
         </div>
-        <div
+        <button
           onClick={this.handlePickerOpen}
           className={styles.dropper}
           dangerouslySetInnerHTML={{ __html: EYEDROPPER }}
         >
-        </div>
+        </button>
         <div
           className={
             `${styles.pickerWrapper}

@@ -6,6 +6,8 @@ import styles from "./resize-node.css";
 export default class ResizeNode extends Component {
   static propTypes = {
     alignLeft: PropTypes.bool,
+    alignTop: PropTypes.bool,
+    alignBottom: PropTypes.bool,
     alignRight: PropTypes.bool,
     cornerTopLeft: PropTypes.bool,
     cornerTopRight: PropTypes.bool,
@@ -42,6 +44,8 @@ export default class ResizeNode extends Component {
   render() {
     const resolvedClassNames = [
       styles.handle,
+      this.props.alignTop && styles.handleTop,
+      this.props.alignBottom && styles.handleBottom,
       this.props.alignLeft && styles.handleLeft,
       this.props.alignRight && styles.handleRight,
       this.props.cornerTopLeft && styles.cornerTopLeft,

@@ -430,6 +430,8 @@
 }
 
 body {
+  box-sizing: border-box;
+
   background-color: #fff;
   box-sizing: border-box;
   color: white;
@@ -456,6 +458,20 @@ p {
 
 li {
   list-style: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input:focus,
+input:active,
+a:focus,
+a:active,
+button:focus,
+button:active {
+  outline: none;
 }
 
 /* Forms */
