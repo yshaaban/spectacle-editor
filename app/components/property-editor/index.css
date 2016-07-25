@@ -19,6 +19,7 @@
   line-height: 1.9;
   position: relative;
   text-align: center;
+  text-transform: uppercase;
   top: -8px;
   width: 100px;
 }

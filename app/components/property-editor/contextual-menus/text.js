@@ -153,7 +153,7 @@ export default class TextMenu extends Component {
             </div>
             <div>
               <div className={styles.breakHr}>
-                <div className={styles.breakTitle}>HEADING 1</div>
+                <div className={styles.breakTitle}>{currentElement.props.paragraphStyle}</div>
               </div>
             </div>
             <div className={styles.row}>
