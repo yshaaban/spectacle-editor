@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styles from "../index.css";
 import { autorun } from "mobx";
 import { map, omit, find, merge } from "lodash";
+
 import {
   Alignment,
   ColorPicker,

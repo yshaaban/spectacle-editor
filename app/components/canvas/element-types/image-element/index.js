@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from "react";
-import ReactDOM from "react-dom";
+import { findDOMNode } from "react-dom";
 import { Motion, spring } from "react-motion";
 import { omit, defer } from "lodash";
 
@@ -677,7 +677,7 @@ export default class ImageElement extends Component {
                 {currentlySelected &&
                   <ResizeNode
                     cornerTopLeft
-                    ref={component => {this.topLeftNode = ReactDOM.findDOMNode(component);}}
+                    ref={component => {this.topLeftNode = findDOMNode(component);}}
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
@@ -685,7 +685,7 @@ export default class ImageElement extends Component {
                 }
                 {currentlySelected &&
                   <ResizeNode
-                    ref={component => {this.leftResizeNode = ReactDOM.findDOMNode(component);}}
+                    ref={component => {this.leftResizeNode = findDOMNode(component);}}
                     alignLeft
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
@@ -694,7 +694,7 @@ export default class ImageElement extends Component {
                 }
                 {currentlySelected &&
                   <ResizeNode
-                    ref={component => {this.bottomLeftNode = ReactDOM.findDOMNode(component);}}
+                    ref={component => {this.bottomLeftNode = findDOMNode(component);}}
                     cornerBottomLeft
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
@@ -703,7 +703,7 @@ export default class ImageElement extends Component {
                 }
                 {currentlySelected &&
                   <ResizeNode
-                    ref={component => {this.topResizeNode = ReactDOM.findDOMNode(component);}}
+                    ref={component => {this.topResizeNode = findDOMNode(component);}}
                     alignTop
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
@@ -714,6 +714,7 @@ export default class ImageElement extends Component {
                   <Arrange />
                 }
                   <ComponentClass
+                    ref={component => {this.image = findDOMNode(component);}}
                     {...props}
                     className={styles.image}
                     style={{ ...elementStyle, ...computedResizeStyles, zIndex: elementIndex }}
@@ -721,7 +722,7 @@ export default class ImageElement extends Component {
                 {currentlySelected &&
                   <ResizeNode
                     cornerTopRight
-                    ref={component => {this.topRightNode = ReactDOM.findDOMNode(component);}}
+                    ref={component => {this.topRightNode = findDOMNode(component);}}
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
@@ -730,7 +731,7 @@ export default class ImageElement extends Component {
                 {currentlySelected &&
                   <ResizeNode
                     alignRight
-                    ref={component => {this.rightResizeNode = ReactDOM.findDOMNode(component);}}
+                    ref={component => {this.rightResizeNode = findDOMNode(component);}}
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
                     component={this.props.component}
@@ -738,7 +739,7 @@ export default class ImageElement extends Component {
                 }
                 {currentlySelected &&
                   <ResizeNode
-                    ref={component => {this.bottomRightNode = ReactDOM.findDOMNode(component);}}
+                    ref={component => {this.bottomRightNode = findDOMNode(component);}}
                     cornerBottomRight
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
@@ -747,7 +748,7 @@ export default class ImageElement extends Component {
                 }
                 {currentlySelected &&
                   <ResizeNode
-                    ref={component => {this.bottomResizeNode = ReactDOM.findDOMNode(component);}}
+                    ref={component => {this.bottomResizeNode = findDOMNode(component);}}
                     alignBottom
                     handleMouseDownResize={this.handleMouseDownResize}
                     onTouch={this.handleTouchStartResize}
