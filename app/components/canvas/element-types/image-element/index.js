@@ -42,12 +42,14 @@ export default class ImageElement extends Component {
 
   componentDidMount() {
     defer(() => {
-      const { width, height } = this.currentElementComponent.getBoundingClientRect();
+      if (this.currentElementComponent && !this.context.store.isDragging) {
+        const { width, height } = this.currentElementComponent.getBoundingClientRect();
 
-      this.setState({ // eslint-disable-line react/no-did-mount-set-state
-        width,
-        height
-      });
+        this.setState({ // eslint-disable-line react/no-did-mount-set-state
+          width,
+          height
+        });
+      }
     });
   }
 

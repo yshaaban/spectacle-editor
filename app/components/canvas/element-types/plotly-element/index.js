@@ -42,12 +42,14 @@ export default class PlotlyElement extends Component {
 
   componentDidMount() {
     defer(() => {
-      const { width, height } = this.currentElementComponent.getBoundingClientRect();
+      if (this.currentElementComponent && !this.context.store.isDragging) {
+        const { width, height } = this.currentElementComponent.getBoundingClientRect();
 
-      this.setState({ // eslint-disable-line react/no-did-mount-set-state
-        width,
-        height
-      });
+        this.setState({ // eslint-disable-line react/no-did-mount-set-state
+          width,
+          height
+        });
+      }
     });
   }
 
@@ -630,7 +632,7 @@ export default class PlotlyElement extends Component {
 
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
-    if (currentlySelected && isPressed) {
+    if (isPressed) {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
       motionStyles.top = spring((props.style && props.style.top || 0) + y, SpringSettings.DRAG);
     }
