@@ -51,22 +51,6 @@ export default class ImageElement extends Component {
     });
   }
 
-  componentWillReceiveProps() {
-    const { isDragging, isResizing } = this.context.store;
-
-    if (!isDragging && !isResizing) {
-      // defer measuring new height and width, otherwise value will be what height was before resize
-      defer(() => {
-        if (this.editable) {
-          this.setState({
-            width: this.editable.clientWidth,
-            height: this.editable.clientHeight
-          });
-        }
-      });
-    }
-  }
-
   shouldComponentUpdate() {
     // This is needed because of the way the component is passed down
     // React isn't re-rendering this when the contextual menu updates the store
@@ -596,6 +580,16 @@ export default class ImageElement extends Component {
 
     if (currentlySelected) {
       window.addEventListener("keydown", this.handleKeyDown);
+
+      if (isResizing) {
+        this.currentElementComponent.style.cursor = cursorType;
+      } else if (this.currentElementComponent && !isDragging) {
+        this.currentElementComponent.style.cursor = "move";
+      }
+
+      if (isDragging) {
+        wrapperStyle.pointerEvents = "none";
+      }
     } else {
       window.removeEventListener("keydown", this.handleKeyDown);
       window.removeEventListener("keyup", this.handleKeyUp);
@@ -607,15 +601,6 @@ export default class ImageElement extends Component {
     let elementStyle = props.style ? { ...props.style } : {};
     const { isDragging, isResizing, cursorType } = this.context.store;
 
-    if (isResizing) {
-      this.currentElementComponent.style.cursor = cursorType;
-    } else if (this.currentElementComponent && !isDragging) {
-      this.currentElementComponent.style.cursor = "move";
-    }
-
-    if (isDragging) {
-      wrapperStyle.pointerEvents = "none";
-    }
 
     if (mousePosition || props.style && props.style.position === "absolute") {
       wrapperStyle.position = "absolute";
@@ -645,12 +630,12 @@ export default class ImageElement extends Component {
 
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
-    if (isPressed) {
+    if (currentlySelected && isPressed) {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
       motionStyles.top = spring((props.style && props.style.top || 0) + y, SpringSettings.DRAG);
     }
 
-    if (isResizing) {
+    if (currentlySelected && isResizing) {
       const componentStylesLeft = props.style && props.style.left || 0;
       const componentStylesTop = props.style && props.style.top || 0;
 
@@ -674,7 +659,7 @@ export default class ImageElement extends Component {
             const computedDragStyles = omit(computedStyles, "width", "height");
             let computedResizeStyles = omit(computedStyles, "top", "left");
 
-            if (!isResizing) {
+            if (!currentlySelected || !isResizing) {
               computedResizeStyles = {};
             }
 

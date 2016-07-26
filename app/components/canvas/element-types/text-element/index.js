@@ -525,6 +525,7 @@ export default class TextElement extends Component {
                     ref={component => {
                       this.editable = ReactDOM.findDOMNode(component);
                     }}
+                    currentlySelected={currentlySelected}
                     stopEditing={this.stopEditing}
                     classNames={{ ...styles, paragraph: paragraphClass }}
                     isEditing={editing}
