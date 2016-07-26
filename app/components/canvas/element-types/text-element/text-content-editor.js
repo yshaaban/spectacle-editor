@@ -110,12 +110,29 @@ export default class TextContentEditor extends Component {
   }
 
   handleKeyDown = (ev) => {
+    const superKey = process.platform === "darwin" ? ev.metaKey : ev.ctrlKey;
+
+    if (superKey && ev.which === 90) {
+      ev.preventDefault();
+      document.execCommand("undo");
+    }
+
+    if (superKey && ev.which === 90 && ev.shiftKey) {
+      ev.preventDefault();
+      document.execCommand("redo");
+    }
+
     if (ev.which === 8 && ev.target.innerText.length <= 1) {
       ev.preventDefault();
     }
 
     if (ev.which === 13 && ev.shiftKey && !this.props.componentProps.listType) {
       ev.preventDefault();
+    }
+
+    if (ev.which === 27) {
+      ev.preventDefault();
+      this.handleBlur();
     }
   }
 
