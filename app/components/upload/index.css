@@ -18,13 +18,17 @@
   background: none;
   border: 0;
   box-shadow: none;
-  color: #a0aab1;
+  color: var(--plotly-blue);
   font-size: 10px;
   font-weight: normal;
   letter-spacing: 0.2em;
   line-height: 1.9;
   outline: 0;
   text-transform: uppercase;
+}
+
+.uploadBtn:disabled {
+  color: #a0aab1;
 }
 
 .uploadIcon {
@@ -51,7 +55,7 @@
   visibility: hidden;
 }
 
-.flyout.visible {
+.visible {
   display: block;
   visibility: visible;
 }

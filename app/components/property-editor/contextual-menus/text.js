@@ -249,7 +249,7 @@ export default class TextMenu extends Component {
               <div className={styles.subHeading}>
                 Link
               </div>
-              <LinkTo />
+              <LinkTo currentElement={this.state.currentElement} />
             </div>
           </div>
         )}
