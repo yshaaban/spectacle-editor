@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { defer } from "lodash";
 
 export default class TextContentEditor extends Component {
   static propTypes = {
