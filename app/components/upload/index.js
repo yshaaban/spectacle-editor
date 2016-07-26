@@ -51,7 +51,7 @@ class UploadButton extends Component {
         // TODO: better error handling, for instance if a session expired.
         if (responseJSON.errors) {
           this.setState({
-            publishError: responseJSON.errors[0].message
+            publishError: responseJSON.errors.pop().message
           });
 
           return;
