@@ -480,7 +480,7 @@ export default class TextElement extends Component {
     }
 
 
-    if (isResizing) {
+    if (isResizing && currentlySelected) {
       const componentStylesLeft = props.style && props.style.left || 0;
 
       motionStyles.left = spring(
@@ -500,7 +500,7 @@ export default class TextElement extends Component {
             const computedDragStyles = omit(computedStyles, "width");
             let computedResizeStyles = omit(computedStyles, "top", "left");
 
-            if (!isResizing) {
+            if (!isResizing || !currentlySelected) {
               computedResizeStyles = {};
             }
 
