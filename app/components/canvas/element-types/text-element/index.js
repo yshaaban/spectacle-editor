@@ -411,7 +411,7 @@ export default class TextElement extends Component {
       left
     } = this.state;
 
-    const { isResizing, isDragging } = this.context.store;
+    const { isResizing, isDragging, paragraphStyles } = this.context.store;
 
     if (isResizing) {
       this.currentElementComponent.style.cursor = "ew-resize";
@@ -459,7 +459,13 @@ export default class TextElement extends Component {
       }
     }
 
-    elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
+    elementStyle = {
+      ...paragraphStyles[props.paragraphStyle],
+      ...elementStyle,
+      position: "relative",
+      left: 0,
+      top: 0
+    };
 
     if (this.props.component.props.style.width !== undefined || isResizing) {
       elementStyle = omit(elementStyle, "whiteSpace");
