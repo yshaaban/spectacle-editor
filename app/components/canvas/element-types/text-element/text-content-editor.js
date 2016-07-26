@@ -30,6 +30,14 @@ export default class TextContentEditor extends Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { children, placeholderText } = nextProps;
+
+    this.setState({
+      contentToRender: children && children || placeholderText
+    });
+  }
+
   handleInput = (ev) => {
     this.setState({ content: ev.target.textContent });
   }
