@@ -81,7 +81,7 @@ export default class ColorPicker extends Component {
     }
 
     const updatedStyles = {
-      ...style,
+      ...this.context.store.currentElement.props.style,
       ...updatedColor
     };
 
