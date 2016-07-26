@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { defer } from "lodash";
 
 export default class TextContentEditor extends Component {
   static propTypes = {
@@ -59,12 +60,19 @@ export default class TextContentEditor extends Component {
   }
 
   handleClick = (ev) => {
-    const { isEditing, placeholderText } = this.props;
+    const { isEditing, placeholderText, currentlySelected } = this.props;
     const { content, contentToRender } = this.state;
     const sel = window.getSelection();
     const range = document.createRange();
+
     if (!isEditing) {
       ev.preventDefault();
+
+      return;
+    }
+
+    if (!currentlySelected) {
+      this.props.stopEditing();
 
       return;
     }
