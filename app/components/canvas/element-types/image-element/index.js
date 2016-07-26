@@ -582,16 +582,6 @@ export default class ImageElement extends Component {
 
     if (currentlySelected) {
       window.addEventListener("keydown", this.handleKeyDown);
-
-      if (isResizing) {
-        this.currentElementComponent.style.cursor = cursorType;
-      } else if (this.currentElementComponent && !isDragging) {
-        this.currentElementComponent.style.cursor = "move";
-      }
-
-      if (isDragging) {
-        wrapperStyle.pointerEvents = "none";
-      }
     } else {
       window.removeEventListener("keydown", this.handleKeyDown);
       window.removeEventListener("keyup", this.handleKeyUp);
@@ -603,6 +593,15 @@ export default class ImageElement extends Component {
     let elementStyle = props.style ? { ...props.style } : {};
     const { isDragging, isResizing, cursorType } = this.context.store;
 
+    if (currentlySelected && isResizing) {
+      this.currentElementComponent.style.cursor = cursorType;
+    } else if (currentlySelected && this.currentElementComponent && !isDragging) {
+      this.currentElementComponent.style.cursor = "move";
+    }
+
+    if (isDragging) {
+      wrapperStyle.pointerEvents = "none";
+    }
 
     if (mousePosition || props.style && props.style.position === "absolute") {
       wrapperStyle.position = "absolute";

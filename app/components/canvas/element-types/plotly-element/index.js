@@ -582,16 +582,6 @@ export default class PlotlyElement extends Component {
 
     if (currentlySelected) {
       window.addEventListener("keydown", this.handleKeyDown);
-
-      if (isResizing) {
-        this.currentElementComponent.style.cursor = cursorType;
-      } else if (this.currentElementComponent && !isDragging) {
-        this.currentElementComponent.style.cursor = "move";
-      }
-
-      if (isDragging) {
-        wrapperStyle.pointerEvents = "none";
-      }
     } else {
       window.removeEventListener("keydown", this.handleKeyDown);
       window.removeEventListener("keyup", this.handleKeyUp);
@@ -603,6 +593,15 @@ export default class PlotlyElement extends Component {
     let elementStyle = props.style ? { ...props.style } : {};
     const { isDragging, isResizing, cursorType } = this.context.store;
 
+    if (currentlySelected && isResizing) {
+      this.currentElementComponent.style.cursor = cursorType;
+    } else if (currentlySelected && this.currentElementComponent && !isDragging) {
+      this.currentElementComponent.style.cursor = "move";
+    }
+
+    if (isDragging) {
+      wrapperStyle.pointerEvents = "none";
+    }
 
     if (mousePosition || props.style && props.style.position === "absolute") {
       wrapperStyle.position = "absolute";
@@ -632,7 +631,7 @@ export default class PlotlyElement extends Component {
 
     elementStyle = { ...elementStyle, position: "relative", left: 0, top: 0 };
 
-    if (isPressed) {
+    if (currentlySelected && isPressed) {
       motionStyles.left = spring((props.style && props.style.left || 0) + x, SpringSettings.DRAG);
       motionStyles.top = spring((props.style && props.style.top || 0) + y, SpringSettings.DRAG);
     }
@@ -717,7 +716,12 @@ export default class PlotlyElement extends Component {
                   <ComponentClass
                     {...props}
                     className={styles.image}
-                    style={{ ...elementStyle, ...computedResizeStyles, zIndex: elementIndex }}
+                    style={{
+                      ...elementStyle,
+                      ...computedResizeStyles,
+                      zIndex: elementIndex,
+                      pointerEvents: "none"
+                    }}
                   />
                 {currentlySelected &&
                   <ResizeNode
