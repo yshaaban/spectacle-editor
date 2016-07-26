@@ -484,16 +484,18 @@ export default class ImageElement extends Component {
   handleMouseDown = (ev) => {
     ev.preventDefault();
 
+    this.clickStart = new Date().getTime();
     this.context.store.setCurrentElementIndex(this.props.elementIndex);
 
-    const { pageX, pageY } = ev;
-    const boundingBox = this.currentElementComponent.getBoundingClientRect();
+    const { pageX, pageY, target } = ev;
+    const boundingBox = target.getBoundingClientRect();
     const mouseOffset = [Math.floor(boundingBox.left - pageX), Math.floor(boundingBox.top - pageY)];
     const originalPosition = [
       this.props.component.props.style.left,
       this.props.component.props.style.top
     ];
-    const { width, height } = boundingBox;
+
+    const { width, height } = this.currentElementComponent.getBoundingClientRect();
 
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("touchend", this.handleMouseUp);
@@ -501,28 +503,51 @@ export default class ImageElement extends Component {
     // Do this preemptively so that dragging doesn't take the performance hit
     this.gridLines = this.context.store.gridLines;
 
-    this.context.store.updateElementDraggingState(true, true);
+    // Only do drag if we hold the mouse down for a bit
+    this.mouseClickTimeout = setTimeout(() => {
+      this.clickStart = null;
+      this.mouseClickTimeout = null;
 
-    // Make the cursor dragging everywhere
-    document.body.style.cursor = "-webkit-grabbing";
-    this.currentElementComponent.style.cursor = "-webkit-grabbing";
+      this.context.store.updateElementDraggingState(true, true);
 
-    // TODO: handle elements that aren't absolutely positioned?
-    this.setState({
-      delta: [0, 0],
-      mouseStart: [pageX, pageY],
-      isPressed: true,
-      mouseOffset,
-      originalPosition,
-      width,
-      height
-    });
+      // Make the cursor dragging everywhere
+      document.body.style.cursor = "-webkit-grabbing";
 
-    window.addEventListener("touchmove", this.handleTouchMove);
-    window.addEventListener("mousemove", this.handleMouseMove);
+      // TODO: handle elements that aren't absolutely positioned?
+      this.setState({
+        delta: [0, 0],
+        mouseStart: [pageX, pageY],
+        isPressed: true,
+        mouseOffset,
+        originalPosition,
+        width,
+        height
+      });
+
+      window.addEventListener("touchmove", this.handleTouchMove);
+      window.addEventListener("mousemove", this.handleMouseMove);
+    }, 150);
   }
 
   handleMouseUp = () => {
+    if (this.mouseClickTimeout || this.mouseClickTimeout === 0) {
+      clearTimeout(this.mouseClickTimeout);
+      window.removeEventListener("mouseup", this.handleMouseUp);
+      window.removeEventListener("touchend", this.handleMouseUp);
+
+      this.mouseClickTimeout = null;
+
+      // this.props.onDropElement(this.props.elementType);
+      const timeSinceMouseDown = new Date().getTime() - this.clickStart;
+
+      // Give the user the remainder of the 250ms to do a double click
+      setTimeout(() => {
+        this.clickStart = null;
+      }, 250 - timeSinceMouseDown);
+
+      return;
+    }
+
     window.removeEventListener("touchmove", this.handleTouchMove);
     window.removeEventListener("touchend", this.handleMouseUp);
     window.removeEventListener("mousemove", this.handleMouseMove);
@@ -705,7 +730,7 @@ export default class ImageElement extends Component {
                   <ComponentClass
                     {...props}
                     className={styles.image}
-                    style={{ ...elementStyle, ...computedResizeStyles }}
+                    style={{ ...elementStyle, ...computedResizeStyles, zIndex: elementIndex }}
                   />
                 {currentlySelected &&
                   <ResizeNode

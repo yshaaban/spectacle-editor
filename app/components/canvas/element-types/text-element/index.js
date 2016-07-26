@@ -501,8 +501,7 @@ export default class TextElement extends Component {
                 className={
                   `${styles.canvasElement}
                    ${extraClasses}
-                   ${BLACKLIST_CURRENT_ELEMENT_DESELECT}
-                   ${styles.list}`
+                   ${BLACKLIST_CURRENT_ELEMENT_DESELECT}`
                 }
                 ref={component => {this.currentElementComponent = component;}}
                 style={{ ...wrapperStyle, ...computedDragStyles }}
@@ -531,7 +530,7 @@ export default class TextElement extends Component {
                     isEditing={editing}
                     placeholderText={defaultText}
                     componentProps={{ ...props }}
-                    style={{ ...elementStyle, ...computedResizeStyles }}
+                    style={{ ...elementStyle, ...computedResizeStyles, zIndex: elementIndex }}
                     children={children}
                   />
                 }

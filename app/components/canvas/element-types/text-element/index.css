@@ -102,4 +102,5 @@ li.line {
 
   border: var(--selected-border);
   border-radius: 2px;
+  z-index: 100;
 }

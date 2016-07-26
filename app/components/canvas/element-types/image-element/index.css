@@ -15,7 +15,7 @@
   bottom: 0;
   left: 0;
 
-  z-index: var(--basic-increment);
+  z-index: 100;
 }
 
 .image {
