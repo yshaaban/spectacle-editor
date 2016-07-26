@@ -257,6 +257,57 @@ export default class SlidesStore {
     });
   }
 
+  setCurrentElementToFrontOrBack(toFront) {
+    transaction(() => {
+      const slidesArray = this.slides;
+      const currentChildren = slidesArray[this.currentSlideIndex].children;
+      const currentChild = currentChildren.splice(this.currentElementIndex, 1);
+      let index;
+
+      if (toFront) {
+        slidesArray[this.currentSlideIndex]
+          .children = currentChildren.concat(currentChild);
+        index = slidesArray[this.currentSlideIndex].children.length - 1;
+      } else {
+        slidesArray[this.currentSlideIndex]
+          .children = currentChild.concat(currentChildren);
+        index = 0;
+      }
+
+      this._addToHistory({
+        currentSlideIndex: this.currentSlideIndex,
+        currentElementIndex: index,
+        slides: slidesArray
+      });
+    });
+  }
+
+  incrementCurrentElementIndexBy(num) {
+    const slidesArray = this.slides;
+    const currentChildren = slidesArray[this.currentSlideIndex].children;
+
+    if (
+      num + this.currentElementIndex < 0 ||
+      num + this.currentElementIndex >= currentChildren.length
+    ) {
+      return;
+    }
+
+    transaction(() => {
+      const currentChild = currentChildren[this.currentElementIndex];
+      const sibling = currentChildren[this.currentElementIndex + num];
+
+      currentChildren[this.currentElementIndex] = sibling;
+      currentChildren[this.currentElementIndex + num] = currentChild;
+
+      this._addToHistory({
+        currentSlideIndex: this.currentSlideIndex,
+        currentElementIndex: this.currentElementIndex + num,
+        slides: slidesArray
+      });
+    });
+  }
+
   updateElementDraggingState(isDraggingElement, isDraggingNewElement = false) {
     transaction(() => {
       this.isDragging = isDraggingElement;

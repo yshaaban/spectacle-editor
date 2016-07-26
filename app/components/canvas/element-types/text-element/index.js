@@ -379,19 +379,21 @@ export default class TextElement extends Component {
   }
 
   stopEditing = () => {
-    this.setState({
-      editing: false,
-      width: this.currentElementComponent.clientWidth,
-      reRender: true
-    });
+    if (this.currentElementComponent) {
+      this.setState({
+        editing: false,
+        width: this.currentElementComponent.clientWidth,
+        reRender: true
+      });
 
-    // this defer is necessary to force an entire re-render of the text editor
-    // because contentEditable creates new elements outside of react's knowledge.
-    // This will unmount the editor and remount it with the updated children incorporated
-    // into the virtual DOM from the store.
-    defer(() => {
-      this.setState({ reRender: false });
-    });
+      // this defer is necessary to force an entire re-render of the text editor
+      // because contentEditable creates new elements outside of react's knowledge.
+      // This will unmount the editor and remount it with the updated children incorporated
+      // into the virtual DOM from the store.
+      defer(() => {
+        this.setState({ reRender: false });
+      });
+    }
   }
 
   render() {
@@ -507,8 +509,7 @@ export default class TextElement extends Component {
                 className={
                   `${styles.canvasElement}
                    ${extraClasses}
-                   ${BLACKLIST_CURRENT_ELEMENT_DESELECT}
-                   ${styles.list}`
+                   ${BLACKLIST_CURRENT_ELEMENT_DESELECT}`
                 }
                 ref={component => {this.currentElementComponent = component;}}
                 style={{ ...wrapperStyle, ...computedDragStyles }}
@@ -532,12 +533,13 @@ export default class TextElement extends Component {
                     ref={component => {
                       this.editable = ReactDOM.findDOMNode(component);
                     }}
+                    currentlySelected={currentlySelected}
                     stopEditing={this.stopEditing}
                     classNames={{ ...styles, paragraph: paragraphClass }}
                     isEditing={editing}
                     placeholderText={defaultText}
                     componentProps={{ ...props }}
-                    style={{ ...elementStyle, ...computedResizeStyles }}
+                    style={{ ...elementStyle, ...computedResizeStyles, zIndex: elementIndex }}
                     children={children}
                   />
                 }
