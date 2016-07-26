@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import styles from "../index.css";
 import { autorun } from "mobx";
-<<<<<<< HEAD
-import { map, omit, find } from "lodash";
-
-=======
 import { map, omit, find, merge } from "lodash";
->>>>>>> master
+
 import {
   Alignment,
   ColorPicker,
