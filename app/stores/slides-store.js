@@ -262,6 +262,7 @@ export default class SlidesStore {
       const slidesArray = this.slides;
       const currentChildren = slidesArray[this.currentSlideIndex].children;
       const currentChild = currentChildren.splice(this.currentElementIndex, 1);
+      const newParagraphStyles = this.paragraphStyles;
       let index;
 
       if (toFront) {
@@ -275,6 +276,7 @@ export default class SlidesStore {
       }
 
       this._addToHistory({
+        paragraphStyles: newParagraphStyles,
         currentSlideIndex: this.currentSlideIndex,
         currentElementIndex: index,
         slides: slidesArray
@@ -296,11 +298,13 @@ export default class SlidesStore {
     transaction(() => {
       const currentChild = currentChildren[this.currentElementIndex];
       const sibling = currentChildren[this.currentElementIndex + num];
+      const newParagraphStyles = this.paragraphStyles;
 
       currentChildren[this.currentElementIndex] = sibling;
       currentChildren[this.currentElementIndex + num] = currentChild;
 
       this._addToHistory({
+        paragraphStyles: newParagraphStyles,
         currentSlideIndex: this.currentSlideIndex,
         currentElementIndex: this.currentElementIndex + num,
         slides: slidesArray
